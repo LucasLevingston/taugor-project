@@ -10,21 +10,22 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0",
+		"@rollup/plugin-replace": "^5.0.5",
+		"dotenv": "^16.4.5",
+		"dotenv-webpack": "^8.0.1",
+		"firebase": "^10.9.0",
+		"firebaseui": "^6.1.0",
+		"react-refresh": "^0.14.0",
 		"react-router-dom": "^6.22.3"
 	},
 	"devDependencies": {
-		"@types/react": "^18.2.64",
-		"@types/react-dom": "^18.2.21",
+		"@types/react": "^18.2.67",
 		"@typescript-eslint/eslint-plugin": "^7.1.1",
 		"@typescript-eslint/parser": "^7.1.1",
 		"@vitejs/plugin-react": "^4.2.1",
 		"eslint": "^8.57.0",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"eslint-plugin-react-refresh": "^0.4.5",
-		"prettier": "3.2.5",
-		"typescript": "^5.2.2",
-		"vite": "^5.1.6"
+		"prettier": "3.2.5"
 	}
 }
