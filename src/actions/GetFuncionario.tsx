@@ -3,7 +3,7 @@ import { firebaseApp } from '../Firebase/firebase';
 import { useEffect, useState } from 'react';
 import { useParams, redirect } from 'react-router-dom';
 
-export default function GetFuncionario() {
+export default function GetFuncionario(): any {
 	const { id } = useParams<{ id: string }>();
 	const db = getFirestore(firebaseApp);
 	const funcionarioCollectionRef = collection(db, 'funcionario');

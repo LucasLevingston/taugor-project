@@ -1,6 +1,5 @@
-import Header from '@/components/Header';
-import { Button } from '@/components/ui/button';
-import { ReloadIcon } from '@radix-ui/react-icons';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import Header from '../../../components/Header';
 import {
 	Card,
 	CardContent,
@@ -11,35 +10,24 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useState } from 'react';
 import { IoEyeOutline, IoEyeSharp } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
-import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
-import { auth } from '../Firebase/firebase';
+import { Button } from '@/components/ui/button';
 
-export default function Login(): any {
+function CadastroFuncionario1() {
 	const [passwordShow, setPasswordShow] = useState(false);
 	const toggleShowPassword = () => {
 		setPasswordShow(!passwordShow);
 	};
-	const [email, setEmail] = useState('');
-	const [senha, setSenha] = useState('');
-	const [loginComEmailESenha, user, loading, error] =
-		useSignInWithEmailAndPassword(auth);
-
-	if (user) {
-		return console.log(user);
-	}
-
 	return (
 		<div>
 			<Header />
 			<div className="flex h-full w-full items-center justify-center pt-10">
 				<Tabs defaultValue="account" className="w-[400px]">
-					<TabsList className="grid w-full">
+					<TabsList className="grid w-full ">
 						<TabsTrigger value="account" className="text-2xl">
-							Entrar na sua conta
+							Cadastrar
 						</TabsTrigger>
 					</TabsList>
 					<TabsContent value="account">
@@ -51,24 +39,18 @@ export default function Login(): any {
 							<CardContent className="space-y-2">
 								<div className="space-y-1">
 									<Label htmlFor="email">Email</Label>
-									<Input
-										id="email"
-										required
-										onChange={(e) => setEmail(e.target.value)}
-									/>
+									<Input id="email" required defaultValue="" />
 								</div>
 								<div className="space-y-1">
 									<Label htmlFor="senha">Senha</Label>
 									<div className="flex">
 										<Input
-											id="senha1"
+											id="senha"
 											type={passwordShow ? 'text' : 'password'}
 											required
 											minLength={8}
-											onChange={(e) => setSenha(e.target.value)}
 										/>
 										<button
-											id="senha2"
 											onClick={toggleShowPassword}
 											className="pl-3"
 											type="button"
@@ -82,43 +64,15 @@ export default function Login(): any {
 									</div>
 								</div>
 							</CardContent>
-							{/* <div className="flex justify-start"> */}
 							<CardFooter className="flex flex-col items-center justify-center">
-								{loading ? (
-									<Button disabled>
-										<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-										Carregando...
-									</Button>
-								) : !error ? (
-									<Button
-										variant="outline"
-										onClick={() => loginComEmailESenha(email, senha)}
-									>
-										Entrar
-									</Button>
-								) : (
-									<Button variant="destructive" disabled>
-										{error.message}
-									</Button>
-								)}
-								<br />
+								<Button>Continuar</Button>
 								<Link
 									to="/recuperar-senha"
 									className="text-[12px] text-mainColor"
 								>
-									Esqueceu a senha? Clique aqui para recuperar
+									Esqueceu a senha?
 								</Link>
 							</CardFooter>
-							<CardFooter className="flex flex-col items-center justify-center">
-								<Label>Nao possui conta?</Label>
-								<Link
-									to="/cadastroUsuario"
-									className="text-[12px] text-mainColor"
-								>
-									Fazer cadastro aqui!
-								</Link>
-							</CardFooter>
-							{/* </div> */}
 						</Card>
 					</TabsContent>
 				</Tabs>
@@ -126,3 +80,5 @@ export default function Login(): any {
 		</div>
 	);
 }
+
+export default CadastroFuncionario1;

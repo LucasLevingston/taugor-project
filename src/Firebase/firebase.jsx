@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import React from 'react';
+import { getAuth } from 'firebase/auth';
 
 // import dotenv from 'dotenv';
 // dotenv.config();
@@ -25,4 +26,5 @@ const firebaseConfig = {
 };
 
 export const firebaseApp = initializeApp(firebaseConfig);
+export const auth = getAuth(firebaseApp);
 // const analytics = getAnalytics(app);

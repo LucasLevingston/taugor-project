@@ -28,15 +28,15 @@ export default function Header() {
 
 	return (
 		<div className="w-full pb-5">
-			<div className="justify-startm-2 flex">
+			<div className="m-2 flex justify-start">
 				<div className="flex h-full w-full items-center ">
-					<div className="border-r-cinza flex h-full items-center border-r-[1px] px-5">
+					<div className="flex h-full items-center border-r-[1px] border-r-cinza px-5">
 						<img src={logoTaugor} className="" width={180} alt="logo" />
 					</div>
 					<div className="tex-left h-full  pl-5">
 						{barraProgresso > 0 ? (
 							<>
-								<p className="text-cinza text-[13px] font-bold">
+								<p className="text-[13px] font-bold text-cinza">
 									PASSO {etapa} DE 6
 								</p>
 								<h1 className="text-[18px] font-bold">
@@ -49,13 +49,13 @@ export default function Header() {
 					</div>
 				</div>
 
-				<div className="border-l-cinza flex w-[5%] items-center border-l-[1px] ">
+				<div className="flex w-[5%] items-center border-l-[1px] border-l-cinza ">
 					<Link to="/">
-						<MdHome className=" text-cinza ml-8" />
+						<MdHome className="ml-8 text-xl text-cinza" />
 					</Link>
 				</div>
 			</div>
-			<div className="flex h-3 w-full  rounded">
+			<div className="flex h-3 w-full   rounded">
 				<ProgressBar
 					className="h-1 w-full"
 					completed={barraProgresso}

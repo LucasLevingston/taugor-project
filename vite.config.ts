@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import dotenv from 'dotenv';
+import path from 'path';
 
 dotenv.config();
 
@@ -30,5 +31,10 @@ export default defineConfig({
 			process.env.VITE_FIREBASE_MEASUREMENT_ID
 		),
 		// Adicione outras variáveis de ambiente conforme necessário
+	},
+	resolve: {
+		alias: {
+			'@': path.resolve(__dirname, './src'),
+		},
 	},
 });
