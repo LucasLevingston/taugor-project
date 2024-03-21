@@ -1,5 +1,4 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import './App.css';
 import GetFuncionario from './actions/GetFuncionario';
 import Login from './pages/Login';
 import GetTodosFuncionarios from './actions/GetTodosFuncionarios';

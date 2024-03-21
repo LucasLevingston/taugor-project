@@ -29,21 +29,29 @@ export default function Header() {
 	return (
 		<div className="w-full pb-5">
 			<div className="justify-startm-2 flex">
-				<div className=" flex h-full w-full items-center">
-					<div className="flex h-full items-center px-5">
-						<img src={logoTaugor} className="" width={200} alt="logo" />
+				<div className="flex h-full w-full items-center ">
+					<div className="border-r-cinza flex h-full items-center border-r-[1px] px-5">
+						<img src={logoTaugor} className="" width={180} alt="logo" />
 					</div>
-					<div className="tex-left h-full border-l-[1px] border-l-cinza pl-3">
-						<p className="text-[13px] font-bold text-cinza">
-							PASSO {etapa} DE 6
-						</p>
-						<h1 className="text-[18px] font-bold">Informacoes de contato</h1>
+					<div className="tex-left h-full  pl-5">
+						{barraProgresso > 0 ? (
+							<>
+								<p className="text-cinza text-[13px] font-bold">
+									PASSO {etapa} DE 6
+								</p>
+								<h1 className="text-[18px] font-bold">
+									Informacoes de contato
+								</h1>
+							</>
+						) : (
+							<div className="text-[13px] font-bold">Seja bem-vindo!</div>
+						)}
 					</div>
 				</div>
 
-				<div className="flex w-[5%] items-center border-l-[1px] border-l-cinza ">
+				<div className="border-l-cinza flex w-[5%] items-center border-l-[1px] ">
 					<Link to="/">
-						<MdHome className=" ml-8 text-cinza" />
+						<MdHome className=" text-cinza ml-8" />
 					</Link>
 				</div>
 			</div>
