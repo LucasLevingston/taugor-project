@@ -55,49 +55,50 @@ export default function GetFuncionario(): any {
 	}, [funcionarioCollectionRef]);
 
 	return (
-		<div>
-			<ul>
-				{funcionario.some((funcionario) => funcionario.id === id) ? (
-					funcionario.map((funcionario) =>
-						funcionario.id === id ? (
-							<li key={funcionario.id}>
-								<p
-								// onClick={handleClick}
-								>
-									Nome: {funcionario.nome}
-								</p>
-								<p>Sexo: {funcionario.sexo}</p>
-								<p>
-									Endereço:
-									<br />
-									Rua: {funcionario.endereco[0]}
-									<br />
-									Numero: {funcionario.endereco[1]}
-									<br />
-									Cidade: {funcionario.endereco[2]}
-									<br />
-									Estado: {funcionario.endereco[3]}
-									<br />
-									CEP: {funcionario.endereco[4]}
-								</p>
-								<p>Telefone: {funcionario.telefone}</p>
-								<p>Foto de Perfil: {funcionario.fotoPerfil}</p>
-								<p>
-									Data de Aniversário: {formatarData(funcionario.nascimento)}
-								</p>
-								<p>Cargo: {funcionario.cargo}</p>
-								<p>
-									Data de Admissão: {formatarData(funcionario.dataAdmissao)}
-								</p>
-								<p>Setor: {funcionario.setor}</p>
-								<p>Salário: {funcionario.salario}</p>
-							</li>
-						) : null
-					)
-				) : (
-					<div>Usuário não encontrado</div>
-				)}
-			</ul>
-		</div>
+		// <div>
+		// 	<ul>
+		// 		{funcionario.some((funcionario) => funcionario.id === id) ? (
+		// 			funcionario.map((funcionario) =>
+		// 				funcionario.id === id ? (
+		// 					<li key={funcionario.id}>
+		// 						<p
+		// 						// onClick={handleClick}
+		// 						>
+		// 							Nome: {funcionario.nome}
+		// 						</p>
+		// 						<p>Sexo: {funcionario.sexo}</p>
+		// 						<p>
+		// 							Endereço:
+		// 							<br />
+		// 							Rua: {funcionario.endereco[0]}
+		// 							<br />
+		// 							Numero: {funcionario.endereco[1]}
+		// 							<br />
+		// 							Cidade: {funcionario.endereco[2]}
+		// 							<br />
+		// 							Estado: {funcionario.endereco[3]}
+		// 							<br />
+		// 							CEP: {funcionario.endereco[4]}
+		// 						</p>
+		// 						<p>Telefone: {funcionario.telefone}</p>
+		// 						<p>Foto de Perfil: {funcionario.fotoPerfil}</p>
+		// 						<p>
+		// 							Data de Aniversário: {formatarData(funcionario.nascimento)}
+		// 						</p>
+		// 						<p>Cargo: {funcionario.cargo}</p>
+		// 						<p>
+		// 							Data de Admissão: {formatarData(funcionario.dataAdmissao)}
+		// 						</p>
+		// 						<p>Setor: {funcionario.setor}</p>
+		// 						<p>Salário: {funcionario.salario}</p>
+		// 					</li>
+		// 				) : null
+		// 			)
+		// 		) : (
+		// 			<div>Usuário não encontrado</div>
+		// 		)}
+		// 	</ul>
+		// </div>
+		<></>
 	);
 }

@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs';
 import { useState } from 'react';
 import { IoEyeOutline, IoEyeSharp } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
@@ -28,8 +28,10 @@ export default function Login(): any {
 	const [loginComEmailESenha, user, loading, error] =
 		useSignInWithEmailAndPassword(auth);
 
+	const win: Window = window;
 	if (user) {
-		return console.log(user);
+		console.log(user);
+		win.location = '/';
 	}
 
 	return (
@@ -38,9 +40,7 @@ export default function Login(): any {
 			<div className="flex h-full w-full items-center justify-center pt-10">
 				<Tabs defaultValue="account" className="w-[400px]">
 					<TabsList className="grid w-full">
-						<TabsTrigger value="account" className="text-2xl">
-							Entrar na sua conta
-						</TabsTrigger>
+						<Label className="text-2xl">Entrar na sua conta</Label>
 					</TabsList>
 					<TabsContent value="account">
 						<Card>
@@ -118,7 +118,6 @@ export default function Login(): any {
 									Fazer cadastro aqui!
 								</Link>
 							</CardFooter>
-							{/* </div> */}
 						</Card>
 					</TabsContent>
 				</Tabs>

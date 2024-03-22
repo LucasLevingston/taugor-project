@@ -1,6 +1,8 @@
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
-import { firebaseApp } from '../Firebase/firebase';
+import { firebaseApp } from '../../Firebase/firebase';
 import { useEffect, useState } from 'react';
+import { DataTable, colunas } from './colunas';
+import Header from '@/components/Header';
 
 export default function GetFuncionarios() {
 	const db = getFirestore(firebaseApp);
@@ -36,15 +38,8 @@ export default function GetFuncionarios() {
 
 	return (
 		<div>
-			<ul>
-				{funcionario.map((funcionario) => (
-					<li key={funcionario.id}>
-						<p>ID: {funcionario.id}</p>
-						<p>Nome: {funcionario.nome}</p>
-						<p>Telefone: {funcionario.telefone}</p>
-					</li>
-				))}
-			</ul>
+			<Header></Header>
+			<DataTable columns={colunas} data={funcionario} />
 		</div>
 	);
 }
