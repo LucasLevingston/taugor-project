@@ -1,54 +1,10 @@
 import { collection, addDoc, getFirestore } from 'firebase/firestore';
 import { firebaseApp } from '../Firebase/firebase';
 import { useState } from 'react';
-
-type EnderecoType = [string, string, string, string, string];
-
-type FuncionarioType = {
-	nome: string;
-	sexo: string;
-	endereco: EnderecoType;
-	telefone: string;
-	fotoPerfil: string;
-	nascimento: string;
-	cargo: string;
-	dataAdmissao: string;
-	setor: string;
-	salario: string;
-};
+import { FuncionarioType } from '@/hooks/getFuncionariosHooks';
 
 const CadastrarFuncionario = () => {
-	const db = getFirestore(firebaseApp);
-	const funcionariosCollectionRef = collection(db, 'funcionario');
-
-	const [funcionario, setFuncionario] = useState<FuncionarioType>({
-		nome: '',
-		sexo: '',
-		endereco: ['', '', '', '', ''], // Garante que o endereco tenha 7 elementos
-		telefone: '',
-		fotoPerfil: '',
-		nascimento: '',
-		cargo: '',
-		dataAdmissao: '',
-		setor: '',
-		salario: '',
-	});
-
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement>,
-		index: number
-	) => {
-		const { value } = e.target;
-		setFuncionario((prevState) => {
-			const novoEndereco = [...prevState.endereco];
-			novoEndereco[index] = value;
-			// Garantir que o novoEndereco sempre tenha 5 elementos
-			while (novoEndereco.length < 5) {
-				novoEndereco.push('');
-			}
-			return { ...prevState, endereco: novoEndereco };
-		});
-	};
+	const [funcionario, setFuncionario] = useState<FuncionarioType>();
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();

@@ -9,6 +9,7 @@ export type FuncionarioType = {
 	id: string;
 	nome: string;
 	sexo: string;
+	email: string;
 	endereco: string[];
 	telefone: string;
 	fotoPerfil: string;

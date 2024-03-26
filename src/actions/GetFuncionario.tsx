@@ -28,6 +28,7 @@ export default function GetFuncionario(): any {
 						>
 							Nome: {funcionario.nome}
 						</p>
+						<p>email: {funcionario.email[0]}</p>
 						<p>Sexo: {funcionario.sexo}</p>
 						<p>
 							Endereço:
