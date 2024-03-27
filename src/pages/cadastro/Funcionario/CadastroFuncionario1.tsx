@@ -22,7 +22,7 @@ import Header from '@/components/Header';
 import Paginacao from './Paginacao';
 import { IoSendOutline } from 'react-icons/io5';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { RxAvatar } from 'react-icons/rx';
 
 import {
@@ -58,7 +58,6 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
 	'image/png',
 	'image/webp',
 ];
-const ACCEPTED_IMAGE_TYPES = ['jpeg', 'jpg', 'png', 'webp'];
 const formSchema = z.object({
 	nome: z
 		.string()
@@ -80,12 +79,12 @@ const formSchema = z.object({
 		.any()
 		.refine((files) => {
 			return files?.[0]?.size <= MAX_FILE_SIZE;
-		}, `Max image size is 5MB.`)
+		}, `A imagem ultrapassou o tamanho maximo de 5MB.`)
 		.refine(
 			(files) => ACCEPTED_IMAGE_MIME_TYPES.includes(files?.[0]?.type),
-			'Only .jpg, .jpeg, .png and .webp formats are supported.'
+			'Apenas jpg, jpeg, png e webp sao os formatos suportados.'
 		),
-	dataAniversario: z.string().refine(
+	nascimento: z.string().refine(
 		(value) => {
 			const date = new Date(value);
 			return !isNaN(date.getTime());
@@ -123,6 +122,16 @@ const estadosBrasileiros = [
 	{ label: 'Tocantins', value: 'TO' },
 ] as const;
 
+interface Cadastro1Type {
+	nome: string;
+	email: string;
+	sexo: string;
+	endereco: string[];
+	telefone: string;
+	fotoPerfil?: any;
+	nascimento: string;
+}
+
 export default function CadastroFuncionario1() {
 	const form = useForm({
 		resolver: zodResolver(formSchema),
@@ -137,12 +146,36 @@ export default function CadastroFuncionario1() {
 			estado: '',
 			telefone: '',
 			fotoPerfil: undefined,
-			dataAniversario: '',
+			nascimento: '',
 		},
 	});
 
-	const onSubmit = (data: z.infer<typeof formSchema>) => {
-		console.log('data', data);
+	const [funcionarioc1, setFuncionarioC1] = useState<Cadastro1Type | null>(
+		null
+	);
+
+	useEffect(() => {
+		console.log(funcionarioc1);
+	}, [funcionarioc1]);
+	const onSubmit = async (data: z.infer<typeof formSchema>) => {
+		const endereco = [
+			data.rua,
+			data.numero,
+			data.cep,
+			data.cidade,
+			data.estado,
+		];
+		setFuncionarioC1({
+			nome: data.nome,
+			email: data.email,
+			sexo: data.sexo,
+			endereco: endereco,
+			telefone: data.telefone,
+			fotoPerfil: data.fotoPerfil,
+			nascimento: data.nascimento,
+		});
+		const win: Window = window;
+		win.location = '/cadastro/2';
 	};
 	function getImageData(event: ChangeEvent<HTMLInputElement>) {
 		const dataTransfer = new DataTransfer();
@@ -158,6 +191,7 @@ export default function CadastroFuncionario1() {
 	const [preview, setPreview] = useState('');
 	const [open, setOpen] = React.useState(false);
 	const [value, setValue] = React.useState('');
+
 	return (
 		<div>
 			<Header />
@@ -170,6 +204,7 @@ export default function CadastroFuncionario1() {
 						<div className="flex flex-col items-center rounded-t-3xl   p-3 pb-3 text-[30px] font-bold text-mainColor ">
 							Cadastro de Funcionario
 						</div>
+						<div className="text-2xl font-bold">Informações de Contato </div>
 						<div className="flex">
 							<div className="flex w-[50%] flex-col">
 								<FormField
@@ -262,7 +297,7 @@ export default function CadastroFuncionario1() {
 										</FormItem>
 									)}
 								/>
-								<div className="flex w-[90%] justify-between">
+								<div className=" w-[90%] justify-between align-bottom">
 									<FormField
 										control={form.control}
 										name="cidade"
@@ -284,10 +319,13 @@ export default function CadastroFuncionario1() {
 										control={form.control}
 										name="estado"
 										render={({ field }) => (
-											<FormItem className="flex flex-col">
+											<FormItem className="flex flex-col pt-2 ">
 												<FormLabel>Estado</FormLabel>
 												<Popover open={open} onOpenChange={setOpen}>
-													<PopoverTrigger asChild>
+													<PopoverTrigger
+														asChild
+														className="border-[2px] border-mainColor"
+													>
 														<FormControl>
 															<Button
 																variant="outline"
@@ -304,15 +342,15 @@ export default function CadastroFuncionario1() {
 															</Button>
 														</FormControl>
 													</PopoverTrigger>
-													<PopoverContent className="w-[200px] p-0">
+													<PopoverContent className="w-[200px] bg-branco p-0 text-preto">
 														<Command>
 															<CommandInput placeholder="Selecione o estado" />
 															<CommandEmpty>Estado nao encontrado</CommandEmpty>
-															<CommandList>
-																<CommandGroup className="bg-branco font-bold text-preto">
+															<CommandList className="">
+																<CommandGroup className="bg-branco font-bold text-preto ">
 																	{estadosBrasileiros.map((estado) => (
 																		<CommandItem
-																			className="font-bold text-preto"
+																			className="font-bold text-preto "
 																			value={estado.value}
 																			key={estado.value}
 																			onSelect={(currentValue) => {
@@ -423,7 +461,7 @@ export default function CadastroFuncionario1() {
 								/>
 								<FormField
 									control={form.control}
-									name="dataAniversario"
+									name="nascimento"
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel>Data de Aniversário</FormLabel>

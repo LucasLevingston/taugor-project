@@ -6,7 +6,7 @@ const db = getFirestore(firebaseApp);
 const tabelaFuncionario = collection(db, 'funcionario');
 
 export type FuncionarioType = {
-	id: string;
+	id?: string;
 	nome: string;
 	sexo: string;
 	email: string;
@@ -17,7 +17,7 @@ export type FuncionarioType = {
 	cargo: string;
 	dataAdmissao: string;
 	setor: string;
-	salario: string;
+	salario: number;
 };
 const win: Window = window;
 
