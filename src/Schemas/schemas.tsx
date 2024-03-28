@@ -39,7 +39,7 @@ export const formSchema1 = z.object({
 	),
 	setor: z.string(),
 	cargo: z.string(),
-	salario: z.string().min(3, { message: 'Digite o salario' }),
+	salario: z.number().min(3, { message: 'Digite o salario' }),
 	dataAdmissao: z.string().refine(
 		(value) => {
 			const dataAdmissao = new Date(value);

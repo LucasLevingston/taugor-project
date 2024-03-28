@@ -120,15 +120,15 @@ const setorOpcoes = [
 	},
 ];
 
-interface Cadastro1Type {
-	nome: string;
-	email: string;
-	sexo: string;
-	endereco: string[];
-	telefone: string;
-	fotoPerfil?: any;
-	nascimento: string;
-}
+// interface Cadastro1Type {
+// 	nome: string;
+// 	email: string;
+// 	sexo: string;
+// 	endereco: string[];
+// 	telefone: string;
+// 	fotoPerfil?: any;
+// 	nascimento: string;
+// }
 function getImageData(event: ChangeEvent<HTMLInputElement>) {
 	const dataTransfer = new DataTransfer();
 	Array.from(event.target.files!).forEach((image) =>
@@ -146,19 +146,13 @@ export default function Formulario() {
 	const [preview, setPreview] = useState('');
 	const [open, setOpen] = React.useState(false);
 	const [value, setValue] = React.useState('');
-	const [funcionarioF1, setFuncionarioF1] = useState<Cadastro1Type | null>(
-		null
-	);
+
 	const [funcionario, setFuncionario] = useState<FuncionarioType | null>(null);
 	const handleChangePage = (page: number) => {
 		setPagina(page);
 	};
-	const form2 = useForm({
-		resolver: zodResolver(formSchema2),
-		defaultValues: {},
-	});
 
-	const form1 = useForm({
+	const form = useForm({
 		resolver: zodResolver(formSchema1),
 		defaultValues: {
 			nome: '',
@@ -175,41 +169,47 @@ export default function Formulario() {
 			setor: '',
 			cargo: '',
 			dataAdmissao: '',
-			salario: '',
+			salario: 0,
 		},
 	});
 	useEffect(() => {
 		console.log(funcionario);
 	}, [funcionario]);
 
-	const onSubmit1 = async (data: z.infer<typeof formSchema1>) => {
-		const endereco = [
-			data.rua,
-			data.numero,
-			data.cep,
-			data.cidade,
-			data.estado,
-		];
-		setFuncionarioF1({
-			nome: data.nome,
-			email: data.email,
-			sexo: data.sexo,
-			endereco: endereco,
-			telefone: data.telefone,
-			fotoPerfil: data.fotoPerfil,
-			nascimento: data.nascimento,
-		});
-		setPagina(2);
+	const onSubmit = async (data: z.infer<typeof formSchema1>) => {
+		if (pagina == 1) {
+			setPagina(2);
+		} else if (pagina == 2) {
+			const endereco = [
+				data.rua,
+				data.numero,
+				data.cep,
+				data.cidade,
+				data.estado,
+			];
+			setFuncionario({
+				nome: data.nome,
+				email: data.email,
+				sexo: data.sexo,
+				endereco: endereco,
+				telefone: data.telefone,
+				fotoPerfil: data.fotoPerfil,
+				nascimento: data.nascimento,
+				setor: data.setor,
+				cargo: data.cargo,
+				salario: data.salario,
+				dataAdmissao: data.dataAdmissao,
+			});
+			console.log(data);
+		}
 	};
-	const onSubmit2 = async (data: z.infer<typeof formSchema1>) => {
-		console.log(data);
-	};
+
 	{
 		return (
 			<div className="flex w-full flex-col items-center justify-center">
-				<Form {...form1}>
+				<Form {...form}>
 					<form
-						onSubmit={form1.handleSubmit(onSubmit2)}
+						onSubmit={form.handleSubmit(onSubmit)}
 						className="w-[70%] space-y-8 rounded-3xl border-[4px] border-mainColor p-5"
 					>
 						<div className="flex flex-col items-center rounded-t-3xl   p-3 pb-3 text-[30px] font-bold text-mainColor ">
@@ -224,7 +224,7 @@ export default function Formulario() {
 								<div className="flex">
 									<div className="flex w-[50%] flex-col">
 										<FormField
-											control={form1.control}
+											control={form.control}
 											name="setor"
 											render={({ field }) => (
 												<FormItem>
@@ -255,17 +255,17 @@ export default function Formulario() {
 										/>
 
 										<FormField
-											control={form1.control}
+											control={form.control}
 											name="salario"
 											render={({ field }) => (
 												<FormItem className="w-[80%]">
 													<FormLabel>Salario</FormLabel>
 													<FormControl>
 														<Input
-															type="text"
+															{...field}
+															type="number"
 															className="border-[2px] border-mainColor text-preto"
 															placeholder="Salario"
-															{...field}
 														/>
 													</FormControl>
 													<FormMessage />
@@ -275,7 +275,7 @@ export default function Formulario() {
 									</div>
 									<div className="flex w-[50%] flex-col">
 										<FormField
-											control={form1.control}
+											control={form.control}
 											name="cargo"
 											render={({ field }) => (
 												<FormItem>
@@ -306,7 +306,7 @@ export default function Formulario() {
 										/>
 
 										<FormField
-											control={form1.control}
+											control={form.control}
 											name="dataAdmissao"
 											render={({ field }) => (
 												<FormItem>
@@ -343,7 +343,7 @@ export default function Formulario() {
 								<div className="flex">
 									<div className="flex w-[50%] flex-col">
 										<FormField
-											control={form1.control}
+											control={form.control}
 											name="nome"
 											render={({ field }) => (
 												<FormItem>
@@ -361,7 +361,7 @@ export default function Formulario() {
 											)}
 										/>
 										<FormField
-											control={form1.control}
+											control={form.control}
 											name="email"
 											render={({ field }) => (
 												<FormItem>
@@ -379,7 +379,7 @@ export default function Formulario() {
 										/>
 										<div className="flex w-full ">
 											<FormField
-												control={form1.control}
+												control={form.control}
 												name="rua"
 												render={({ field }) => (
 													<FormItem className="mr-5 w-[72%] flex-initial">
@@ -397,7 +397,7 @@ export default function Formulario() {
 											/>
 
 											<FormField
-												control={form1.control}
+												control={form.control}
 												name="numero"
 												render={({ field }) => (
 													<FormItem className="w-[15%]">
@@ -416,7 +416,7 @@ export default function Formulario() {
 											<div className="w-[10%]"></div>
 										</div>
 										<FormField
-											control={form1.control}
+											control={form.control}
 											name="cep"
 											render={({ field }) => (
 												<FormItem>
@@ -434,7 +434,7 @@ export default function Formulario() {
 										/>
 										<div className=" w-[90%] justify-between align-bottom">
 											<FormField
-												control={form1.control}
+												control={form.control}
 												name="cidade"
 												render={({ field }) => (
 													<FormItem>
@@ -451,7 +451,7 @@ export default function Formulario() {
 												)}
 											/>
 											<FormField
-												control={form1.control}
+												control={form.control}
 												name="estado"
 												render={({ field }) => (
 													<FormItem className="flex flex-col pt-2 ">
@@ -492,7 +492,7 @@ export default function Formulario() {
 																					key={estado.value}
 																					onSelect={(currentValue) => {
 																						setValue(currentValue);
-																						form1.setValue(
+																						form.setValue(
 																							'estado',
 																							estado.value
 																						);
@@ -524,7 +524,7 @@ export default function Formulario() {
 									<div className="flex w-[50%] flex-col">
 										<div className="">
 											<FormField
-												control={form1.control}
+												control={form.control}
 												name="fotoPerfil"
 												render={({ field: { onChange, value, ...field } }) => (
 													<FormItem className="flex flex-col items-center justify-center ">
@@ -556,7 +556,7 @@ export default function Formulario() {
 											/>
 										</div>
 										<FormField
-											control={form1.control}
+											control={form.control}
 											name="sexo"
 											render={({ field }) => (
 												<FormItem>
@@ -586,7 +586,7 @@ export default function Formulario() {
 											)}
 										/>
 										<FormField
-											control={form1.control}
+											control={form.control}
 											name="telefone"
 											render={({ field }) => (
 												<FormItem>
@@ -603,7 +603,7 @@ export default function Formulario() {
 											)}
 										/>
 										<FormField
-											control={form1.control}
+											control={form.control}
 											name="nascimento"
 											render={({ field }) => (
 												<FormItem>
