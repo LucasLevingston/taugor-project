@@ -14,9 +14,10 @@ module.exports = {
 			mainColor: '#0073CF',
 			branco: '#fff',
 			preto: '#000',
-			cinza: '#A0AFB7',
+			cinza: '#D3D3D3',
 			transparent: 'transparent',
 			vermelho: '#FF0000',
+			azulClaro: '#B8CAD4',
 		},
 		container: {
 			center: true,
