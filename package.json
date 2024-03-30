@@ -43,6 +43,7 @@
 		"react-input-mask": "^2.0.4",
 		"react-refresh": "^0.14.0",
 		"react-router-dom": "^6.22.3",
+		"react-to-pdf": "^1.0.1",
 		"tailwind-merge": "^2.2.2",
 		"tailwindcss-animate": "^1.0.7",
 		"zod": "^3.22.4"
@@ -50,6 +51,7 @@
 	"devDependencies": {
 		"@types/node": "^20.11.30",
 		"@types/react": "^18.2.67",
+		"@types/react-dom": "^18.2.23",
 		"@typescript-eslint/eslint-plugin": "^7.1.1",
 		"@typescript-eslint/parser": "^7.1.1",
 		"@vitejs/plugin-react": "^4.2.1",

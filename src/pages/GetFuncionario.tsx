@@ -10,11 +10,12 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { FaTrash } from 'react-icons/fa6';
 import { IoIosArrowBack } from 'react-icons/io';
+import GerarPDF from '@/components/GerarPDF';
 
 export default function GetFuncionario() {
 	const { id } = useParams<{ id: string | undefined }>();
 
-	if (id == undefined || id === null) {
+	if (id === null) {
 		return <div>O ID não foi fornecido.</div>;
 	}
 
@@ -40,10 +41,6 @@ export default function GetFuncionario() {
 
 	const win: Window = window;
 
-	function onClick() {
-		win.location = '/getFuncionarios';
-	}
-
 	return (
 		<div>
 			<Header />
@@ -54,7 +51,7 @@ export default function GetFuncionario() {
 							<div>
 								<Button
 									onClick={() => {
-										onClick();
+										win.location = '/getFuncionarios';
 									}}
 									variant="outline"
 								>
@@ -65,8 +62,9 @@ export default function GetFuncionario() {
 							<div className="p-3 pb-3 text-[40px] font-bold text-mainColor">
 								Funcionário
 							</div>
-							<div className=" text-vermelho">
-								<Button variant="outline">
+							<div className=" flex items-center space-x-2 ">
+								<GerarPDF />
+								<Button variant="outline" className="text-vermelho">
 									Deletar Funcionario <FaTrash className="ml-3" />
 								</Button>
 							</div>

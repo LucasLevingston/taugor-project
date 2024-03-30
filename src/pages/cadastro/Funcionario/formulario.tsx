@@ -51,6 +51,8 @@ import {
 } from '@/static.tsx';
 import { Switch } from '@/components/ui/switch.tsx';
 import { Label } from '@/components/ui/label.tsx';
+import { IoIosArrowBack } from 'react-icons/io';
+import { FaTrash } from 'react-icons/fa6';
 
 function getImagemData(event: ChangeEvent<HTMLInputElement>) {
 	const dataTransfer = new DataTransfer();
@@ -168,6 +170,7 @@ export default function Formulario({
 			postFuncionario(funcionario, data.fotoPerfil);
 		}
 	};
+	const win: Window = window;
 
 	{
 		return (
@@ -177,10 +180,22 @@ export default function Formulario({
 						onSubmit={form.handleSubmit(onSubmit)}
 						className="w-[70%] space-y-8 rounded-3xl border-[4px] border-cinza p-5"
 					>
-						<div className="flex flex-col items-center rounded-t-3xl   p-3 pb-3 text-[30px] font-bold text-mainColor ">
-							Cadastro de Funcionario
+						<div className="flex items-center   ">
+							<div className="w-[32%]">
+								<Button
+									onClick={() => {
+										win.location = '/getFuncionarios';
+									}}
+									variant="outline"
+								>
+									<IoIosArrowBack className="mr-3" />
+									Ver todos os Funcionarios
+								</Button>
+							</div>
+							<div className="p-3 pb-3 text-[40px] font-bold text-mainColor">
+								Cadastrar Funcionário
+							</div>
 						</div>
-
 						<div>
 							<div className="pb-3 text-2xl  font-bold">
 								Informações de Contato{' '}
