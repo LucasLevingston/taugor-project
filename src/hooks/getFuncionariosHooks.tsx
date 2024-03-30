@@ -1,5 +1,6 @@
-import { firebaseApp } from '@/Firebase/firebase';
-import { collection, getDocs, getFirestore } from 'firebase/firestore';
+import { firebaseApp, funcionariosRef, storage } from '@/Firebase/firebase';
+import { addDoc, collection, getDocs, getFirestore } from 'firebase/firestore';
+import { ref, uploadBytes } from 'firebase/storage';
 import { useEffect, useState } from 'react';
 
 const db = getFirestore(firebaseApp);
@@ -12,14 +13,13 @@ export type FuncionarioType = {
 	email: string;
 	endereco: string[];
 	telefone: string;
-	fotoPerfil: string;
+	fotoPerfil?: File;
 	nascimento: string;
 	cargo: string;
 	dataAdmissao: string;
 	setor: string;
 	salario: number;
 };
-const win: Window = window;
 
 export function getFuncionarios(): FuncionarioType[] {
 	const [funcionarios, setFuncionarios] = useState<FuncionarioType[]>([]);
@@ -75,3 +75,34 @@ export function getFuncionarioPeloId(
 
 	return funcionario;
 }
+
+export async function postFuncionario(
+	funcionario: FuncionarioType,
+	fotoPerfil: File
+): Promise<string | undefined> {
+	try {
+		const docRef = await addDoc(funcionariosRef, funcionario);
+		const funcionarioId = docRef.id;
+
+		await postImagem(fotoPerfil, funcionarioId);
+
+		console.log('Usuário cadastrado com sucesso');
+
+		return funcionarioId;
+	} catch (error) {
+		console.log('Erro ao cadastrar funcionário', error);
+		return undefined;
+	}
+}
+
+const postImagem = async (imagem: File, id: string | undefined) => {
+	try {
+		const storageRef = ref(storage, `imagensPerfil/${id}`);
+
+		await uploadBytes(storageRef, imagem);
+
+		console.log('Imagem de perfil postada com sucesso');
+	} catch (error) {
+		console.log('Erro ao postar imagem de perfil', error);
+	}
+};

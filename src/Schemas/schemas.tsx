@@ -8,7 +8,7 @@ const ACCEPTED_IMAGE_MIME_TYPES = [
 	'image/webp',
 ];
 
-export const formSchema1 = z.object({
+export const formSchema = z.object({
 	nome: z
 		.string()
 		.min(2, { message: 'O nome deve ter no mínimo 2 caracteres' })
@@ -29,7 +29,8 @@ export const formSchema1 = z.object({
 		.refine(
 			(files) => ACCEPTED_IMAGE_MIME_TYPES.includes(files?.[0]?.type),
 			'Apenas jpg, jpeg, png e webp sao os formatos suportados.'
-		),
+		)
+		.optional(),
 	nascimento: z.string().refine(
 		(value) => {
 			const date = new Date(value);
@@ -39,7 +40,7 @@ export const formSchema1 = z.object({
 	),
 	setor: z.string(),
 	cargo: z.string(),
-	salario: z.number().min(3, { message: 'Digite o salario' }),
+	salario: z.string().min(3, { message: 'Digite o salario' }),
 	dataAdmissao: z.string().refine(
 		(value) => {
 			const dataAdmissao = new Date(value);
@@ -48,5 +49,3 @@ export const formSchema1 = z.object({
 		{ message: 'A data de admissao deve estar em um formato válido' }
 	),
 });
-
-export const formSchema2 = z.object({});

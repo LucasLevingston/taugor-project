@@ -1,4 +1,4 @@
-import { DataTable, colunas } from './colunas';
+import { DataTable, Colunas } from './Colunas';
 import Header from '@/components/Header';
 import { getFuncionarios } from '@/hooks/getFuncionariosHooks';
 
@@ -8,7 +8,7 @@ export default function GetFuncionarios() {
 	return (
 		<div>
 			<Header></Header>
-			<DataTable columns={colunas} data={funcionarios} />
+			<DataTable columns={Colunas} data={funcionarios} />
 		</div>
 	);
 }

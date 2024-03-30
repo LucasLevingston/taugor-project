@@ -19,23 +19,25 @@ export default function GetFuncionario() {
 	}
 
 	const funcionario = getFuncionarioPeloId(id);
+
+	const [pagina, setPagina] = useState(1);
 	const handleChangePage = (page: number) => {
 		setPagina(page);
 	};
 
-	const [pagina, setPagina] = useState(1);
 	const [fotoRedonda, setFotoRedonda] = useState(false);
 	const [formato, setFormato] = useState('h-full w-48');
 
-	function onChange() {
+	function onChangeFoto() {
 		if (fotoRedonda == true) {
 			setFotoRedonda(false);
-			setFormato('h-full w-48');
+			setFormato('h-48 w-48 rounded-none');
 		} else if (fotoRedonda == false) {
 			setFotoRedonda(true);
 			setFormato('h-48 w-48');
 		}
 	}
+
 	const win: Window = window;
 
 	function onClick() {
@@ -140,7 +142,7 @@ export default function GetFuncionario() {
 														<Switch
 															aria-readonly
 															onCheckedChange={() => {
-																onChange();
+																onChangeFoto();
 															}}
 														/>
 														<Label>Foto redonda</Label>

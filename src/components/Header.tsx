@@ -2,29 +2,14 @@ import logoTaugor from '../assets/logo-taugor.png';
 import { useEffect, useState } from 'react';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { MdHome } from 'react-icons/md';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
-export default function Header() {
+interface progressoProps {
+	onChangeProgresso: (progresso: number) => void;
+}
+
+export default function Header({ progresso }: { progresso?: number }) {
 	const [barraProgresso, setBarraProgresso] = useState(0);
-	const [etapa, setEtapa] = useState(0);
-
-	useEffect(() => {
-		if (location.pathname == '/cadastro/1') {
-			setEtapa(1);
-			setBarraProgresso(25);
-		} else if (location.pathname == '/cadastro/2') {
-			setBarraProgresso(50);
-			setEtapa(2);
-		} else if (location.pathname == '/cadastro/3') {
-			setBarraProgresso(75);
-			setEtapa(3);
-		} else if (location.pathname == '/cadastro/4') {
-			setBarraProgresso(90);
-			setEtapa(4);
-		} else {
-			setBarraProgresso(0);
-		}
-	}, [location.pathname]);
 
 	return (
 		<div className="w-full pb-5">
@@ -36,9 +21,6 @@ export default function Header() {
 					<div className="tex-left h-full  pl-5">
 						{barraProgresso > 0 ? (
 							<>
-								<p className="text-[13px] font-bold text-cinza">
-									PASSO {etapa} DE 6
-								</p>
 								<h1 className="text-[18px] font-bold">
 									Informacoes de contato
 								</h1>
@@ -58,13 +40,13 @@ export default function Header() {
 			<div className="flex h-3 w-full   rounded">
 				<ProgressBar
 					className="h-1 w-full"
-					completed={barraProgresso}
-					customLabel={`${barraProgresso}%`}
+					completed={progresso ?? barraProgresso}
+					customLabel={`${progresso ?? barraProgresso}%`}
 					bgColor="#0073CF"
 					animateOnRender={true}
 					height={'15px'}
 					ariaValuetext={0}
-				/>{' '}
+				/>
 			</div>
 		</div>
 	);

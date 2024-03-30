@@ -34,38 +34,16 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { FaTrash } from 'react-icons/fa';
-import {
-	AlertDialog,
-	AlertDialogDescription,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-	AlertDialogTrigger,
-	AlertDialogAction,
-} from '@/components/ui/alert-dialog';
+import { FuncionarioType } from '@/hooks/getFuncionariosHooks';
+import { FaUserPlus } from 'react-icons/fa6';
+import { GoColumns } from 'react-icons/go';
 
-type FuncionarioType = {
-	id: string;
-	nome: string;
-	sexo: string;
-	endereco: string[];
-	telefone: string;
-	fotoPerfil: string;
-	nascimento: string;
-	cargo: string;
-	dataAdmissao: string;
-	setor: string;
-	salario: string;
-};
-
-function redirecionarDadosFuncionario(funcionario: string) {
-	const win: Window = window;
+const win: Window = window;
+function redirecionarDadosFuncionario(funcionario: string | undefined) {
 	win.location.href = `/getFuncionario/${funcionario}`;
 }
 
-export const colunas: ColumnDef<FuncionarioType>[] = [
+export const Colunas: ColumnDef<FuncionarioType>[] = [
 	{
 		id: 'select',
 		header: ({ table }) => (
@@ -148,7 +126,7 @@ export const colunas: ColumnDef<FuncionarioType>[] = [
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="bg-preto text-branco">
-						<DropdownMenuLabel>Acoes</DropdownMenuLabel>
+						<DropdownMenuLabel>Acões</DropdownMenuLabel>
 
 						<DropdownMenuSeparator />
 						<DropdownMenuItem
@@ -157,7 +135,7 @@ export const colunas: ColumnDef<FuncionarioType>[] = [
 							Ver dados
 						</DropdownMenuItem>
 						<DropdownMenuItem className="flex font-bold text-vermelho">
-							Excluir funcionario
+							Excluir funcionário
 							<FaTrash className="ml-3" />
 						</DropdownMenuItem>
 					</DropdownMenuContent>
@@ -204,9 +182,9 @@ export function DataTable<TData, TValue>({
 	});
 
 	return (
-		<div className="flex justify-center">
+		<div className="flex justify-center ">
 			<div>
-				<div className="flex items-center py-4">
+				<div className="flex justify-between py-4">
 					<Input
 						placeholder="Filtrar por nome"
 						value={(table.getColumn('nome')?.getFilterValue() as string) ?? ''}
@@ -215,10 +193,20 @@ export function DataTable<TData, TValue>({
 						}
 						className="max-w-sm"
 					/>
+					<Button
+						variant="outline"
+						onClick={() => {
+							win.location = '/CadastroFuncionario';
+						}}
+					>
+						Cadastrar Funcionario
+						<FaUserPlus className="ml-2" />
+					</Button>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant="outline" className="ml-auto">
+							<Button variant="outline" className="">
 								Colunas
+								<GoColumns className="ml-2" />
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="end" className="bg-preto text-branco">
@@ -303,7 +291,7 @@ export function DataTable<TData, TValue>({
 						onClick={() => table.previousPage()}
 						disabled={!table.getCanPreviousPage()}
 					>
-						Previous
+						Voltar
 					</Button>
 					<Button
 						variant="outline"
@@ -311,7 +299,7 @@ export function DataTable<TData, TValue>({
 						onClick={() => table.nextPage()}
 						disabled={!table.getCanNextPage()}
 					>
-						Next
+						Próximo
 					</Button>
 				</div>
 			</div>

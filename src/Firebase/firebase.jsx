@@ -2,6 +2,8 @@ import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import React from 'react';
 import { getAuth } from 'firebase/auth';
+import { collection, getFirestore } from 'firebase/firestore';
+import { getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 
 // import dotenv from 'dotenv';
 // dotenv.config();
@@ -26,5 +28,10 @@ const firebaseConfig = {
 };
 
 export const firebaseApp = initializeApp(firebaseConfig);
+export const storage = getStorage();
 export const auth = getAuth(firebaseApp);
+export const db = getFirestore(firebaseApp);
+export const funcionariosRef = collection(db, 'funcionario');
+export const fotosRef = ref(storage, 'fotosPerfil');
+
 // const analytics = getAnalytics(app);

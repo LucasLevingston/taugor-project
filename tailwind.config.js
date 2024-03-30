@@ -14,7 +14,7 @@ module.exports = {
 			mainColor: '#0073CF',
 			branco: '#fff',
 			preto: '#000',
-			cinza: '#D3D3D3',
+			cinza: '#E1E3E3',
 			transparent: 'transparent',
 			vermelho: '#FF0000',
 			azulClaro: '#B8CAD4',

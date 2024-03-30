@@ -5,7 +5,6 @@ import { RxAvatar } from 'react-icons/rx';
 import { getFuncionarioPeloId } from '@/hooks/getFuncionariosHooks';
 import { useParams } from 'react-router-dom';
 import Paginacao from '@/pages/cadastro/Funcionario/Paginacao';
-import { Button } from 'react-day-picker';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
