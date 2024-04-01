@@ -75,3 +75,73 @@ export const setorOpcoes = [
 		opcao: 'Vendas',
 	},
 ];
+
+export function formatarDataParaNumeros(data: string): string {
+	const numeros = data.replace(/\D/g, '');
+
+	if (numeros.length !== 8) {
+	}
+
+	const ano = numeros.slice(0, 4);
+	const mes = numeros.slice(4, 6);
+	const dia = numeros.slice(6, 8);
+
+	return `${dia}${mes}${ano}`;
+}
+
+export function DataFormatada(data: string): string {
+	const numeros = data.replace(/\D/g, '');
+
+	if (numeros.length !== 8) {
+		return '';
+	}
+
+	const dia = numeros.slice(0, 2);
+	const mes = numeros.slice(2, 4);
+	const ano = numeros.slice(4, 8);
+
+	return `${dia}/${mes}/${ano}`;
+}
+
+export function formatarTelefone(telefone: string): string {
+	const numeros = telefone.replace(/\D/g, '');
+
+	if (numeros.length !== 11) {
+		return '';
+	}
+
+	const ddd = numeros.slice(0, 2);
+	const parte1 = numeros.slice(2, 6);
+	const parte2 = numeros.slice(6, 10);
+
+	return `(${ddd}) ${parte1}-${parte2}`;
+}
+
+export function formatarCEP(cep: string): string {
+	const numeros = cep.replace(/\D/g, '');
+
+	if (numeros.length !== 8) {
+		return '';
+	}
+
+	const parte1 = numeros.slice(0, 5);
+	const parte2 = numeros.slice(5, 8);
+
+	return `${parte1}-${parte2}`;
+}
+
+export function limparTelefone(telefone: string) {
+	return telefone.replace(/[\(\)\-\s]/g, '');
+}
+
+export const win: Window = window;
+
+export function getDataAtual() {
+	const dataAtual = new Date();
+	const dia = String(dataAtual.getDate()).padStart(2, '0');
+
+	const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
+	const ano = dataAtual.getFullYear().toString();
+
+	return `${dia}${mes}${ano}`;
+}

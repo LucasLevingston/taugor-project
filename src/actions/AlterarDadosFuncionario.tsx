@@ -2,18 +2,14 @@ import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Header from '@/components/Header';
 import { RxAvatar } from 'react-icons/rx';
-import { getFuncionarioPeloId } from '@/hooks/getFuncionariosHooks';
+import { getFuncionarioPeloId } from '@/hooks/funcionarios.hooks';
 import { useParams } from 'react-router-dom';
-import Paginacao from '@/pages/cadastro/Funcionario/Paginacao';
+import Paginacao from '@/components/Paginacao';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
 export default function AlterarDadosFuncionario() {
-	const { id } = useParams<{ id: string | undefined }>();
-
-	if (id == undefined || id === null) {
-		return <div>O ID não foi fornecido.</div>;
-	}
+	const { id } = useParams<{ id: string }>();
 
 	const funcionario = getFuncionarioPeloId(id);
 	const handleChangePage = (page: number) => {

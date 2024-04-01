@@ -20,7 +20,7 @@ export const formSchema = z.object({
 	cep: z.string().min(8, { message: 'CEP inválido' }),
 	cidade: z.string().min(1, { message: 'Digite o nome da cidade' }),
 	estado: z.string().nonempty({ message: 'Selecione o estado' }),
-	telefone: z.string().regex(/^\d{10,11}$/, { message: 'Telefone inválido' }),
+	telefone: z.string().nonempty({ message: 'Selecione o estado' }),
 	fotoPerfil: z
 		.any()
 		.refine((files) => {

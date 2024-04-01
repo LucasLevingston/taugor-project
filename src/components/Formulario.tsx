@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { formSchema } from '../../../Schemas/schemas.tsx';
+import { formSchema } from '../Schemas/schemas.tsx';
 import {
 	Form,
 	FormControl,
@@ -42,17 +42,20 @@ import { cn } from '@/lib/utils';
 import {
 	FuncionarioType,
 	postFuncionario,
-} from '@/hooks/getFuncionariosHooks.tsx';
+} from '@/hooks/funcionarios.hooks.tsx';
 import {
 	cargoOpcoes,
 	estadosBrasileiros,
+	formatarDataParaNumeros,
+	getDataAtual,
 	setorOpcoes,
 	sexoOpcoes,
-} from '@/static.tsx';
+	win,
+} from '@/estatico.tsx';
 import { Switch } from '@/components/ui/switch.tsx';
 import { Label } from '@/components/ui/label.tsx';
 import { IoIosArrowBack } from 'react-icons/io';
-import { FaTrash } from 'react-icons/fa6';
+import InputMask from 'react-input-mask';
 
 function getImagemData(event: ChangeEvent<HTMLInputElement>) {
 	const dataTransfer = new DataTransfer();
@@ -76,8 +79,7 @@ export default function Formulario({
 	const [open, setOpen] = React.useState(false);
 	const [value, setValue] = React.useState('');
 	const [funcionario, setFuncionario] = useState<FuncionarioType | null>(null);
-	const [fotoRedonda, setFotoRedonda] = useState(false);
-	const [formato, setFormato] = useState('h-48 w-48 rounded-none');
+	const [formato, setFormato] = useState('rounded-none');
 	const [, setProgresso] = useState(0);
 	const form = useForm({
 		resolver: zodResolver(formSchema),
@@ -114,12 +116,10 @@ export default function Formulario({
 	});
 
 	function onChangeFoto() {
-		if (fotoRedonda == true) {
-			setFotoRedonda(false);
-			setFormato('h-48 w-48 rounded-none');
-		} else if (fotoRedonda == false) {
-			setFotoRedonda(true);
-			setFormato('h-48 w-48');
+		if (formato == '') {
+			setFormato('rounded-none');
+		} else if (formato == 'rounded-none') {
+			setFormato('');
 		}
 	}
 
@@ -131,46 +131,43 @@ export default function Formulario({
 			return null;
 		}
 	}
-	function formatarDataParaNumeros(data: string): string {
-		return data.replace(/\D/g, '');
-	}
 
 	const onSubmit = async (data: z.infer<typeof formSchema>) => {
-		if (pagina == 1) {
-			setPagina(2);
-		} else if (pagina == 2) {
-			const endereco = [
-				data.rua,
-				data.numero,
-				data.cep,
-				data.cidade,
-				data.estado,
-			];
-			const salario = validarETransformarStringParaNumero(data.salario);
+		const endereco = [
+			data.rua,
+			data.numero,
+			data.cep,
+			data.cidade,
+			data.estado,
+		];
+		const salario = await validarETransformarStringParaNumero(data.salario);
 
-			if (salario !== null) {
-				setFuncionario({
-					nome: data.nome,
-					email: data.email,
-					sexo: data.sexo,
-					endereco: endereco,
-					telefone: data.telefone,
-					nascimento: formatarDataParaNumeros(data.nascimento),
-					setor: data.setor,
-					cargo: data.cargo,
-					salario: salario,
-					dataAdmissao: formatarDataParaNumeros(data.dataAdmissao),
-				});
-				console.log(data);
-			} else {
-				console.error('O salário fornecido não é um número válido.');
+		if (salario !== null) {
+			await setFuncionario({
+				nome: data.nome,
+				email: data.email,
+				sexo: data.sexo,
+				endereco: endereco,
+				telefone: data.telefone,
+				nascimento: formatarDataParaNumeros(data.nascimento),
+				setor: data.setor,
+				cargo: data.cargo,
+				salario: salario,
+				dataAdmissao: formatarDataParaNumeros(data.dataAdmissao),
+				ativo: true,
+				historico: [
+					{ ocorrido: 'Funcionário adicionado', data: getDataAtual() },
+				],
+			});
+
+			if (funcionario) {
+				await postFuncionario(funcionario, data.fotoPerfil);
+				// win.location = `get-funcionarios`;
 			}
-		}
-		if (funcionario) {
-			postFuncionario(funcionario, data.fotoPerfil);
+		} else {
+			console.error('O salário fornecido não é um número válido.');
 		}
 	};
-	const win: Window = window;
 
 	{
 		return (
@@ -184,7 +181,7 @@ export default function Formulario({
 							<div className="w-[32%]">
 								<Button
 									onClick={() => {
-										win.location = '/getFuncionarios';
+										win.location = '/get-funcionarios';
 									}}
 									variant="outline"
 								>
@@ -279,6 +276,7 @@ export default function Formulario({
 														<FormLabel>Numero</FormLabel>
 														<FormControl>
 															<Input
+																type="Number"
 																{...field}
 																className="border-transparent bg-transparent "
 																placeholder="Numero"
@@ -296,10 +294,11 @@ export default function Formulario({
 											control={form.control}
 											name="cep"
 											render={({ field }) => (
-												<FormItem className="w-[90%] bg-cinza p-2">
+												<FormItem className="flex w-[90%] flex-col bg-cinza p-3">
 													<FormLabel>CEP</FormLabel>
 													<FormControl>
-														<Input
+														<InputMask
+															mask="999999-99"
 															{...field}
 															className="border-transparent bg-transparent "
 															placeholder="Digite o CEP"
@@ -416,7 +415,7 @@ export default function Formulario({
 											render={({ field: { onChange, value, ...field } }) => (
 												<FormItem className="flex  ">
 													<Avatar
-														className={`${formato}  border-[2px] border-cinza bg-cinza`}
+														className={`${formato} h-48 w-48  border-[2px] border-cinza bg-cinza`}
 													>
 														<AvatarImage
 															className="h-full w-full"
@@ -500,12 +499,13 @@ export default function Formulario({
 											control={form.control}
 											name="telefone"
 											render={({ field }) => (
-												<FormItem className="w-[90%] bg-cinza p-2">
+												<FormItem className="flex w-[90%] flex-col bg-cinza p-3">
 													<FormLabel>Numero de celular</FormLabel>
 													<FormControl>
-														<Input
+														<InputMask
+															mask="(99)99999-9999"
 															{...field}
-															className="border-transparent bg-transparent "
+															className="w-[30%] border-transparent bg-transparent "
 															placeholder="Digite o numero"
 														/>
 													</FormControl>
@@ -658,14 +658,16 @@ export default function Formulario({
 									</div>
 								</div>
 							</div>
-							<Button
-								variant="outline"
-								className="gap-1 px-5 py-4"
-								type="submit"
-							>
-								Continuar
-								<IoSendOutline />
-							</Button>
+							<div className="flex w-full justify-end">
+								<Button
+									variant="outline"
+									className="mr-16 gap-1 px-5 py-4"
+									type="submit"
+								>
+									Continuar
+									<IoSendOutline />
+								</Button>
+							</div>
 						</div>
 					</form>
 				</Form>

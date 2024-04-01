@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useState } from 'react';
 import { useSendPasswordResetEmail } from 'react-firebase-hooks/auth';
-import { auth } from '../../Firebase/firebase';
+import { auth } from '../../../Firebase/firebase';
 import { ReloadIcon } from '@radix-ui/react-icons';
 
 export default function RedefinirSenha(): any {

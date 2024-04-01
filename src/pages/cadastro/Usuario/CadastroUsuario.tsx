@@ -19,15 +19,15 @@ import { auth } from '@/Firebase/firebase';
 import { ReloadIcon } from '@radix-ui/react-icons';
 
 export default function CadastroUsuario() {
-	const [passwordShow, setPasswordShow] = useState(false);
-	const toggleShowPassword = () => {
-		setPasswordShow(!passwordShow);
+	const [senhaVisisvel, setSenhaVisivel] = useState(false);
+	const alterarSenhaVisivel = () => {
+		setSenhaVisivel(!senhaVisisvel);
 	};
 
 	const [email, setEmail] = useState('');
 	const [senha, setSenha] = useState('');
 	const [confirmarSenha, setConfirmarSenha] = useState('');
-	const [createUserWithEmailAndPassword, user, loading, error] =
+	const [criarUsuarioComEmailESenha, user, loading, error] =
 		useCreateUserWithEmailAndPassword(auth);
 
 	function validarSenha() {
@@ -94,17 +94,17 @@ export default function CadastroUsuario() {
 									<div className="flex">
 										<Input
 											id="senha"
-											type={passwordShow ? 'text' : 'password'}
+											type={senhaVisisvel ? 'text' : 'password'}
 											required
 											minLength={8}
 											onChange={(e) => setSenha(e.target.value)}
 										/>
 										<button
-											onClick={toggleShowPassword}
+											onClick={alterarSenhaVisivel}
 											className="pl-3"
 											type="button"
 										>
-											{passwordShow ? (
+											{senhaVisisvel ? (
 												<IoEyeOutline className="h-7 w-7" />
 											) : (
 												<IoEyeSharp className="h-7 w-7" />
@@ -117,18 +117,18 @@ export default function CadastroUsuario() {
 									<div className="flex">
 										<Input
 											id="senha"
-											type={passwordShow ? 'text' : 'password'}
+											type={senhaVisisvel ? 'text' : 'password'}
 											required
 											minLength={8}
 											value={confirmarSenha}
 											onChange={(e) => setConfirmarSenha(e.target.value)}
 										/>
 										<button
-											onClick={toggleShowPassword}
+											onClick={alterarSenhaVisivel}
 											className="pl-3"
 											type="button"
 										>
-											{passwordShow ? (
+											{senhaVisisvel ? (
 												<IoEyeOutline className="h-7 w-7" />
 											) : (
 												<IoEyeSharp className="h-7 w-7" />
@@ -136,7 +136,7 @@ export default function CadastroUsuario() {
 										</button>
 									</div>
 									{!validarSenha() && (
-										<p className="text-vermelho text-xs">
+										<p className="text-xs text-vermelho">
 											As senhas devem ser iguais e ter no minimo 8 caracteres,
 											sendo uma maiuscula e uma especial.
 										</p>
@@ -152,7 +152,7 @@ export default function CadastroUsuario() {
 								) : validarSenha() ? (
 									<Button
 										variant="outline"
-										onClick={() => createUserWithEmailAndPassword(email, senha)}
+										onClick={() => criarUsuarioComEmailESenha(email, senha)}
 									>
 										Cadastrar
 									</Button>

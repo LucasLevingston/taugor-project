@@ -18,12 +18,10 @@ const Paginacao: React.FC<PaginacaoProps> = ({ onChangePage }) => {
 
 	const handlePreviousPage = (paginaAtual: number) => {
 		onChangePage(paginaAtual);
-		console.log(paginaAtual);
 	};
 
 	const handleNextPage = (paginaAtual: number) => {
 		onChangePage(paginaAtual);
-		console.log(paginaAtual);
 	};
 
 	return (

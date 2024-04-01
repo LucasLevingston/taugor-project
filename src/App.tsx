@@ -5,29 +5,30 @@ import GetTodosFuncionarios from './pages/GetTodosFuncionarios/GetTodosFuncionar
 import AlterarDadosFuncionario from './actions/AlterarDadosFuncionario';
 import CadastroFuncionario1 from './pages/cadastro/Funcionario/CadastroFuncionario';
 import CadastroUsuario from './pages/cadastro/Usuario/CadastroUsuario';
-import RedefinirSenha from './pages/cadastro/RedefinirSenha';
-import Home from './pages/Home';
+import RedefinirSenha from './pages/cadastro/Usuario/RedefinirSenha';
 
 export default function App() {
 	return (
 		<BrowserRouter>
 			<Routes>
-				<Route path="/" element={<Home />} />
-				<Route path={`/GetFuncionario/:id`} element={<GetFuncionario />} />
-				<Route path="/cadastroUsuario" element={<CadastroUsuario />} />
+				<Route path={`/get-funcionario/:id`} element={<GetFuncionario />} />
+				<Route path="/cadastro-usuario" element={<CadastroUsuario />} />
 				<Route
-					path={`/AlterarDadosFuncionario/:id`}
+					path={`/alterar-dados-funcionario/:id`}
 					element={<AlterarDadosFuncionario />}
 				/>
-				<Route path="/redefinirSenha" element={<RedefinirSenha />} />
-				<Route path="/cadastroFuncionario" element={<CadastroFuncionario1 />} />
-				<Route path="/GetFuncionarios" element={<GetTodosFuncionarios />} />
+				<Route path="/redefinir-senha" element={<RedefinirSenha />} />
 				<Route
-					path="/GetFuncionario"
-					element={<Navigate to="/GetFuncionarios" />}
+					path="/cadastro-funcionario"
+					element={<CadastroFuncionario1 />}
+				/>
+				<Route path="/get-funcionarios" element={<GetTodosFuncionarios />} />
+				<Route
+					path="/get-funcionario"
+					element={<Navigate to="/get-funcionarios" />}
 				/>
 				<Route path="/login" element={<Login />} caseSensitive={false} />
-				{/* <Route path="/" element={< />} caseSensitive={false} /> */}
+				<Route path="/" element={<Navigate to="/get-funcionarios" />} />
 			</Routes>
 		</BrowserRouter>
 	);

@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { auth } from '../Firebase/firebase';
 import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { ReloadIcon } from '@radix-ui/react-icons';
@@ -12,28 +15,23 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs';
-import { useState } from 'react';
 import { IoEyeOutline, IoEyeSharp } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
-import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
-import { auth } from '../Firebase/firebase';
+import { win } from '@/estatico';
 
-export default function Login(): any {
-	const [passwordShow, setPasswordShow] = useState(false);
+export default function Login() {
+	const [senhaVisivel, setSenhaVisivel] = useState(false);
 	const toggleShowPassword = () => {
-		setPasswordShow(!passwordShow);
+		setSenhaVisivel(!senhaVisivel);
 	};
 	const [email, setEmail] = useState('');
 	const [senha, setSenha] = useState('');
 	const [loginComEmailESenha, user, loading, error] =
 		useSignInWithEmailAndPassword(auth);
 
-	const win: Window = window;
 	if (user) {
-		console.log(user);
 		win.location = '/';
 	}
-
 	return (
 		<div>
 			<Header />
@@ -62,7 +60,7 @@ export default function Login(): any {
 									<div className="flex">
 										<Input
 											id="senha1"
-											type={passwordShow ? 'text' : 'password'}
+											type={senhaVisivel ? 'text' : 'password'}
 											required
 											minLength={8}
 											onChange={(e) => setSenha(e.target.value)}
@@ -73,7 +71,7 @@ export default function Login(): any {
 											className="pl-3"
 											type="button"
 										>
-											{passwordShow ? (
+											{senhaVisivel ? (
 												<IoEyeOutline className="h-7 w-7" />
 											) : (
 												<IoEyeSharp className="h-7 w-7" />
@@ -82,7 +80,6 @@ export default function Login(): any {
 									</div>
 								</div>
 							</CardContent>
-							{/* <div className="flex justify-start"> */}
 							<CardFooter className="flex flex-col items-center justify-center">
 								{loading ? (
 									<Button disabled>

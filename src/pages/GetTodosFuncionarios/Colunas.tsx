@@ -34,13 +34,16 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { FaTrash } from 'react-icons/fa';
-import { FuncionarioType } from '@/hooks/getFuncionariosHooks';
+import {
+	FuncionarioType,
+	desativarFuncionario,
+} from '@/hooks/funcionarios.hooks';
 import { FaUserPlus } from 'react-icons/fa6';
 import { GoColumns } from 'react-icons/go';
+import { win } from '@/estatico';
 
-const win: Window = window;
 function redirecionarDadosFuncionario(funcionario: string | undefined) {
-	win.location.href = `/getFuncionario/${funcionario}`;
+	win.location = `/get-funcionario/${funcionario}`;
 }
 
 export const Colunas: ColumnDef<FuncionarioType>[] = [
@@ -134,8 +137,17 @@ export const Colunas: ColumnDef<FuncionarioType>[] = [
 						>
 							Ver dados
 						</DropdownMenuItem>
-						<DropdownMenuItem className="flex font-bold text-vermelho">
-							Excluir funcionário
+						<DropdownMenuItem
+							className="flex font-bold text-vermelho"
+							onClick={async () => {
+								if (funcionario.id) {
+									if (await desativarFuncionario(funcionario.id)) {
+										window.location.reload();
+									}
+								}
+							}}
+						>
+							Desativar funcionário
 							<FaTrash className="ml-3" />
 						</DropdownMenuItem>
 					</DropdownMenuContent>
@@ -144,15 +156,15 @@ export const Colunas: ColumnDef<FuncionarioType>[] = [
 		},
 	},
 ];
-interface DataTableProps<TData, TValue> {
+interface TabelaUsuariosProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function TabelaUsuarios<TData, TValue>({
 	columns,
 	data,
-}: DataTableProps<TData, TValue>) {
+}: TabelaUsuariosProps<TData, TValue>) {
 	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
 		[]
@@ -196,7 +208,7 @@ export function DataTable<TData, TValue>({
 					<Button
 						variant="outline"
 						onClick={() => {
-							win.location = '/CadastroFuncionario';
+							win.location = '/cadastro-funcionario';
 						}}
 					>
 						Cadastrar Funcionario

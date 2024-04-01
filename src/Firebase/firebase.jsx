@@ -1,9 +1,15 @@
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import React from 'react';
-import { getAuth } from 'firebase/auth';
 import { collection, getFirestore } from 'firebase/firestore';
 import { getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import {
+	getAuth,
+	setPersistence,
+	signInWithEmailAndPassword,
+	browserSessionPersistence,
+	browserLocalPersistence,
+} from 'firebase/auth';
 
 // import dotenv from 'dotenv';
 // dotenv.config();
@@ -17,7 +23,7 @@ import { getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 // 	appId: import.meta.env.VITE_FIREBASE_APP_ID,
 // 	measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 // };
-const firebaseConfig = {
+export const firebaseConfig = {
 	apiKey: 'AIzaSyCeM3S44Mbrdyi1_LjMuCPC4VQSHhzaspE',
 	authDomain: 'taugor-project-11e64.firebaseapp.com',
 	projectId: 'taugor-project-11e64',
@@ -26,12 +32,35 @@ const firebaseConfig = {
 	appId: '1:553442758015:web:6ed176031587f051d35e4a',
 	measurementId: 'G-84JGCSF05Y',
 };
-
 export const firebaseApp = initializeApp(firebaseConfig);
 export const storage = getStorage();
-export const auth = getAuth(firebaseApp);
 export const db = getFirestore(firebaseApp);
-export const funcionariosRef = collection(db, 'funcionario');
+export const tabelaFuncionarioRef = collection(db, 'funcionarios');
 export const fotosRef = ref(storage, 'fotosPerfil');
 
-// const analytics = getAnalytics(app);
+export const auth = getAuth(firebaseApp);
+setPersistence(auth, browserSessionPersistence)
+	.then(() => {
+		console.log('Persistência sessão de autenticação habilitada.');
+	})
+	.catch((error) => {
+		console.error(
+			'Erro ao habilitar persistência de autenticação:',
+			error.message
+		);
+	});
+
+export const isUserAuthenticated = () => {
+	return new Promise((resolve, reject) => {
+		const unsubscribe = auth.onAuthStateChanged((user) => {
+			if (user) {
+				// O usuário está autenticado
+				resolve(user);
+			} else {
+				// O usuário não está autenticado
+				reject(new Error('Usuário não autenticado.'));
+			}
+			unsubscribe(); // Limpe o observador
+		});
+	});
+};
