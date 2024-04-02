@@ -106,15 +106,20 @@ export function DataFormatada(data: string): string {
 export function formatarTelefone(telefone: string): string {
 	const numeros = telefone.replace(/\D/g, '');
 
-	if (numeros.length !== 11) {
+	if (numeros.length !== 10 && numeros.length !== 11) {
 		return '';
 	}
 
 	const ddd = numeros.slice(0, 2);
-	const parte1 = numeros.slice(2, 6);
-	const parte2 = numeros.slice(6, 10);
+	const parte1 = numeros.slice(2, 7);
+	const parte2 = numeros.slice(7, 11);
 
-	return `(${ddd}) ${parte1}-${parte2}`;
+	const telefoneFormatado =
+		numeros.length === 11
+			? `(${ddd}) 9${parte1}-${parte2}`
+			: `(${ddd}) ${parte1}-${parte2}`;
+
+	return telefoneFormatado;
 }
 
 export function formatarCEP(cep: string): string {
@@ -144,4 +149,8 @@ export function getDataAtual() {
 	const ano = dataAtual.getFullYear().toString();
 
 	return `${dia}${mes}${ano}`;
+}
+
+export function formatarTelefoneParaNumeros(telefone: string): string {
+	return telefone.replace(/[()\- ]/g, '');
 }

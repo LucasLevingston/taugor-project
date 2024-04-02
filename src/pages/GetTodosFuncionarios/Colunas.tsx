@@ -41,6 +41,7 @@ import {
 import { FaUserPlus } from 'react-icons/fa6';
 import { GoColumns } from 'react-icons/go';
 import { win } from '@/estatico';
+import { RxAvatar } from 'react-icons/rx';
 
 function redirecionarDadosFuncionario(funcionario: string | undefined) {
 	win.location = `/get-funcionario/${funcionario}`;
@@ -70,13 +71,15 @@ export const Colunas: ColumnDef<FuncionarioType>[] = [
 		enableHiding: false,
 	},
 	{
-		accessorKey: 'fotoPerfil',
+		accessorKey: 'fotoPerfilUrl',
 		header: '',
 		cell: ({ row }) => {
 			return (
 				<Avatar>
-					<AvatarImage src={row.getValue('fotoPerfil')} />
-					<AvatarFallback>CN</AvatarFallback>
+					<AvatarImage src={row.getValue('fotoPerfilUrl')} />
+					<AvatarFallback>
+						<RxAvatar className="h-full w-full" />
+					</AvatarFallback>
 				</Avatar>
 			);
 		},
@@ -227,16 +230,19 @@ export function TabelaUsuarios<TData, TValue>({
 								.filter((column) => column.getCanHide())
 								.map((column) => {
 									return (
-										<DropdownMenuCheckboxItem
-											key={column.id}
-											className="capitalize"
-											checked={column.getIsVisible()}
-											onCheckedChange={(value) =>
-												column.toggleVisibility(!!value)
-											}
-										>
-											{column.id}
-										</DropdownMenuCheckboxItem>
+										<div key={column.id}>
+											{column.id === 'fotoPerfilUrl' ? null : (
+												<DropdownMenuCheckboxItem
+													className="capitalize"
+													checked={column.getIsVisible()}
+													onCheckedChange={(value) =>
+														column.toggleVisibility(!!value)
+													}
+												>
+													{column.id}
+												</DropdownMenuCheckboxItem>
+											)}
+										</div>
 									);
 								})}
 						</DropdownMenuContent>

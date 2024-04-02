@@ -13,11 +13,12 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { FaTrash } from 'react-icons/fa6';
 import { IoIosArrowBack } from 'react-icons/io';
-import GerarPDF from '@/components/GerarPDF';
+// import GerarPDF from '@/components/GerarPDF';
 import BotaoAlterarDado from '@/components/BotaoAlterarDado';
-import { DataFormatada, formatarCEP, formatarTelefone, win } from '@/estatico';
+import { DataFormatada, formatarTelefone, win } from '@/estatico';
 import { useAuthentication } from '@/hooks/usuarios.hooks';
 import { ReloadIcon } from '@radix-ui/react-icons';
+import BotaoMostrarHistorico from '@/components/BotaoMostrarHistorico';
 
 export default function GetFuncionario() {
 	const [formato, setFormato] = useState('rounded-none');
@@ -68,7 +69,7 @@ export default function GetFuncionario() {
 					<div className="flex w-full flex-col items-center justify-center pb-3  ">
 						<div className="w-[70%] space-y-8 rounded-3xl border-[4px] border-mainColor  p-5">
 							<div className="flex items-center justify-between  ">
-								<div>
+								<div className="flex items-center space-x-2">
 									<Button
 										onClick={() => {
 											win.location = '/get-funcionarios';
@@ -78,6 +79,7 @@ export default function GetFuncionario() {
 										<IoIosArrowBack className="mr-3" />
 										Ver todos os Funcionarios
 									</Button>
+									<BotaoMostrarHistorico funcionario={funcionario} />
 								</div>
 								<div className="p-3 pb-3 text-[40px] font-bold text-mainColor">
 									Dados do Funcionário
@@ -145,7 +147,7 @@ export default function GetFuncionario() {
 																<BotaoAlterarDado
 																	funcionario={funcionario}
 																	field="endereco.0"
-																	novoValor={dadosAlterados.novoValor as string}
+																	novoValor={funcionario.endereco[0]}
 																	handleChange={handleChange}
 																	antigoValor={funcionario.endereco[0]}
 																/>
@@ -174,7 +176,7 @@ export default function GetFuncionario() {
 													<h1 className="text-xs font-bold">CEP</h1>
 													<div className="flex items-center justify-between">
 														<h2 className="text-lg">
-															{formatarCEP(funcionario.endereco[2])}
+															{funcionario.endereco[2]}
 														</h2>
 														<BotaoAlterarDado
 															funcionario={funcionario}
@@ -227,7 +229,7 @@ export default function GetFuncionario() {
 													>
 														<AvatarImage
 															className="h-full w-full"
-															// src={funcionario.fotoPerfil}
+															src={funcionario.fotoPerfilUrl}
 														/>
 														<AvatarFallback>
 															<RxAvatar className="h-full w-full" />
@@ -357,7 +359,7 @@ export default function GetFuncionario() {
 													</h1>
 													<div className="flex items-center justify-between">
 														<h2 className="text-lg">
-															{funcionario.dataAdmissao}
+															{DataFormatada(funcionario.dataAdmissao)}
 														</h2>
 														<BotaoAlterarDado
 															funcionario={funcionario}

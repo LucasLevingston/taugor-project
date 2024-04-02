@@ -47,7 +47,6 @@ import {
 	cargoOpcoes,
 	estadosBrasileiros,
 	formatarDataParaNumeros,
-	getDataAtual,
 	setorOpcoes,
 	sexoOpcoes,
 	win,
@@ -55,7 +54,7 @@ import {
 import { Switch } from '@/components/ui/switch.tsx';
 import { Label } from '@/components/ui/label.tsx';
 import { IoIosArrowBack } from 'react-icons/io';
-import InputMask from 'react-input-mask';
+import { IMaskInput } from 'react-imask';
 
 function getImagemData(event: ChangeEvent<HTMLInputElement>) {
 	const dataTransfer = new DataTransfer();
@@ -74,7 +73,6 @@ export default function Formulario({
 }: {
 	onChangeProgresso: (progresso: number) => void;
 }) {
-	const [pagina, setPagina] = useState(1);
 	const [preview, setPreview] = useState('');
 	const [open, setOpen] = React.useState(false);
 	const [value, setValue] = React.useState('');
@@ -91,9 +89,9 @@ export default function Formulario({
 			numero: '',
 			cep: '',
 			cidade: '',
+			fotoPerfil: undefined,
 			estado: '',
 			telefone: '',
-			fotoPerfil: undefined,
 			nascimento: '',
 			setor: '',
 			cargo: '',
@@ -156,13 +154,16 @@ export default function Formulario({
 				dataAdmissao: formatarDataParaNumeros(data.dataAdmissao),
 				ativo: true,
 				historico: [
-					{ ocorrido: 'Funcionário adicionado', data: getDataAtual() },
+					{
+						ocorrido: 'Funcionário adicionado',
+						data: new Date().toISOString(),
+					},
 				],
 			});
 
-			if (funcionario) {
+			if (funcionario && data.fotoPerfil) {
 				await postFuncionario(funcionario, data.fotoPerfil);
-				// win.location = `get-funcionarios`;
+				win.location = `get-funcionarios`;
 			}
 		} else {
 			console.error('O salário fornecido não é um número válido.');
@@ -212,7 +213,7 @@ export default function Formulario({
 															type="name"
 															placeholder="Digite o nome"
 															className="border-transparent bg-transparent "
-														></Input>
+														/>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -297,10 +298,10 @@ export default function Formulario({
 												<FormItem className="flex w-[90%] flex-col bg-cinza p-3">
 													<FormLabel>CEP</FormLabel>
 													<FormControl>
-														<InputMask
-															mask="999999-99"
+														<IMaskInput
+															mask="00000-00"
 															{...field}
-															className="border-transparent bg-transparent "
+															className="w-full border-transparent bg-transparent p-2 "
 															placeholder="Digite o CEP"
 														/>
 													</FormControl>
@@ -432,17 +433,28 @@ export default function Formulario({
 															</h1>{' '}
 															<FormControl className="">
 																<Input
-																	type="file"
 																	{...field}
+																	type="file"
+																	accept="image/png,image/jpeg"
 																	onChange={(event) => {
-																		const { files, displayUrl } =
-																			getImagemData(event);
-																		setPreview(displayUrl);
-																		onChange(files);
+																		if (
+																			event.target.files &&
+																			event.target.files[0]
+																		) {
+																			const { displayUrl } =
+																				getImagemData(event);
+
+																			setPreview(displayUrl);
+																			onChange(
+																				event.target.files &&
+																					event.target.files[0]
+																			);
+																		}
 																	}}
 																	className="border-[2px] bg-cinza font-bold text-preto"
 																/>
 															</FormControl>
+															<FormMessage />
 														</div>
 														<div className="flex  space-x-4 pt-3">
 															<Switch
@@ -454,7 +466,6 @@ export default function Formulario({
 															<Label>Foto redonda</Label>
 														</div>
 													</div>
-													<FormMessage />
 												</FormItem>
 											)}
 										/>
@@ -502,11 +513,11 @@ export default function Formulario({
 												<FormItem className="flex w-[90%] flex-col bg-cinza p-3">
 													<FormLabel>Numero de celular</FormLabel>
 													<FormControl>
-														<InputMask
-															mask="(99)99999-9999"
+														<IMaskInput
+															mask="(00) 00000-0000"
 															{...field}
-															className="w-[30%] border-transparent bg-transparent "
-															placeholder="Digite o numero"
+															className="w-full border-transparent bg-transparent p-2 "
+															placeholder="Digite o numero de celular"
 														/>
 													</FormControl>
 													<FormMessage />

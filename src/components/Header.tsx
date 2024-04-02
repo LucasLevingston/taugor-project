@@ -1,15 +1,11 @@
 import logoTaugor from '../assets/logo-taugor.png';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { MdHome } from 'react-icons/md';
-import { Link, useLocation } from 'react-router-dom';
-
-interface progressoProps {
-	onChangeProgresso: (progresso: number) => void;
-}
+import { Link } from 'react-router-dom';
 
 export default function Header({ progresso }: { progresso?: number }) {
-	const [barraProgresso, setBarraProgresso] = useState(0);
+	const [barraProgresso] = useState(0);
 
 	return (
 		<div className="w-full pb-5">

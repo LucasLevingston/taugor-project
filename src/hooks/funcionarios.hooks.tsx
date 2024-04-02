@@ -9,7 +9,7 @@ import {
 	updateDoc,
 	where,
 } from 'firebase/firestore';
-import { ref, uploadBytes } from 'firebase/storage';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useEffect, useState } from 'react';
 
 export type FuncionarioType = {
@@ -20,6 +20,7 @@ export type FuncionarioType = {
 	endereco: string[];
 	telefone: string;
 	fotoPerfil?: File;
+	fotoPerfilUrl?: string;
 	nascimento: string;
 	cargo: string;
 	dataAdmissao: string;
@@ -58,15 +59,27 @@ export function getFuncionariosAtivos(): FuncionarioType[] {
 		const fetchFuncionariosAtivos = async () => {
 			const q = query(tabelaFuncionarioRef, where('ativo', '==', true));
 			const querySnapshot = await getDocs(q);
-			const funcionariosData: FuncionarioType[] = [];
-			querySnapshot.forEach((doc) => {
-				const funcionarioData = {
-					...doc.data(),
-					id: doc.id,
-				} as FuncionarioType;
-				funcionariosData.push(funcionarioData);
-			});
-			setFuncionariosAtivos(funcionariosData);
+
+			const promises: Promise<FuncionarioType | null>[] =
+				querySnapshot.docs.map(async (doc) => {
+					const funcionarioData = {
+						...doc.data(),
+						id: doc.id,
+					} as FuncionarioType;
+					if (funcionarioData.id) {
+						funcionarioData.fotoPerfilUrl = await getFotoPerfil(
+							funcionarioData.id
+						);
+						return funcionarioData;
+					}
+					return null;
+				});
+
+			const funcionariosData = await Promise.all(promises);
+			const funcionariosDataFiltered = funcionariosData.filter(
+				(funcionario) => funcionario !== null
+			) as FuncionarioType[];
+			setFuncionariosAtivos(funcionariosDataFiltered);
 		};
 		fetchFuncionariosAtivos();
 	}, []);
@@ -81,20 +94,22 @@ export function getFuncionarioPeloId(
 
 	useEffect(() => {
 		if (!id) {
-			console.log('Usuário não encontrado');
+			console.log('ID do usuário não fornecido');
 			return;
 		}
 
 		const fetchFuncionario = async () => {
 			try {
 				const data = await getDocs(tabelaFuncionarioRef);
+
 				const funcionarioData = data.docs.map((doc) => ({
-					...doc.data(),
 					id: doc.id,
+					...doc.data(),
 				})) as FuncionarioType[];
 
 				const funcionarioEncontrado = funcionarioData.find((f) => f.id === id);
 				if (funcionarioEncontrado) {
+					funcionarioEncontrado.fotoPerfilUrl = await getFotoPerfil(id);
 					setFuncionario(funcionarioEncontrado);
 				} else {
 					console.log('Funcionário não encontrado');
@@ -110,6 +125,18 @@ export function getFuncionarioPeloId(
 	return funcionario;
 }
 
+export async function getFotoPerfil(id: string): Promise<string> {
+	try {
+		const fotoPerfilRef = ref(storage, `imagensPerfil/${id}`);
+		const url = await getDownloadURL(fotoPerfilRef);
+		console.log('Foto de perfil obtida com sucesso.');
+
+		return url;
+	} catch (error) {
+		console.error('Erro ao obter foto de perfil:', error);
+		return '';
+	}
+}
 export async function postFuncionario(
 	funcionario: FuncionarioType,
 	fotoPerfil: File
@@ -118,10 +145,9 @@ export async function postFuncionario(
 		const docRef = await addDoc(tabelaFuncionarioRef, funcionario);
 		const funcionarioId = docRef.id;
 
-		await postImagem(fotoPerfil, funcionarioId);
+		await postFotoPerfil(fotoPerfil, funcionarioId);
 
 		console.log('Usuário cadastrado com sucesso');
-
 		return funcionarioId;
 	} catch (error) {
 		console.log('Erro ao cadastrar funcionário', error);
@@ -129,11 +155,13 @@ export async function postFuncionario(
 	}
 }
 
-const postImagem = async (imagem: File, id: string | undefined) => {
+const postFotoPerfil = async (imagem: File, id: string | undefined) => {
 	try {
 		const storageRef = ref(storage, `imagensPerfil/${id}`);
-
-		await uploadBytes(storageRef, imagem);
+		const metadata = {
+			contentType: 'image/jpg',
+		};
+		await uploadBytes(storageRef, imagem, metadata);
 
 		console.log('Imagem de perfil postada com sucesso');
 	} catch (error) {
@@ -229,5 +257,22 @@ export async function adicionarNoHistorico(
 	} catch (error) {
 		console.error('Erro ao adicionar entrada ao histórico:', error);
 		return false;
+	}
+}
+
+export async function updateFotoPerfil(id: string, foto: File): Promise<void> {
+	try {
+		const fotoPerfilRef = ref(storage, `imagensPerfil/${id}`);
+
+		const metadata = {
+			contentType: foto.type,
+		};
+
+		await uploadBytes(fotoPerfilRef, foto, metadata);
+
+		console.log('Foto de perfil atualizada com sucesso');
+	} catch (error) {
+		console.error('Erro ao atualizar a foto de perfil:', error);
+		throw error;
 	}
 }

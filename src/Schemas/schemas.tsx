@@ -1,13 +1,5 @@
 import { z } from 'zod';
 
-const MAX_FILE_SIZE = 1024 * 1024 * 5;
-const ACCEPTED_IMAGE_MIME_TYPES = [
-	'image/jpeg',
-	'image/jpg',
-	'image/png',
-	'image/webp',
-];
-
 export const formSchema = z.object({
 	nome: z
 		.string()
@@ -21,16 +13,7 @@ export const formSchema = z.object({
 	cidade: z.string().min(1, { message: 'Digite o nome da cidade' }),
 	estado: z.string().nonempty({ message: 'Selecione o estado' }),
 	telefone: z.string().nonempty({ message: 'Selecione o estado' }),
-	fotoPerfil: z
-		.any()
-		.refine((files) => {
-			return files?.[0]?.size <= MAX_FILE_SIZE;
-		}, `A imagem ultrapassou o tamanho máximo de 5MB.`)
-		.refine(
-			(files) => ACCEPTED_IMAGE_MIME_TYPES.includes(files?.[0]?.type),
-			'Apenas jpg, jpeg, png e webp são os formatos suportados.'
-		)
-		.optional(),
+	fotoPerfil: z.instanceof(File, { message: 'Required' }).optional(),
 	nascimento: z.string().refine(
 		(value) => {
 			const date = new Date(value);

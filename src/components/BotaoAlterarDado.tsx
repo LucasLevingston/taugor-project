@@ -20,6 +20,7 @@ import {
 	cargoOpcoes,
 	estadosBrasileiros,
 	formatarDataParaNumeros,
+	formatarTelefoneParaNumeros,
 	setorOpcoes,
 	sexoOpcoes,
 } from '@/estatico';
@@ -41,7 +42,7 @@ import {
 	CommandItem,
 	CommandList,
 } from './ui/command';
-import InputMask from 'react-input-mask';
+import { IMaskInput } from 'react-imask';
 
 export default function BotaoAlterarDado({
 	funcionario,
@@ -82,6 +83,7 @@ export default function BotaoAlterarDado({
 	}
 	const [open, setOpen] = React.useState(false);
 	const [value, setValue] = React.useState('');
+
 	return (
 		<>
 			<AlertDialog open={isOpen}>
@@ -115,12 +117,12 @@ export default function BotaoAlterarDado({
 							/>
 						) : field === 'endereco.2' ? (
 							<div className="flex-col border-preto bg-cinza  p-3">
-								<InputMask
-									mask="999999-99"
+								<IMaskInput
+									mask="00000-00"
 									placeholder="Digite o CEP"
 									className="rounded bg-branco p-2"
-									onChange={(event) => {
-										handleChange(field, event.target.value);
+									onAccept={(event) => {
+										handleChange(field, event);
 									}}
 								/>
 							</div>
@@ -179,12 +181,13 @@ export default function BotaoAlterarDado({
 							</Popover>
 						) : field === 'telefone' ? (
 							<div className="flex-col border-preto bg-cinza  p-3">
-								<InputMask
-									mask="(99)99999-9999"
-									placeholder="Digite o número de celular"
-									className="w-[50%]  rounded bg-branco p-2"
-									onChange={(event) => {
-										handleChange(field, event.target.value);
+								<IMaskInput
+									mask="(00) 00000-0000"
+									placeholder="Digite o Telefone"
+									className="rounded bg-branco p-2"
+									onAccept={(event) => {
+										handleChange(field, formatarTelefoneParaNumeros(event));
+										console.log(event);
 									}}
 								/>
 							</div>
@@ -211,7 +214,7 @@ export default function BotaoAlterarDado({
 									handleChange(field, event.target.value);
 								}}
 								type={
-									field === 'salario' || field === 'endereco.2'
+									field === 'salario' || field === 'endereco.1'
 										? 'Number'
 										: 'text'
 								}
@@ -223,14 +226,14 @@ export default function BotaoAlterarDado({
 							className="border-transparent"
 							onClick={handleCloseDialog}
 						>
-							Cancel
+							Cancelar
 						</AlertDialogCancel>
 						<Button
 							variant="outline"
 							className="border-preto"
 							onClick={handleContinue}
 						>
-							Continue
+							Alterar
 						</Button>
 					</AlertDialogFooter>
 				</AlertDialogContent>
