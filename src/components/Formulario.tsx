@@ -96,7 +96,7 @@ export default function Formulario({
 			setor: '',
 			cargo: '',
 			dataAdmissao: '',
-			salario: ``,
+			salario: 0,
 		},
 	});
 	const calcularProgresso = () => {
@@ -121,52 +121,34 @@ export default function Formulario({
 		}
 	}
 
-	function validarETransformarStringParaNumero(str: string): number | null {
-		if (!isNaN(parseFloat(str))) {
-			return parseFloat(str);
-		} else {
-			console.log('O salario deve ser apenas numeros!');
-			return null;
-		}
-	}
-
 	const onSubmit = async (data: z.infer<typeof formSchema>) => {
-		const endereco = [
-			data.rua,
-			data.numero,
-			data.cep,
-			data.cidade,
-			data.estado,
-		];
-		const salario = await validarETransformarStringParaNumero(data.salario);
+		await setFuncionario({
+			nome: data.nome,
+			email: data.email,
+			sexo: data.sexo,
+			rua: data.rua,
+			numero: data.numero,
+			cep: data.cep,
+			cidade: data.cidade,
+			estado: data.estado,
+			telefone: data.telefone,
+			nascimento: formatarDataParaNumeros(data.nascimento),
+			setor: data.setor,
+			cargo: data.cargo,
+			salario: data.salario,
+			dataAdmissao: formatarDataParaNumeros(data.dataAdmissao),
+			ativo: true,
+			historico: [
+				{
+					ocorrido: 'Funcionário adicionado',
+					data: new Date().toISOString(),
+				},
+			],
+		});
 
-		if (salario !== null) {
-			await setFuncionario({
-				nome: data.nome,
-				email: data.email,
-				sexo: data.sexo,
-				endereco: endereco,
-				telefone: data.telefone,
-				nascimento: formatarDataParaNumeros(data.nascimento),
-				setor: data.setor,
-				cargo: data.cargo,
-				salario: salario,
-				dataAdmissao: formatarDataParaNumeros(data.dataAdmissao),
-				ativo: true,
-				historico: [
-					{
-						ocorrido: 'Funcionário adicionado',
-						data: new Date().toISOString(),
-					},
-				],
-			});
-
-			if (funcionario && data.fotoPerfil) {
-				await postFuncionario(funcionario, data.fotoPerfil);
-				win.location = `get-funcionarios`;
-			}
-		} else {
-			console.error('O salário fornecido não é um número válido.');
+		if (funcionario && data.fotoPerfil) {
+			await postFuncionario(funcionario, data.fotoPerfil);
+			win.location = `get-funcionarios`;
 		}
 	};
 
@@ -595,13 +577,13 @@ export default function Formulario({
 												name="salario"
 												render={({ field }) => (
 													<FormItem className="w-[90%]  bg-cinza p-2">
-														<FormLabel>Salario</FormLabel>
+														<FormLabel>Salário</FormLabel>
 														<FormControl>
 															<Input
+																type={'number'}
 																{...field}
-																type="text"
-																className="border-transparent bg-transparent "
-																placeholder="Salario"
+																className="w-full border-transparent bg-transparent p-2 "
+																placeholder="Digite o salário"
 															/>
 														</FormControl>
 														<FormMessage />

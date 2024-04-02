@@ -17,7 +17,11 @@ export type FuncionarioType = {
 	nome: string;
 	sexo: string;
 	email: string;
-	endereco: string[];
+	rua: string;
+	numero: string;
+	cep: string;
+	cidade: string;
+	estado: string;
 	telefone: string;
 	fotoPerfil?: File;
 	fotoPerfilUrl?: string;
@@ -129,7 +133,6 @@ export async function getFotoPerfil(id: string): Promise<string> {
 	try {
 		const fotoPerfilRef = ref(storage, `imagensPerfil/${id}`);
 		const url = await getDownloadURL(fotoPerfilRef);
-		console.log('Foto de perfil obtida com sucesso.');
 
 		return url;
 	} catch (error) {
@@ -147,7 +150,6 @@ export async function postFuncionario(
 
 		await postFotoPerfil(fotoPerfil, funcionarioId);
 
-		console.log('Usuário cadastrado com sucesso');
 		return funcionarioId;
 	} catch (error) {
 		console.log('Erro ao cadastrar funcionário', error);
@@ -162,8 +164,6 @@ const postFotoPerfil = async (imagem: File, id: string | undefined) => {
 			contentType: 'image/jpg',
 		};
 		await uploadBytes(storageRef, imagem, metadata);
-
-		console.log('Imagem de perfil postada com sucesso');
 	} catch (error) {
 		console.log('Erro ao postar imagem de perfil', error);
 	}
@@ -201,22 +201,25 @@ export async function desativarFuncionario(id?: string) {
 interface NovoDado {
 	[key: string]: any;
 }
+
 export async function alterarDadoFuncionario(
 	id: string,
 	campo: string,
-	novoValor: string
+	novoValor: string | File | number
 ) {
 	try {
 		const funcionarioRef = doc(tabelaFuncionarioRef, id);
 		const novoDado: NovoDado = {};
-		if (campo === 'endereco') {
-			novoDado[campo] = [novoValor];
+
+		if (campo === 'fotoPerfil' && novoValor instanceof File) {
+			await updateFotoPerfil(id, novoValor);
 		} else {
 			novoDado[campo] = novoValor;
+
+			await updateDoc(funcionarioRef, novoDado);
+			await adicionarNoHistorico(id, campo, novoValor);
 		}
-		await updateDoc(funcionarioRef, novoDado);
-		await adicionarNoHistorico(id, campo, novoValor);
-		console.log('Dado do funcionário alterado com sucesso.');
+
 		return true;
 	} catch (error) {
 		console.error('Erro ao alterar dado do funcionário:', error);
@@ -227,15 +230,18 @@ export async function alterarDadoFuncionario(
 export async function adicionarNoHistorico(
 	id: string,
 	campo: string,
-	novoValor: string
+	novoValor: string | File | number
 ) {
-	console.log(id, campo, novoValor);
 	try {
 		const funcionarioRef = doc(tabelaFuncionarioRef, id);
 		const funcionarioDoc = await getDoc(funcionarioRef);
 		const funcionarioData = funcionarioDoc.data();
-
-		const mensagem = `O campo ${campo} foi alterado para '${novoValor}'`;
+		let mensagem = '';
+		if (campo === 'fotoPerfil') {
+			mensagem = `O campo '${campo}' foi alterado.`;
+		} else {
+			mensagem = `O campo '${campo}' foi alterado para '${novoValor}'`;
+		}
 		if (funcionarioData) {
 			const novoHistorico = [
 				...(funcionarioData.historico || []),
@@ -251,7 +257,6 @@ export async function adicionarNoHistorico(
 				{ merge: true }
 			);
 
-			console.log('Entrada adicionada ao histórico com sucesso.');
 			return true;
 		}
 	} catch (error) {
@@ -267,10 +272,8 @@ export async function updateFotoPerfil(id: string, foto: File): Promise<void> {
 		const metadata = {
 			contentType: foto.type,
 		};
-
+		adicionarNoHistorico(id, 'fotoPerfil', foto);
 		await uploadBytes(fotoPerfilRef, foto, metadata);
-
-		console.log('Foto de perfil atualizada com sucesso');
 	} catch (error) {
 		console.error('Erro ao atualizar a foto de perfil:', error);
 		throw error;

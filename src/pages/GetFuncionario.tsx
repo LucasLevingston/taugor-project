@@ -16,7 +16,7 @@ import { IoIosArrowBack } from 'react-icons/io';
 // import GerarPDF from '@/components/GerarPDF';
 import BotaoAlterarDado from '@/components/BotaoAlterarDado';
 import { DataFormatada, formatarTelefone, win } from '@/estatico';
-import { useAuthentication } from '@/hooks/usuarios.hooks';
+import { useAuntenticacao } from '@/hooks/usuarios.hooks';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import BotaoMostrarHistorico from '@/components/BotaoMostrarHistorico';
 
@@ -25,11 +25,11 @@ export default function GetFuncionario() {
 	const [pagina, setPagina] = useState(1);
 	const [dadosAlterados, setDadosAlterados] = useState<{
 		campo: string;
-		novoValor: string | number;
+		novoValor: string | File | number;
 	}>({ campo: '', novoValor: '' });
 
 	const { id } = useParams<{ id: string }>();
-	const { loading, user } = useAuthentication();
+	const { carregando, usuario } = useAuntenticacao();
 
 	if (id === null) {
 		return <div>O ID não foi fornecido.</div>;
@@ -49,7 +49,7 @@ export default function GetFuncionario() {
 		}
 	}
 
-	const handleChange = async (campo: string, valor: string | number) => {
+	const handleChange = async (campo: string, valor: string | File | number) => {
 		await setDadosAlterados({
 			campo: campo,
 			novoValor: valor,
@@ -59,12 +59,12 @@ export default function GetFuncionario() {
 	return (
 		<div>
 			<Header />
-			{loading ? (
+			{carregando ? (
 				<div className="flex h-full w-full flex-col items-center justify-center space-y-5">
 					<div>Carregando...</div>
 					<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
 				</div>
-			) : user ? (
+			) : usuario ? (
 				funcionario ? (
 					<div className="flex w-full flex-col items-center justify-center pb-3  ">
 						<div className="w-[70%] space-y-8 rounded-3xl border-[4px] border-mainColor  p-5">
@@ -141,15 +141,13 @@ export default function GetFuncionario() {
 															<h1 className="text-xs font-bold">Rua</h1>
 
 															<div className="flex items-center justify-between">
-																<h2 className="text-lg">
-																	{funcionario.endereco[0]}
-																</h2>
+																<h2 className="text-lg">{funcionario.rua}</h2>
 																<BotaoAlterarDado
 																	funcionario={funcionario}
-																	field="endereco.0"
-																	novoValor={funcionario.endereco[0]}
+																	field="rua"
+																	novoValor={dadosAlterados.novoValor as string}
 																	handleChange={handleChange}
-																	antigoValor={funcionario.endereco[0]}
+																	antigoValor={funcionario.rua}
 																/>
 															</div>
 														</div>
@@ -159,14 +157,14 @@ export default function GetFuncionario() {
 															<h1 className="text-xs font-bold">Número</h1>
 															<div className="flex items-center justify-between">
 																<h2 className="text-lg">
-																	{funcionario.endereco[1]}
+																	{funcionario.numero}
 																</h2>
 																<BotaoAlterarDado
 																	funcionario={funcionario}
-																	field="endereco.1"
+																	field="numero"
 																	novoValor={dadosAlterados.novoValor as string}
 																	handleChange={handleChange}
-																	antigoValor={funcionario.endereco[1]}
+																	antigoValor={funcionario.numero}
 																/>
 															</div>
 														</div>
@@ -175,15 +173,13 @@ export default function GetFuncionario() {
 												<div className="h-13 w-[90%]  bg-cinza p-2 ">
 													<h1 className="text-xs font-bold">CEP</h1>
 													<div className="flex items-center justify-between">
-														<h2 className="text-lg">
-															{funcionario.endereco[2]}
-														</h2>
+														<h2 className="text-lg">{funcionario.cep}</h2>
 														<BotaoAlterarDado
 															funcionario={funcionario}
-															field="endereco.2"
+															field="cep"
 															novoValor={dadosAlterados.novoValor as string}
 															handleChange={handleChange}
-															antigoValor={funcionario.endereco[2]}
+															antigoValor={funcionario.cep}
 														/>
 													</div>
 												</div>
@@ -191,30 +187,26 @@ export default function GetFuncionario() {
 													<div className="h-13 w-[50%] bg-cinza p-2 ">
 														<h1 className="text-xs font-bold">Cidade</h1>
 														<div className="flex items-center justify-between">
-															<h2 className="text-lg">
-																{funcionario.endereco[3]}
-															</h2>
+															<h2 className="text-lg">{funcionario.cidade}</h2>
 															<BotaoAlterarDado
 																funcionario={funcionario}
-																field="endereco.3"
+																field="cidade"
 																novoValor={dadosAlterados.novoValor as string}
 																handleChange={handleChange}
-																antigoValor={funcionario.endereco[3]}
+																antigoValor={funcionario.cidade}
 															/>
 														</div>
 													</div>
 													<div className="h-13 w-[45%]  bg-cinza p-2 ">
 														<h1 className="text-xs font-bold">Estado</h1>
 														<div className="flex items-center justify-between">
-															<h2 className="text-lg">
-																{funcionario.endereco[4]}
-															</h2>
+															<h2 className="text-lg">{funcionario.estado}</h2>
 															<BotaoAlterarDado
 																funcionario={funcionario}
-																field="endereco.4"
+																field="estado"
 																novoValor={dadosAlterados.novoValor as string}
 																handleChange={handleChange}
-																antigoValor={funcionario.endereco[4]}
+																antigoValor={funcionario.estado}
 															/>
 														</div>{' '}
 													</div>
@@ -222,27 +214,29 @@ export default function GetFuncionario() {
 											</div>
 										</div>
 										<div className="flex w-[50%] flex-col ">
-											<div className="w-full space-y-5">
-												<div className="flex ">
-													<Avatar
-														className={`${formato} h-48 w-48 border-[4px]  border-mainColor`}
-													>
-														<AvatarImage
-															className="h-full w-full"
-															src={funcionario.fotoPerfilUrl}
-														/>
-														<AvatarFallback>
-															<RxAvatar className="h-full w-full" />
-														</AvatarFallback>
-													</Avatar>
-													<div className="ml-5">
-														{' '}
-														<h1 className="bg-cinza py-2 pl-2 text-xs font-bold">
-															Foto de Perfil
-														</h1>
-														<div className="flex items-center justify-center space-x-4 pt-3">
+											<div className="w-full space-y-5 ">
+												<div className="flex w-[90%] justify-between space-x-4 bg-cinza p-2">
+													<div className="flex space-x-4">
+														<div className="flex flex-col  space-x-2">
+															<h1 className="py-2 pl-2 text-xs font-bold">
+																Foto de Perfil
+															</h1>
+															<Avatar
+																className={`${formato} h-48 w-48 border-[4px]  border-mainColor`}
+															>
+																<AvatarImage
+																	className="h-full w-full"
+																	src={funcionario.fotoPerfilUrl}
+																/>
+																<AvatarFallback>
+																	<RxAvatar className="h-full w-full" />
+																</AvatarFallback>
+															</Avatar>
+														</div>
+														<div className="flex justify-center space-x-4 pt-10">
 															<Switch
 																aria-readonly
+																className="bg-mainColor"
 																onCheckedChange={() => {
 																	onChangeFoto();
 																}}
@@ -250,6 +244,13 @@ export default function GetFuncionario() {
 															<Label>Foto redonda</Label>
 														</div>
 													</div>
+													<BotaoAlterarDado
+														funcionario={funcionario}
+														field="fotoPerfil"
+														novoValor={dadosAlterados.novoValor as File}
+														handleChange={handleChange}
+														antigoValor={funcionario.fotoPerfilUrl}
+													/>
 												</div>
 												<div className="h-13 w-[90%]  bg-cinza p-2 ">
 													<h1 className="text-xs font-bold">Sexo</h1>
@@ -343,7 +344,9 @@ export default function GetFuncionario() {
 												<div className="h-13 w-[90%]  bg-cinza p-2 ">
 													<h1 className="text-xs font-bold">Salário</h1>
 													<div className="flex items-center justify-between">
-														<h2 className="text-lg">{funcionario.salario}</h2>
+														<h2 className="text-lg">
+															R$ {funcionario.salario}
+														</h2>
 														<BotaoAlterarDado
 															funcionario={funcionario}
 															field="salario"

@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 import Formulario from '../../../components/Formulario';
 import React, { useState } from 'react';
 import { Progress } from '@/components/ui/progress';
-import { useAuthentication } from '@/hooks/usuarios.hooks';
+import { useAuntenticacao } from '@/hooks/usuarios.hooks';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { Button } from '@/components/ui/button';
 import { win } from '@/estatico';
@@ -19,17 +19,17 @@ export default function CadastroFuncionario1() {
 		const timer = setTimeout(() => setProgresso(0), 500);
 		return () => clearTimeout(timer);
 	}, []);
-	const { loading, user } = useAuthentication();
+	const { carregando, usuario } = useAuntenticacao();
 
 	return (
 		<div>
 			<Header progresso={progresso} />
-			{loading ? (
+			{carregando ? (
 				<div className="flex h-full w-full flex-col items-center justify-center space-y-5">
 					<div>Carregando...</div>
 					<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
 				</div>
-			) : user ? (
+			) : usuario ? (
 				<div>
 					<Progress value={progresso} className="w-[60%]" />
 					<Formulario onChangeProgresso={handleProgressChange} />

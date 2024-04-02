@@ -18,6 +18,7 @@ module.exports = {
 			transparent: 'transparent',
 			vermelho: '#FF0000',
 			azulClaro: '#B8CAD4',
+			verde: '#5EE617',
 		},
 		container: {
 			center: true,

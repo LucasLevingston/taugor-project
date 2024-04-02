@@ -41,20 +41,20 @@ export const estadosBrasileiros = [
 
 export const cargoOpcoes = [
 	{
-		id: 'desenvolvedor',
-		opcao: 'Desenvolvedor',
+		id: 'estagiario',
+		opcao: 'Estagiário',
 	},
 	{
-		id: 'analista',
-		opcao: 'Analista de RH',
+		id: 'junior',
+		opcao: 'Júnior',
 	},
 	{
-		id: 'contador',
-		opcao: 'Contador',
+		id: 'pleno',
+		opcao: 'Pleno',
 	},
 	{
-		id: 'vendedor',
-		opcao: 'Vendedor',
+		id: 'senior',
+		opcao: 'Sênior',
 	},
 ];
 export const setorOpcoes = [

@@ -43,6 +43,7 @@ import {
 	CommandList,
 } from './ui/command';
 import { IMaskInput } from 'react-imask';
+import { PromoverFuncionario } from './BotaoPromoverFuncionario';
 
 export default function BotaoAlterarDado({
 	funcionario,
@@ -53,9 +54,9 @@ export default function BotaoAlterarDado({
 }: {
 	funcionario: FuncionarioType;
 	field: string;
-	novoValor: string;
-	antigoValor: string | Number;
-	handleChange: (field: string, value: string) => void;
+	novoValor: string | File | number;
+	antigoValor?: string | Number;
+	handleChange: (field: string, value: string | File | number) => void;
 }) {
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -101,7 +102,17 @@ export default function BotaoAlterarDado({
 							Alterar dado{' '}
 						</AlertDialogTitle>
 						<AlertDialogDescription>
-							Atual: {String(antigoValor)}
+							{field === 'fotoPerfil' ? (
+								<>
+									Atual:
+									<img
+										className="h-48 w-48 rounded"
+										src={funcionario.fotoPerfilUrl}
+									/>
+								</>
+							) : (
+								<>Atual: {String(antigoValor)}</>
+							)}
 						</AlertDialogDescription>
 						{field === 'nascimento' || field === 'dataAdmissao' ? (
 							<Input
@@ -115,7 +126,7 @@ export default function BotaoAlterarDado({
 									)
 								}
 							/>
-						) : field === 'endereco.2' ? (
+						) : field === 'cep' ? (
 							<div className="flex-col border-preto bg-cinza  p-3">
 								<IMaskInput
 									mask="00000-00"
@@ -126,7 +137,7 @@ export default function BotaoAlterarDado({
 									}}
 								/>
 							</div>
-						) : field === 'endereco.4' ? (
+						) : field === 'estado' ? (
 							<Popover open={open} onOpenChange={setOpen}>
 								<PopoverTrigger
 									asChild
@@ -187,26 +198,52 @@ export default function BotaoAlterarDado({
 									className="rounded bg-branco p-2"
 									onAccept={(event) => {
 										handleChange(field, formatarTelefoneParaNumeros(event));
-										console.log(event);
 									}}
 								/>
 							</div>
 						) : field === 'sexo' || field === 'setor' || field === 'cargo' ? (
 							<Select
 								onValueChange={(value) => handleChange(field, value)}
-								defaultValue={novoValor}
+								defaultValue={novoValor?.toString()}
 							>
-								<SelectTrigger className="w-[180px] border-[2px]  ">
-									<SelectValue placeholder="Selecionar" />
-								</SelectTrigger>
-								<SelectContent className="bg-branco text-preto ">
-									{opcoesSelecionar(field)?.map((opcao) => (
-										<SelectItem key={opcao.id} value={opcao.id}>
-											{opcao.opcao}
-										</SelectItem>
-									))}
-								</SelectContent>
+								<div className="flex justify-between">
+									<SelectTrigger className="w-[180px] border-[2px]  ">
+										<SelectValue placeholder="Selecionar" />
+									</SelectTrigger>
+									<SelectContent className="bg-branco text-preto ">
+										{opcoesSelecionar(field)?.map((opcao) => (
+											<SelectItem key={opcao.id} value={opcao.id}>
+												{opcao.opcao}
+											</SelectItem>
+										))}
+									</SelectContent>
+									{field === 'cargo' &&
+									(funcionario.cargo == 'junior' ||
+										funcionario.cargo === 'pleno' ||
+										funcionario.cargo === 'estagiario') ? (
+										<PromoverFuncionario funcionario={funcionario} />
+									) : null}
+								</div>
 							</Select>
+						) : field === 'fotoPerfil' ? (
+							<Input
+								type="file"
+								accept="image/png,image/jpeg"
+								onChange={(event) => {
+									if (event.target.files && event.target.files[0]) {
+										handleChange(field, event.target.files[0]);
+									}
+								}}
+								className="border-[2px] bg-cinza font-bold text-preto"
+							/>
+						) : field === 'salario' ? (
+							<Input
+								placeholder="Digite o novo valor"
+								onChange={(event) => {
+									handleChange(field, event.target.value);
+								}}
+								type={'number'}
+							/>
 						) : (
 							<Input
 								placeholder="Digite o novo valor"
@@ -214,9 +251,7 @@ export default function BotaoAlterarDado({
 									handleChange(field, event.target.value);
 								}}
 								type={
-									field === 'salario' || field === 'endereco.1'
-										? 'Number'
-										: 'text'
+									field === 'salario' || field === 'numero' ? 'Number' : 'text'
 								}
 							/>
 						)}

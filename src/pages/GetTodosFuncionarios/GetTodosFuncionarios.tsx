@@ -6,22 +6,22 @@ import {
 } from '@/hooks/funcionarios.hooks';
 import { win } from '@/estatico';
 import { Button } from '@/components/ui/button';
-import { useAuthentication } from '@/hooks/usuarios.hooks';
+import { useAuntenticacao } from '@/hooks/usuarios.hooks';
 import { ReloadIcon } from '@radix-ui/react-icons';
 
 export default function GetFuncionarios(): JSX.Element {
 	const funcionarios: FuncionarioType[] = getFuncionariosAtivos();
-	const { loading, user } = useAuthentication();
+	const { carregando, usuario } = useAuntenticacao();
 
 	return (
 		<div>
 			<Header />
-			{loading ? (
+			{carregando ? (
 				<div className="flex h-full w-full flex-col items-center justify-center space-y-5">
 					<div>Carregando...</div>
 					<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
 				</div>
-			) : user ? (
+			) : usuario ? (
 				<TabelaUsuarios columns={Colunas} data={funcionarios} />
 			) : (
 				<div className="flex items-center justify-center space-x-5 ">

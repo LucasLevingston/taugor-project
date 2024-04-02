@@ -26,10 +26,10 @@ export default function Login() {
 	};
 	const [email, setEmail] = useState('');
 	const [senha, setSenha] = useState('');
-	const [loginComEmailESenha, user, loading, error] =
+	const [loginComEmailESenha, usuario, carregando, error] =
 		useSignInWithEmailAndPassword(auth);
 
-	if (user) {
+	if (usuario) {
 		win.location = '/';
 	}
 	return (
@@ -81,7 +81,7 @@ export default function Login() {
 								</div>
 							</CardContent>
 							<CardFooter className="flex flex-col items-center justify-center">
-								{loading ? (
+								{carregando ? (
 									<Button disabled>
 										<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
 										Carregando...
