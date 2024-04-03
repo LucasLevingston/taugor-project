@@ -34,7 +34,7 @@ export const PromoverFuncionario: React.FC<PromoverFuncionarioProps> = ({
 		const novoCargo = novoValor(funcionario);
 		if (funcionario.id && novoCargo) {
 			if (await alterarDadoFuncionario(funcionario.id, 'cargo', novoCargo)) {
-				window.location.reload();
+				window.location.href = '/';
 			}
 		}
 	}

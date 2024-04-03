@@ -73,7 +73,7 @@ export default function BotaoAlterarDado({
 		handleCloseDialog();
 		if (funcionario.id) {
 			if (await alterarDadoFuncionario(funcionario.id, field, novoValor)) {
-				window.location.reload();
+				window.location.href = '/';
 			}
 		}
 	};

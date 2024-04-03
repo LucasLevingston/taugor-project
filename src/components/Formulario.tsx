@@ -162,7 +162,7 @@ export default function Formulario({
 					setCarregando(true);
 					await postFuncionario(funcionario, formData.fotoPerfil);
 					setCarregando(false);
-					window.location.reload();
+					window.location.href = '/';
 				}
 			} catch (error) {
 				console.error('Erro ao postar funcionário:', error);

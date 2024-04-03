@@ -141,7 +141,7 @@ export const Colunas: ColumnDef<FuncionarioType>[] = [
 							onClick={async () => {
 								if (funcionario.id) {
 									if (await desativarFuncionario(funcionario.id)) {
-										window.location.reload();
+										window.location.href = '/';
 									}
 								}
 							}}
