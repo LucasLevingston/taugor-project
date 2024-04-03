@@ -4,6 +4,7 @@ import { getFuncionarioPeloId } from '@/hooks/funcionarios.hooks';
 import ConteudoPDF from './ConteudoPDF';
 import { Link, useParams } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
+import { FaRegFilePdf } from 'react-icons/fa6';
 
 const getTargetElement = () => document.getElementById('conteudoPDF');
 export default function GerarPDF() {
@@ -25,8 +26,13 @@ export default function GerarPDF() {
 								Voltar
 							</Link>
 						</Button>
-						<Button onClick={handleGerarPDF} variant="outline">
-							Gerar PDF
+						<Button
+							onClick={handleGerarPDF}
+							variant="outline"
+							className="flex  w-[8%] justify-center space-x-6"
+						>
+							<div>Gerar PDF</div>
+							<FaRegFilePdf />
 						</Button>
 					</div>
 					<ConteudoPDF funcionario={funcionario} />

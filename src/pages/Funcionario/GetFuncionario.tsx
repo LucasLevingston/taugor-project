@@ -11,13 +11,14 @@ import Paginacao from '@/components/Paginacao';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { FaTrash } from 'react-icons/fa6';
+import { FaRegFilePdf, FaTrash } from 'react-icons/fa6';
 import { IoIosArrowBack } from 'react-icons/io';
 import BotaoAlterarDado from '@/components/BotaoAlterarDado';
 import { DataFormatada, formatarTelefone } from '@/estatico';
 import { useAuntenticacao } from '@/hooks/usuarios.hooks';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import BotaoMostrarHistorico from '@/components/BotaoMostrarHistorico';
+import { Toaster, toast } from 'sonner';
 
 export default function GetFuncionario() {
 	const [formato, setFormato] = useState('rounded-none h-56');
@@ -52,6 +53,7 @@ export default function GetFuncionario() {
 
 	return (
 		<div>
+			<Toaster richColors position="top-right" />
 			<Header />
 			{carregando ? (
 				<div className="flex h-full w-full flex-col items-center justify-center space-y-5">
@@ -79,8 +81,17 @@ export default function GetFuncionario() {
 									Dados do Funcionário
 								</div>
 								<div className=" flex items-center space-x-2 ">
-									<Button>
-										<Link to={`/gerar-pdf/${id}`}>Gerar PDF</Link>
+									<Button
+										variant="outline"
+										className="flex  items-center space-x-6"
+									>
+										<Link
+											to={`/gerar-pdf/${id}`}
+											className="flex  items-center space-x-7 "
+										>
+											Gerar PDF
+											<FaRegFilePdf />
+										</Link>
 									</Button>
 									<Button
 										variant="outline"
@@ -88,7 +99,10 @@ export default function GetFuncionario() {
 										onClick={async () => {
 											if (funcionario.id) {
 												if (await desativarFuncionario(funcionario.id)) {
-													<Navigate to="/get-funcionarios" />;
+													toast.error('Funcionário desativado');
+													setTimeout(() => {
+														window.location.href = '/';
+													}, 2000);
 												}
 											}
 										}}

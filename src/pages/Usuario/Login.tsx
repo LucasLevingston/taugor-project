@@ -17,6 +17,8 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs';
 import { IoEyeOutline, IoEyeSharp } from 'react-icons/io5';
 import { Link, Navigate } from 'react-router-dom';
+import FuncionarioAtualizado from '@/components/Alertas/FuncionarioAtualizado';
+import { Toaster, toast } from 'sonner';
 
 export default function Login() {
 	const [senhaVisivel, setSenhaVisivel] = useState(false);
@@ -33,6 +35,7 @@ export default function Login() {
 	}
 	return (
 		<div>
+			<Toaster richColors position="top-right" />
 			<Header />
 			<div className="flex h-full w-full items-center justify-center pt-10">
 				<Tabs defaultValue="account" className="w-[400px]">
@@ -88,7 +91,19 @@ export default function Login() {
 								) : !error ? (
 									<Button
 										variant="outline"
-										onClick={() => loginComEmailESenha(email, senha)}
+										onClick={async () => {
+											if (await loginComEmailESenha(email, senha)) {
+												toast.success('Login efetuado com sucesso!');
+												setTimeout(() => {
+													window.location.href = '/';
+												}, 2000);
+											} else {
+												toast.error('Email ou senha inválidos');
+												setTimeout(() => {
+													window.location.href = '/';
+												}, 2000);
+											}
+										}}
 									>
 										Entrar
 									</Button>

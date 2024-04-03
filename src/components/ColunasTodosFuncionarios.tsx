@@ -43,6 +43,7 @@ import { GoColumns } from 'react-icons/go';
 import { RxAvatar } from 'react-icons/rx';
 import { Link } from 'react-router-dom';
 import { ReloadIcon } from '@radix-ui/react-icons';
+import { Toaster, toast } from 'sonner';
 
 export const Colunas: ColumnDef<FuncionarioType>[] = [
 	{
@@ -141,7 +142,10 @@ export const Colunas: ColumnDef<FuncionarioType>[] = [
 							onClick={async () => {
 								if (funcionario.id) {
 									if (await desativarFuncionario(funcionario.id)) {
-										window.location.href = '/';
+										toast.error('Funcionário desativado');
+										setTimeout(() => {
+											window.location.href = '/';
+										}, 2000);
 									}
 								}
 							}}
@@ -200,6 +204,7 @@ export function TabelaUsuarios<TData, TValue>({
 
 	return (
 		<div className="flex justify-center">
+			<Toaster richColors position="top-right" />
 			{carregando ? (
 				<div className="flex h-full w-full flex-col items-center justify-center space-y-5">
 					<div>Carregando...</div>

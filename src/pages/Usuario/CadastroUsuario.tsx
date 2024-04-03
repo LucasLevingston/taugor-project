@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth } from '@/Firebase/firebase';
 import { ReloadIcon } from '@radix-ui/react-icons';
+import { Toaster, toast } from 'sonner';
 
 export default function CadastroUsuario() {
 	const [senhaVisisvel, setSenhaVisivel] = useState(false);
@@ -51,25 +52,20 @@ export default function CadastroUsuario() {
 	}
 
 	if (error) {
-		return (
-			<div>
-				<p>Error: {error.message}</p>
-			</div>
-		);
+		toast.error(`Erro ao realizar cadastro: ${error}`);
+		setTimeout(() => {
+			window.location.href = '/';
+		}, 2000);
 	}
 	if (usuario) {
-		return (
-			<div className="flex flex-col items-center justify-center space-y-3">
-				<Header></Header>
-				<p className="rounded border p-3">Usuario cadastrado!</p>
-				<Button variant="outline">
-					<Link to="/login">Fazer Login</Link>
-				</Button>
-			</div>
-		);
+		toast.success('Funcionário Cadastrado!');
+		setTimeout(() => {
+			window.location.href = '/';
+		}, 2000);
 	}
 	return (
 		<div>
+			<Toaster richColors position="top-right" />
 			<Header />
 			<div className="flex h-full w-full items-center justify-center pt-10">
 				<Tabs defaultValue="account" className="w-[400px]">

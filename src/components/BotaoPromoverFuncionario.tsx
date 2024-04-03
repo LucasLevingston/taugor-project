@@ -14,6 +14,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { toast } from 'sonner';
 
 interface PromoverFuncionarioProps {
 	funcionario: FuncionarioType;
@@ -34,7 +35,10 @@ export const PromoverFuncionario: React.FC<PromoverFuncionarioProps> = ({
 		const novoCargo = novoValor(funcionario);
 		if (funcionario.id && novoCargo) {
 			if (await alterarDadoFuncionario(funcionario.id, 'cargo', novoCargo)) {
-				window.location.href = '/';
+				toast.success('Funcionário Promovido');
+				setTimeout(() => {
+					window.location.href = '/';
+				}, 2000);
 			}
 		}
 	}

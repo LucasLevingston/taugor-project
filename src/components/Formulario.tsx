@@ -56,6 +56,8 @@ import { IoIosArrowBack } from 'react-icons/io';
 import { IMaskInput } from 'react-imask';
 import { Link } from 'react-router-dom';
 import { ReloadIcon } from '@radix-ui/react-icons';
+import { Toaster, toast } from 'sonner';
+import { VerPDF } from './VerPDFFormulario.tsx';
 
 function getImagemData(event: ChangeEvent<HTMLInputElement>) {
 	const dataTransfer = new DataTransfer();
@@ -81,6 +83,8 @@ export default function Formulario({
 	const [formato, setFormato] = useState('rounded-none');
 	const [, setProgresso] = useState(0);
 	const [carregando, setCarregando] = useState(false);
+	const [verPDF, setVerPDF] = useState(false);
+
 	const form = useForm({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -162,7 +166,10 @@ export default function Formulario({
 					setCarregando(true);
 					await postFuncionario(funcionario, formData.fotoPerfil);
 					setCarregando(false);
-					window.location.href = '/';
+					toast.success('Funcionário Cadastrado');
+					setTimeout(() => {
+						window.location.href = '/';
+					}, 2000);
 				}
 			} catch (error) {
 				console.error('Erro ao postar funcionário:', error);
@@ -175,14 +182,21 @@ export default function Formulario({
 
 	{
 		return (
-			<div className="flex w-full flex-col items-center justify-center">
+			<div
+				className={
+					verPDF
+						? 'flex w-full p-3'
+						: 'flex w-full flex-col items-center justify-center'
+				}
+			>
+				<Toaster richColors position="top-right" />
 				<Form {...form}>
 					<form
 						onSubmit={form.handleSubmit(onSubmit)}
 						className="w-[70%] space-y-8 rounded-3xl border-[4px] border-cinza p-5"
 					>
-						<div className="flex items-center   ">
-							<div className="w-[32%]">
+						<div className="flex items-center justify-between  ">
+							<div className="">
 								<Button variant="outline">
 									<Link to="/get-funcionarios" className="flex items-center">
 										<IoIosArrowBack className="mr-3" />
@@ -190,9 +204,18 @@ export default function Formulario({
 									</Link>
 								</Button>
 							</div>
-							<div className="p-3 pb-3 text-[40px] font-bold text-mainColor">
+							<div className="w-[45%] p-3 pb-3 text-[40px] font-bold text-mainColor">
 								Cadastrar Funcionário
 							</div>
+							<Button
+								variant={'outline'}
+								onClick={() => {
+									setVerPDF(!verPDF);
+								}}
+							>
+								{' '}
+								Ver PDF
+							</Button>
 						</div>
 						<div>
 							<div className="pb-3 text-2xl  font-bold">
@@ -697,6 +720,7 @@ export default function Formulario({
 						</div>
 					</form>
 				</Form>
+				{verPDF && <VerPDF form={form} />}
 			</div>
 		);
 	}

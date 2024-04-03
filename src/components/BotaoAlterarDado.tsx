@@ -44,6 +44,8 @@ import {
 } from './ui/command';
 import { IMaskInput } from 'react-imask';
 import { PromoverFuncionario } from './BotaoPromoverFuncionario';
+import { ToastAction } from './ui/toast';
+import { Toaster, toast } from 'sonner';
 
 export default function BotaoAlterarDado({
 	funcionario,
@@ -67,13 +69,15 @@ export default function BotaoAlterarDado({
 	const handleCloseDialog = () => {
 		setIsOpen(false);
 	};
-
 	const handleContinue = async () => {
 		handleChange(field, novoValor);
 		handleCloseDialog();
 		if (funcionario.id) {
 			if (await alterarDadoFuncionario(funcionario.id, field, novoValor)) {
-				window.location.href = '/';
+				toast.success('Funcionário Atualizado');
+				setTimeout(() => {
+					window.location.href = '/';
+				}, 2000);
 			}
 		}
 	};
@@ -87,6 +91,7 @@ export default function BotaoAlterarDado({
 
 	return (
 		<>
+			<Toaster position="top-right" richColors />
 			<AlertDialog open={isOpen}>
 				<AlertDialogTrigger
 					asChild
