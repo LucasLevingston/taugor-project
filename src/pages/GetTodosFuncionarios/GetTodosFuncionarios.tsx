@@ -4,10 +4,10 @@ import {
 	getFuncionariosAtivos,
 	FuncionarioType,
 } from '@/hooks/funcionarios.hooks';
-import { win } from '@/estatico';
 import { Button } from '@/components/ui/button';
 import { useAuntenticacao } from '@/hooks/usuarios.hooks';
 import { ReloadIcon } from '@radix-ui/react-icons';
+import { Link } from 'react-router-dom';
 
 export default function GetFuncionarios(): JSX.Element {
 	const funcionarios: FuncionarioType[] = getFuncionariosAtivos();
@@ -26,13 +26,8 @@ export default function GetFuncionarios(): JSX.Element {
 			) : (
 				<div className="flex items-center justify-center space-x-5 ">
 					<div>Faça o login para Continuar </div>
-					<Button
-						variant="outline"
-						onClick={() => {
-							win.location = '/login';
-						}}
-					>
-						Fazer login
+					<Button variant="outline">
+						<Link to="/login">Fazer login</Link>
 					</Button>
 				</div>
 			)}

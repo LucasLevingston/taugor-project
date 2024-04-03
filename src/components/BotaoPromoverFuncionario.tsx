@@ -3,7 +3,6 @@ import {
 	FuncionarioType,
 	alterarDadoFuncionario,
 } from '@/hooks/funcionarios.hooks';
-import { win } from '@/estatico';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -15,6 +14,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { Navigate } from 'react-router-dom';
 
 interface PromoverFuncionarioProps {
 	funcionario: FuncionarioType;
@@ -33,7 +33,7 @@ async function promover(funcionario: FuncionarioType) {
 	const novoCargo = novoValor(funcionario);
 	if (funcionario.id && novoCargo) {
 		if (await alterarDadoFuncionario(funcionario.id, 'cargo', novoCargo)) {
-			win.location.reload();
+			<Navigate to="/login" />;
 		}
 	}
 }

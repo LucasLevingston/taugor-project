@@ -17,7 +17,6 @@ import { Button } from '@/components/ui/button';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth } from '@/Firebase/firebase';
 import { ReloadIcon } from '@radix-ui/react-icons';
-import { win } from '@/estatico';
 
 export default function CadastroUsuario() {
 	const [senhaVisisvel, setSenhaVisivel] = useState(false);
@@ -63,8 +62,8 @@ export default function CadastroUsuario() {
 			<div className="flex flex-col items-center justify-center space-y-3">
 				<Header></Header>
 				<p className="rounded border p-3">Usuario cadastrado!</p>
-				<Button variant="outline" onClick={() => (win.location = '/login')}>
-					Fazer Login
+				<Button variant="outline">
+					<Link to="/login">Fazer Login</Link>
 				</Button>
 			</div>
 		);

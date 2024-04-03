@@ -14,8 +14,8 @@ import { useState } from 'react';
 import { useSendPasswordResetEmail } from 'react-firebase-hooks/auth';
 import { auth } from '../../../Firebase/firebase';
 import { ReloadIcon } from '@radix-ui/react-icons';
-import { win } from '@/estatico';
 import { IoArrowBackOutline } from 'react-icons/io5';
+import { Link } from 'react-router-dom';
 
 export default function RedefinirSenha(): any {
 	const [emailNaoDigitado, setEmailNaoDigitado] = useState(false);
@@ -67,10 +67,12 @@ export default function RedefinirSenha(): any {
 										<Button
 											className="flex w-[25%] space-x-1"
 											variant="outline"
-											onClick={() => (win.location = '/login')}
 										>
-											<IoArrowBackOutline />
-											<span>Voltar</span>
+											{' '}
+											<Link to="/login" className="flex items-center">
+												<IoArrowBackOutline />
+												<span>Voltar</span>
+											</Link>
 										</Button>
 										{error ? (
 											<Button disabled>{error.message}</Button>

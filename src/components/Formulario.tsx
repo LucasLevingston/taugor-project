@@ -49,12 +49,12 @@ import {
 	formatarDataParaNumeros,
 	setorOpcoes,
 	sexoOpcoes,
-	win,
 } from '@/estatico.tsx';
 import { Switch } from '@/components/ui/switch.tsx';
 import { Label } from '@/components/ui/label.tsx';
 import { IoIosArrowBack } from 'react-icons/io';
 import { IMaskInput } from 'react-imask';
+import { Link, Navigate } from 'react-router-dom';
 
 function getImagemData(event: ChangeEvent<HTMLInputElement>) {
 	const dataTransfer = new DataTransfer();
@@ -148,7 +148,7 @@ export default function Formulario({
 
 		if (funcionario && data.fotoPerfil) {
 			await postFuncionario(funcionario, data.fotoPerfil);
-			win.location = `get-funcionarios`;
+			<Navigate to="/get-funcionarios" />;
 		}
 	};
 
@@ -162,14 +162,11 @@ export default function Formulario({
 					>
 						<div className="flex items-center   ">
 							<div className="w-[32%]">
-								<Button
-									onClick={() => {
-										win.location = '/get-funcionarios';
-									}}
-									variant="outline"
-								>
-									<IoIosArrowBack className="mr-3" />
-									Ver todos os Funcionarios
+								<Button variant="outline">
+									<Link to="/get-funcionarios" className="flex items-center">
+										<IoIosArrowBack className="mr-3" />
+										Ver todos os Funcionarios
+									</Link>
 								</Button>
 							</div>
 							<div className="p-3 pb-3 text-[40px] font-bold text-mainColor">

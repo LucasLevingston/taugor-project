@@ -2,8 +2,7 @@ import generatePDF from 'react-to-pdf';
 import { Button } from '../ui/button';
 import { getFuncionarioPeloId } from '@/hooks/funcionarios.hooks';
 import ConteudoPDF from './ConteudoPDF';
-import { useParams } from 'react-router-dom';
-import { win } from '@/estatico';
+import { Link, useParams } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 
 const getTargetElement = () => document.getElementById('conteudoPDF');
@@ -19,13 +18,12 @@ export default function GerarPDF() {
 			{funcionario ? (
 				<div>
 					<div className="flex w-full justify-between">
-						<Button
-							onClick={() => (win.location = `/get-funcionario/${id}`)}
-							variant="outline"
-						>
-							{' '}
-							<ChevronLeft className="h-4 w-4" />
-							Voltar
+						<Button variant="outline">
+							<Link to={`/get-funcionario/${id}`} className="flex items-center">
+								{' '}
+								<ChevronLeft className="h-4 w-4" />
+								Voltar
+							</Link>
 						</Button>
 						<Button onClick={handleGerarPDF} variant="outline">
 							Gerar PDF

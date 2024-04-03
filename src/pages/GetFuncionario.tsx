@@ -6,7 +6,7 @@ import {
 	desativarFuncionario,
 	getFuncionarioPeloId,
 } from '@/hooks/funcionarios.hooks';
-import { useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import Paginacao from '@/components/Paginacao';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { FaTrash } from 'react-icons/fa6';
 import { IoIosArrowBack } from 'react-icons/io';
 import BotaoAlterarDado from '@/components/BotaoAlterarDado';
-import { DataFormatada, formatarTelefone, win } from '@/estatico';
+import { DataFormatada, formatarTelefone } from '@/estatico';
 import { useAuntenticacao } from '@/hooks/usuarios.hooks';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import BotaoMostrarHistorico from '@/components/BotaoMostrarHistorico';
@@ -69,14 +69,14 @@ export default function GetFuncionario() {
 						<div className="w-[70%] space-y-8 rounded-3xl border-[4px] border-mainColor  p-5">
 							<div className="flex items-center justify-between  ">
 								<div className="flex items-center space-x-2">
-									<Button
-										onClick={() => {
-											win.location = '/get-funcionarios';
-										}}
-										variant="outline"
-									>
-										<IoIosArrowBack className="mr-3" />
-										Ver todos os Funcionarios
+									<Button variant="outline">
+										<Link
+											to="/get-funcionarios"
+											className="flex items-center justify-center"
+										>
+											<IoIosArrowBack className="mr-3" />
+											Ver todos os Funcionarios
+										</Link>
 									</Button>
 									<BotaoMostrarHistorico funcionario={funcionario} />
 								</div>
@@ -84,8 +84,8 @@ export default function GetFuncionario() {
 									Dados do Funcionário
 								</div>
 								<div className=" flex items-center space-x-2 ">
-									<Button onClick={() => (win.location = `/gerar-pdf/${id}`)}>
-										Gerar PDF
+									<Button>
+										<Link to={`/gerar-pdf/${id}`}>Gerar PDF</Link>
 									</Button>
 									<Button
 										variant="outline"
@@ -93,7 +93,7 @@ export default function GetFuncionario() {
 										onClick={async () => {
 											if (funcionario.id) {
 												if (await desativarFuncionario(funcionario.id)) {
-													win.location = '/get-funcionarios';
+													<Navigate to="/get-funcionarios" />;
 												}
 											}
 										}}
@@ -388,13 +388,8 @@ export default function GetFuncionario() {
 			) : (
 				<div className="flex items-center justify-center space-x-5 ">
 					<div>Faça o login para Continuar </div>
-					<Button
-						variant="outline"
-						onClick={() => {
-							win.location = '/login';
-						}}
-					>
-						Fazer login
+					<Button variant="outline">
+						<Link to="/login">Fazer login</Link>
 					</Button>
 				</div>
 			)}

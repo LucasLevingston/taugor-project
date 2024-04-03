@@ -5,7 +5,7 @@ import { Progress } from '@/components/ui/progress';
 import { useAuntenticacao } from '@/hooks/usuarios.hooks';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { Button } from '@/components/ui/button';
-import { win } from '@/estatico';
+import { Link } from 'react-router-dom';
 
 export default function CadastroFuncionario1() {
 	const [progresso, setProgresso] = useState(0);
@@ -36,13 +36,9 @@ export default function CadastroFuncionario1() {
 			) : (
 				<div className="flex items-center justify-center space-x-5 ">
 					<div>Faça o login para Continuar </div>
-					<Button
-						variant="outline"
-						onClick={() => {
-							win.location = '/login';
-						}}
-					>
-						Fazer login
+					<Button variant="outline">
+						{' '}
+						<Link to="/login"> Fazer login</Link>
 					</Button>
 				</div>
 			)}

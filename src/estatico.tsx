@@ -139,8 +139,6 @@ export function limparTelefone(telefone: string) {
 	return telefone.replace(/[\(\)\-\s]/g, '');
 }
 
-export const win: Window = window;
-
 export function getDataAtual() {
 	const dataAtual = new Date();
 	const dia = String(dataAtual.getDate()).padStart(2, '0');

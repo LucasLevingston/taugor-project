@@ -40,12 +40,8 @@ import {
 } from '@/hooks/funcionarios.hooks';
 import { FaUserPlus } from 'react-icons/fa6';
 import { GoColumns } from 'react-icons/go';
-import { win } from '@/estatico';
 import { RxAvatar } from 'react-icons/rx';
-
-function redirecionarDadosFuncionario(funcionario: string | undefined) {
-	win.location = `/get-funcionario/${funcionario}`;
-}
+import { Link } from 'react-router-dom';
 
 export const Colunas: ColumnDef<FuncionarioType>[] = [
 	{
@@ -135,10 +131,8 @@ export const Colunas: ColumnDef<FuncionarioType>[] = [
 						<DropdownMenuLabel>Acões</DropdownMenuLabel>
 
 						<DropdownMenuSeparator />
-						<DropdownMenuItem
-							onClick={() => redirecionarDadosFuncionario(funcionario.id)}
-						>
-							Ver dados
+						<DropdownMenuItem>
+							<Link to={`/get-funcionario/${funcionario.id}`}>Ver dados</Link>
 						</DropdownMenuItem>
 						<DropdownMenuItem
 							className="flex font-bold text-vermelho"
@@ -208,14 +202,11 @@ export function TabelaUsuarios<TData, TValue>({
 						}
 						className="max-w-sm"
 					/>
-					<Button
-						variant="outline"
-						onClick={() => {
-							win.location = '/cadastro-funcionario';
-						}}
-					>
-						Cadastrar Funcionario
-						<FaUserPlus className="ml-2" />
+					<Button variant="outline">
+						<Link to="/cadastro-funcionario" className="flex items-center">
+							Cadastrar Funcionario
+							<FaUserPlus className="ml-2" />
+						</Link>
 					</Button>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>

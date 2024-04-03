@@ -16,8 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs';
 import { IoEyeOutline, IoEyeSharp } from 'react-icons/io5';
-import { Link } from 'react-router-dom';
-import { win } from '@/estatico';
+import { Link, Navigate } from 'react-router-dom';
 
 export default function Login() {
 	const [senhaVisivel, setSenhaVisivel] = useState(false);
@@ -30,7 +29,7 @@ export default function Login() {
 		useSignInWithEmailAndPassword(auth);
 
 	if (usuario) {
-		win.location = '/';
+		<Navigate to={`/get-funcionarios`} />;
 	}
 	return (
 		<div>
