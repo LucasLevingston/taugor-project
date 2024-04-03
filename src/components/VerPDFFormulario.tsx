@@ -1,6 +1,7 @@
 import {
 	DataFormatada,
 	formatarDataHistorico,
+	formatarDataParaNumeros,
 	formatarTelefone,
 } from '@/estatico';
 import { UseFormReturn } from 'react-hook-form';
@@ -37,7 +38,7 @@ export const VerPDF: React.FC<VerPDFProps> = ({ form }) => {
 					<div className="pb-7 text-3xl font-bold">Informações de Contato</div>
 					<div className="flex">
 						<div className="flex w-[60%] flex-col ">
-							<div className="w-full space-y-10">
+							<div className="w-full space-y-5">
 								<div className="h-13 p-2 ">
 									<h1 className="text-xl font-bold">Nome</h1>
 									<h2 className="text-2xl">{form.getValues('nome')}</h2>
@@ -72,7 +73,7 @@ export const VerPDF: React.FC<VerPDFProps> = ({ form }) => {
 								</div>
 							</div>
 						</div>
-						<div className="flex flex-col space-y-10  p-2">
+						<div className="flex flex-col space-y-5  p-2">
 							<div className="p-2">
 								<h1 className="text-xl font-bold">Sexo</h1>
 								<h2 className="text-2xl">{form.getValues('sexo')}</h2>
@@ -86,7 +87,9 @@ export const VerPDF: React.FC<VerPDFProps> = ({ form }) => {
 							<div className="p-2">
 								<h1 className="text-xl font-bold">Data de Aniversário</h1>
 								<h2 className="text-2xl">
-									{DataFormatada(form.getValues('nascimento'))}
+									{formatarDataParaNumeros(
+										DataFormatada(form.getValues('nascimento'))
+									)}
 								</h2>
 							</div>
 						</div>
@@ -97,7 +100,7 @@ export const VerPDF: React.FC<VerPDFProps> = ({ form }) => {
 						Informações de Funcionário
 					</div>
 					<div className="flex w-full">
-						<div className=" w-[60%] space-y-10 ">
+						<div className=" w-[60%] space-y-5 ">
 							<div className="h-13  p-2 ">
 								<h1 className="text-xl font-bold">Setor</h1>
 								<h2 className="text-2xl">{form.getValues('setor')}</h2>
@@ -108,7 +111,7 @@ export const VerPDF: React.FC<VerPDFProps> = ({ form }) => {
 								<h2 className="text-2xl">{form.getValues('cargo')}</h2>
 							</div>
 						</div>
-						<div className="space-y-10">
+						<div className="space-y-5">
 							<div className="h-13  p-2 ">
 								<h1 className="text-xl font-bold">Salário</h1>
 								<h2 className="text-2xl">R$ {form.getValues('salario')}</h2>
@@ -116,20 +119,22 @@ export const VerPDF: React.FC<VerPDFProps> = ({ form }) => {
 							<div className="h-13  p-2 ">
 								<h1 className="text-xl font-bold">Data de Admissão</h1>
 								<h2 className="text-2xl">
-									{DataFormatada(form.getValues('dataAdmissao'))}
+									{formatarDataParaNumeros(
+										DataFormatada(form.getValues('dataAdmissao'))
+									)}
 								</h2>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div className=" flex flex-col space-y-10 p-2">
+				<div className=" flex flex-col space-y-5 p-2">
 					<div className="pb-7 text-3xl font-bold">Histórico:</div>
 					<h1 className="text-2xl font-bold">
-						Ocorrido:
+						Ocorrido:{' '}
 						<span className="font-normal">Funcionario adicionado</span>
 					</h1>
 					<h2 className=" py-10  text-2xl font-bold">
-						Data:
+						Data:{' '}
 						<span className="font-normal">
 							{formatarDataHistorico(new Date().toISOString())}
 						</span>
