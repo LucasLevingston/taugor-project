@@ -5,6 +5,7 @@ import GetTodosFuncionarios from './pages/GetTodosFuncionarios/GetTodosFuncionar
 import CadastroFuncionario1 from './pages/cadastro/Funcionario/CadastroFuncionario';
 import CadastroUsuario from './pages/cadastro/Usuario/CadastroUsuario';
 import RedefinirSenha from './pages/cadastro/Usuario/RedefinirSenha';
+import GerarPDF from './components/PDF/GerarPDF';
 
 export default function App() {
 	return (
@@ -19,6 +20,7 @@ export default function App() {
 					element={<CadastroFuncionario1 />}
 				/>
 				<Route path="/get-funcionarios" element={<GetTodosFuncionarios />} />
+				<Route path="/gerar-pdf/:id" element={<GerarPDF />} />
 				<Route
 					path="/get-funcionario"
 					element={<Navigate to="/get-funcionarios" />}

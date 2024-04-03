@@ -1,4 +1,3 @@
-// usuarios.hooks.tsx
 import { useEffect, useState } from 'react';
 import { isUsuarioAutenticado } from '../Firebase/firebase';
 import firebase from 'firebase/compat/app';

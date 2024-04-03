@@ -13,7 +13,6 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { FaTrash } from 'react-icons/fa6';
 import { IoIosArrowBack } from 'react-icons/io';
-// import GerarPDF from '@/components/GerarPDF';
 import BotaoAlterarDado from '@/components/BotaoAlterarDado';
 import { DataFormatada, formatarTelefone, win } from '@/estatico';
 import { useAuntenticacao } from '@/hooks/usuarios.hooks';
@@ -21,7 +20,7 @@ import { ReloadIcon } from '@radix-ui/react-icons';
 import BotaoMostrarHistorico from '@/components/BotaoMostrarHistorico';
 
 export default function GetFuncionario() {
-	const [formato, setFormato] = useState('rounded-none');
+	const [formato, setFormato] = useState('rounded-none h-56');
 	const [pagina, setPagina] = useState(1);
 	const [dadosAlterados, setDadosAlterados] = useState<{
 		campo: string;
@@ -42,10 +41,10 @@ export default function GetFuncionario() {
 	};
 
 	function onChangeFoto() {
-		if (formato == '') {
-			setFormato('rounded-none');
-		} else if (formato == 'rounded-none') {
-			setFormato('');
+		if (formato == 'h-48') {
+			setFormato('rounded-none h-56');
+		} else if (formato == 'rounded-none h-56') {
+			setFormato('h-48');
 		}
 	}
 
@@ -85,7 +84,9 @@ export default function GetFuncionario() {
 									Dados do Funcionário
 								</div>
 								<div className=" flex items-center space-x-2 ">
-									{/* <GerarPDF funcionario={funcionario} /> */}
+									<Button onClick={() => (win.location = `/gerar-pdf/${id}`)}>
+										Gerar PDF
+									</Button>
 									<Button
 										variant="outline"
 										className="text-vermelho"
@@ -222,7 +223,7 @@ export default function GetFuncionario() {
 																Foto de Perfil
 															</h1>
 															<Avatar
-																className={`${formato} h-48 w-48 border-[4px]  border-mainColor`}
+																className={`${formato}  w-48 border-[4px]  border-mainColor`}
 															>
 																<AvatarImage
 																	className="h-full w-full"
@@ -236,7 +237,7 @@ export default function GetFuncionario() {
 														<div className="flex justify-center space-x-4 pt-10">
 															<Switch
 																aria-readonly
-																className="bg-mainColor"
+																className=""
 																onCheckedChange={() => {
 																	onChangeFoto();
 																}}
@@ -265,38 +266,40 @@ export default function GetFuncionario() {
 														/>
 													</div>{' '}
 												</div>
-												<div className="h-13 w-[90%]  bg-cinza p-2 ">
-													<h1 className="text-xs font-bold">
-														Número de Celular
-													</h1>
-													<div className="flex items-center justify-between">
-														<h2 className="text-lg">
-															{formatarTelefone(funcionario.telefone)}
-														</h2>
-														<BotaoAlterarDado
-															funcionario={funcionario}
-															field="telefone"
-															novoValor={dadosAlterados.novoValor as string}
-															handleChange={handleChange}
-															antigoValor={funcionario.telefone}
-														/>
+												<div className="flex w-[90%] justify-between">
+													<div className="h-13 w-[50%]  bg-cinza p-2 ">
+														<h1 className="text-xs font-bold">
+															Número de Celular
+														</h1>
+														<div className="flex items-center justify-between">
+															<h2 className="text-lg">
+																{formatarTelefone(funcionario.telefone)}
+															</h2>
+															<BotaoAlterarDado
+																funcionario={funcionario}
+																field="telefone"
+																novoValor={dadosAlterados.novoValor as string}
+																handleChange={handleChange}
+																antigoValor={funcionario.telefone}
+															/>
+														</div>
 													</div>
-												</div>
-												<div className="h-13 w-[90%]  bg-cinza p-2 ">
-													<h1 className="text-xs font-bold">
-														Data de Aniversário
-													</h1>
-													<div className="flex items-center justify-between">
-														<h2 className="text-lg">
-															{DataFormatada(funcionario.nascimento)}
-														</h2>
-														<BotaoAlterarDado
-															funcionario={funcionario}
-															field="nascimento"
-															novoValor={dadosAlterados.novoValor as string}
-															handleChange={handleChange}
-															antigoValor={funcionario.nascimento}
-														/>
+													<div className="h-13 w-[45%]  bg-cinza p-2 ">
+														<h1 className="text-xs font-bold">
+															Data de Aniversário
+														</h1>
+														<div className="flex items-center justify-between">
+															<h2 className="text-lg">
+																{DataFormatada(funcionario.nascimento)}
+															</h2>
+															<BotaoAlterarDado
+																funcionario={funcionario}
+																field="nascimento"
+																novoValor={dadosAlterados.novoValor as string}
+																handleChange={handleChange}
+																antigoValor={funcionario.nascimento}
+															/>
+														</div>
 													</div>
 												</div>
 											</div>

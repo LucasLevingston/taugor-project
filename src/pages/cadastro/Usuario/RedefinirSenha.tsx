@@ -14,8 +14,11 @@ import { useState } from 'react';
 import { useSendPasswordResetEmail } from 'react-firebase-hooks/auth';
 import { auth } from '../../../Firebase/firebase';
 import { ReloadIcon } from '@radix-ui/react-icons';
+import { win } from '@/estatico';
+import { IoArrowBackOutline } from 'react-icons/io5';
 
 export default function RedefinirSenha(): any {
+	const [emailNaoDigitado, setEmailNaoDigitado] = useState(false);
 	const [email, setEmail] = useState('');
 	const [sendPasswordResetEmail, enviando, error] =
 		useSendPasswordResetEmail(auth);
@@ -35,18 +38,18 @@ export default function RedefinirSenha(): any {
 			<div className="flex h-full w-full items-center justify-center pt-10">
 				<Tabs defaultValue="account" className="w-[400px]">
 					<TabsList className="grid w-full">
-						<TabsTrigger value="account" className="text-2xl">
-							Recuperacao de senha
+						<TabsTrigger value="account" className=" text-2xl">
+							Recuperação de Senha
 						</TabsTrigger>
 					</TabsList>
 					<TabsContent value="account">
 						<Card>
 							<CardHeader>
-								<CardTitle>Recuperar senha</CardTitle>
+								<CardTitle>Recuperar Senha</CardTitle>
 								<CardDescription></CardDescription>
 							</CardHeader>
 							<CardContent className="space-y-2">
-								<div className="space-y-1">
+								<div className="space-y-3">
 									<Label htmlFor="email">
 										Digite o Email para recuperar a senha
 									</Label>
@@ -55,29 +58,47 @@ export default function RedefinirSenha(): any {
 										required
 										onChange={(e) => setEmail(e.target.value)}
 									/>
-									{error ? (
-										<Button disabled>{error.message}</Button>
-									) : (
+									{emailNaoDigitado ? (
+										<div className="text-xs font-bold text-vermelho">
+											Digite um email.
+										</div>
+									) : null}
+									<div className="flex justify-between">
 										<Button
+											className="flex w-[25%] space-x-1"
 											variant="outline"
-											onClick={() => {
-												verificarEmail();
-											}}
-											disabled={enviando}
+											onClick={() => (win.location = '/login')}
 										>
-											{enviando ? (
-												<>
-													<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-													Carregando...
-												</>
-											) : (
-												'Recuperar'
-											)}
+											<IoArrowBackOutline />
+											<span>Voltar</span>
 										</Button>
-									)}
+										{error ? (
+											<Button disabled>{error.message}</Button>
+										) : (
+											<Button
+												variant="outline"
+												onClick={() => {
+													if (!email) {
+														setEmailNaoDigitado(true);
+													} else {
+														verificarEmail();
+													}
+												}}
+												disabled={enviando}
+											>
+												{enviando ? (
+													<>
+														<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+														Carregando...
+													</>
+												) : (
+													'Recuperar'
+												)}
+											</Button>
+										)}
+									</div>
 								</div>
 							</CardContent>
-							{/* <div className="flex justify-start"> */}
 						</Card>
 					</TabsContent>
 				</Tabs>

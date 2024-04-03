@@ -100,7 +100,7 @@ export default function Login() {
 								)}
 								<br />
 								<Link
-									to="/recuperar-senha"
+									to="/redefinir-senha"
 									className="text-[12px] text-mainColor"
 								>
 									Esqueceu a senha? Clique aqui para recuperar
@@ -109,7 +109,7 @@ export default function Login() {
 							<CardFooter className="flex flex-col items-center justify-center">
 								<Label>Nao possui conta?</Label>
 								<Link
-									to="/cadastroUsuario"
+									to="/cadastro-usuario"
 									className="text-[12px] text-mainColor"
 								>
 									Fazer cadastro aqui!

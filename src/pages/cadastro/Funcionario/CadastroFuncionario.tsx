@@ -1,4 +1,3 @@
-// Em CadastroFuncionario1.js
 import Header from '@/components/Header';
 import Formulario from '../../../components/Formulario';
 import React, { useState } from 'react';

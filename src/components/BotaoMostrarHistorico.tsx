@@ -8,26 +8,12 @@ import {
 	SheetTrigger,
 } from '@/components/ui/sheet';
 import { BsJournalText } from 'react-icons/bs';
+import { formatarDataHistorico } from '@/estatico';
 export default function BotaoMostrarHistorico({
 	funcionario,
 }: {
 	funcionario: FuncionarioType;
 }) {
-	function formatarDataHistorico(data: string): string {
-		const dataObj = new Date(data);
-
-		const dia = dataObj.getDate().toString().padStart(2, '0');
-		const mes = (dataObj.getMonth() + 1).toString().padStart(2, '0');
-		const ano = dataObj.getFullYear().toString();
-		const hora = dataObj.getHours().toString().padStart(2, '0');
-		const minuto = dataObj.getMinutes().toString().padStart(2, '0');
-		const segundo = dataObj.getSeconds().toString().padStart(2, '0');
-
-		const dataFormatada = `${dia}/${mes}/${ano} ${hora}:${minuto}:${segundo}`;
-
-		return dataFormatada;
-	}
-
 	return (
 		<div className="rounded-lg border">
 			<Sheet>
