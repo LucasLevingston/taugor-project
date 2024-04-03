@@ -1,4 +1,7 @@
-import { TabelaUsuarios, Colunas } from './Colunas';
+import {
+	TabelaUsuarios,
+	Colunas,
+} from '../../components/ColunasTodosFuncionarios';
 import Header from '@/components/Header';
 import {
 	getFuncionariosAtivos,

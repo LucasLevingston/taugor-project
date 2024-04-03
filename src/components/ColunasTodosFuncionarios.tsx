@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
 	DropdownMenu,
@@ -42,6 +42,7 @@ import { FaUserPlus } from 'react-icons/fa6';
 import { GoColumns } from 'react-icons/go';
 import { RxAvatar } from 'react-icons/rx';
 import { Link } from 'react-router-dom';
+import { ReloadIcon } from '@radix-ui/react-icons';
 
 export const Colunas: ColumnDef<FuncionarioType>[] = [
 	{
@@ -119,6 +120,7 @@ export const Colunas: ColumnDef<FuncionarioType>[] = [
 		id: 'actions',
 		cell: ({ row }) => {
 			const funcionario = row.original;
+
 			return (
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
@@ -169,6 +171,12 @@ export function TabelaUsuarios<TData, TValue>({
 	const [columnVisibility, setColumnVisibility] =
 		React.useState<VisibilityState>({});
 	const [rowSelection, setRowSelection] = React.useState({});
+	const [carregando, setCarregando] = useState(true);
+	useEffect(() => {
+		if (data) {
+			setCarregando(false);
+		}
+	}, [data]);
 
 	const table = useReactTable({
 		data,
@@ -192,126 +200,135 @@ export function TabelaUsuarios<TData, TValue>({
 
 	return (
 		<div className="flex justify-center">
-			<div>
-				<div className="flex justify-between py-4">
-					<Input
-						placeholder="Filtrar por nome"
-						value={(table.getColumn('nome')?.getFilterValue() as string) ?? ''}
-						onChange={(event) =>
-							table.getColumn('nome')?.setFilterValue(event.target.value)
-						}
-						className="max-w-sm"
-					/>
-					<Button variant="outline">
-						<Link to="/cadastro-funcionario" className="flex items-center">
-							Cadastrar Funcionario
-							<FaUserPlus className="ml-2" />
-						</Link>
-					</Button>
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button variant="outline" className="">
-								Colunas
-								<GoColumns className="ml-2" />
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end" className="bg-preto text-branco">
-							{table
-								.getAllColumns()
-								.filter((column) => column.getCanHide())
-								.map((column) => {
-									return (
-										<div key={column.id}>
-											{column.id === 'fotoPerfilUrl' ? null : (
-												<DropdownMenuCheckboxItem
-													className="capitalize"
-													checked={column.getIsVisible()}
-													onCheckedChange={(value) =>
-														column.toggleVisibility(!!value)
-													}
-												>
-													{column.id}
-												</DropdownMenuCheckboxItem>
-											)}
-										</div>
-									);
-								})}
-						</DropdownMenuContent>
-					</DropdownMenu>
+			{carregando ? (
+				<div className="flex h-full w-full flex-col items-center justify-center space-y-5">
+					<div>Carregando...</div>
+					<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
 				</div>
-				<div className="text-muted-foreground flex-1 text-sm">
-					{table.getFilteredSelectedRowModel().rows.length} funcionarios
-					selecionados.
-				</div>
-				<div className="rounded-md border border-mainColor">
-					<Table className="">
-						<TableHeader>
-							{table.getHeaderGroups().map((headerGroup) => (
-								<TableRow key={headerGroup.id}>
-									{headerGroup.headers.map((header) => {
+			) : (
+				<div>
+					<div className="flex justify-between py-4">
+						<Input
+							placeholder="Filtrar por nome"
+							value={
+								(table.getColumn('nome')?.getFilterValue() as string) ?? ''
+							}
+							onChange={(event) =>
+								table.getColumn('nome')?.setFilterValue(event.target.value)
+							}
+							className="max-w-sm"
+						/>
+						<Button variant="outline">
+							<Link to="/cadastro-funcionario" className="flex items-center">
+								Cadastrar Funcionario
+								<FaUserPlus className="ml-2" />
+							</Link>
+						</Button>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button variant="outline" className="">
+									Colunas
+									<GoColumns className="ml-2" />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end" className="bg-preto text-branco">
+								{table
+									.getAllColumns()
+									.filter((column) => column.getCanHide())
+									.map((column) => {
 										return (
-											<TableHead key={header.id}>
-												{header.isPlaceholder
-													? null
-													: flexRender(
-															header.column.columnDef.header,
-															header.getContext()
-														)}
-											</TableHead>
+											<div key={column.id}>
+												{column.id === 'fotoPerfilUrl' ? null : (
+													<DropdownMenuCheckboxItem
+														className="capitalize"
+														checked={column.getIsVisible()}
+														onCheckedChange={(value) =>
+															column.toggleVisibility(!!value)
+														}
+													>
+														{column.id}
+													</DropdownMenuCheckboxItem>
+												)}
+											</div>
 										);
 									})}
-								</TableRow>
-							))}
-						</TableHeader>
-						<TableBody>
-							{table.getRowModel().rows?.length ? (
-								table.getRowModel().rows.map((row) => (
-									<TableRow
-										key={row.id}
-										data-state={row.getIsSelected() && 'selected'}
-									>
-										{row.getVisibleCells().map((cell) => (
-											<TableCell key={cell.id}>
-												{flexRender(
-													cell.column.columnDef.cell,
-													cell.getContext()
-												)}
-											</TableCell>
-										))}
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</div>
+					<div className="text-muted-foreground flex-1 text-sm">
+						{table.getFilteredSelectedRowModel().rows.length} funcionarios
+						selecionados.
+					</div>
+					<div className="rounded-md border border-mainColor">
+						<Table className="">
+							<TableHeader>
+								{table.getHeaderGroups().map((headerGroup) => (
+									<TableRow key={headerGroup.id}>
+										{headerGroup.headers.map((header) => {
+											return (
+												<TableHead key={header.id}>
+													{header.isPlaceholder
+														? null
+														: flexRender(
+																header.column.columnDef.header,
+																header.getContext()
+															)}
+												</TableHead>
+											);
+										})}
 									</TableRow>
-								))
-							) : (
-								<TableRow>
-									<TableCell
-										colSpan={columns.length}
-										className="h-24 text-center"
-									>
-										Nenhum funcionario cadastrado.
-									</TableCell>
-								</TableRow>
-							)}
-						</TableBody>
-					</Table>
+								))}
+							</TableHeader>
+							<TableBody>
+								{table.getRowModel().rows?.length ? (
+									table.getRowModel().rows.map((row) => (
+										<TableRow
+											key={row.id}
+											data-state={row.getIsSelected() && 'selected'}
+										>
+											{row.getVisibleCells().map((cell) => (
+												<TableCell key={cell.id}>
+													{flexRender(
+														cell.column.columnDef.cell,
+														cell.getContext()
+													)}
+												</TableCell>
+											))}
+										</TableRow>
+									))
+								) : (
+									<TableRow>
+										<TableCell
+											colSpan={columns.length}
+											className="h-24 text-center"
+										>
+											Nenhum funcionario cadastrado.
+										</TableCell>
+									</TableRow>
+								)}
+							</TableBody>
+						</Table>
+					</div>
+					<div className="flex items-center justify-end space-x-2 py-4">
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={() => table.previousPage()}
+							disabled={!table.getCanPreviousPage()}
+						>
+							Voltar
+						</Button>
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={() => table.nextPage()}
+							disabled={!table.getCanNextPage()}
+						>
+							Próximo
+						</Button>
+					</div>
 				</div>
-				<div className="flex items-center justify-end space-x-2 py-4">
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => table.previousPage()}
-						disabled={!table.getCanPreviousPage()}
-					>
-						Voltar
-					</Button>
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => table.nextPage()}
-						disabled={!table.getCanNextPage()}
-					>
-						Próximo
-					</Button>
-				</div>
-			</div>
+			)}
 		</div>
 	);
 }

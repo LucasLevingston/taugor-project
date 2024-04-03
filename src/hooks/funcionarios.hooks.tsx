@@ -11,6 +11,7 @@ import {
 } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 export type FuncionarioType = {
 	id?: string;
@@ -278,4 +279,12 @@ export async function updateFotoPerfil(id: string, foto: File): Promise<void> {
 		console.error('Erro ao atualizar a foto de perfil:', error);
 		throw error;
 	}
+}
+
+export async function getFuncionarioPelaUrl(): Promise<FuncionarioType | null> {
+	const { id } = useParams<{ id: string }>();
+	if (id) {
+		return getFuncionarioPeloId(id);
+	}
+	return null;
 }

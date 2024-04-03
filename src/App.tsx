@@ -1,10 +1,10 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import GetFuncionario from './pages/GetFuncionario';
-import Login from './pages/Login';
-import GetTodosFuncionarios from './pages/GetTodosFuncionarios/GetTodosFuncionarios';
-import CadastroFuncionario1 from './pages/cadastro/Funcionario/CadastroFuncionario';
-import CadastroUsuario from './pages/cadastro/Usuario/CadastroUsuario';
-import RedefinirSenha from './pages/cadastro/Usuario/RedefinirSenha';
+import GetFuncionario from './pages/Funcionario/GetFuncionario';
+import Login from './pages/Usuario/Login';
+import GetTodosFuncionarios from './pages/Funcionario/GetTodosFuncionarios';
+import CadastroFuncionario1 from './pages/Funcionario/CadastroFuncionario';
+import CadastroUsuario from './pages/Usuario/CadastroUsuario';
+import RedefinirSenha from './pages/Usuario/RedefinirSenha';
 import GerarPDF from './components/PDF/GerarPDF';
 import { useAuntenticacao } from './hooks/usuarios.hooks';
 import { ReloadIcon } from '@radix-ui/react-icons';

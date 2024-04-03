@@ -13,7 +13,7 @@ export const formSchema = z.object({
 	cidade: z.string().min(1, { message: 'Digite o nome da cidade' }),
 	estado: z.string().nonempty({ message: 'Selecione o estado' }),
 	telefone: z.string().nonempty({ message: 'Selecione o estado' }),
-	fotoPerfil: z.instanceof(File, { message: 'Required' }).optional(),
+	fotoPerfil: z.instanceof(File).optional(),
 	nascimento: z.string().refine(
 		(value) => {
 			const date = new Date(value);

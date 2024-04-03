@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/select';
 import { IoSendOutline } from 'react-icons/io5';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { RxAvatar } from 'react-icons/rx';
 
 import {
@@ -54,7 +54,8 @@ import { Switch } from '@/components/ui/switch.tsx';
 import { Label } from '@/components/ui/label.tsx';
 import { IoIosArrowBack } from 'react-icons/io';
 import { IMaskInput } from 'react-imask';
-import { Link, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { ReloadIcon } from '@radix-ui/react-icons';
 
 function getImagemData(event: ChangeEvent<HTMLInputElement>) {
 	const dataTransfer = new DataTransfer();
@@ -79,6 +80,7 @@ export default function Formulario({
 	const [funcionario, setFuncionario] = useState<FuncionarioType | null>(null);
 	const [formato, setFormato] = useState('rounded-none');
 	const [, setProgresso] = useState(0);
+	const [carregando, setCarregando] = useState(false);
 	const form = useForm({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -122,35 +124,54 @@ export default function Formulario({
 	}
 
 	const onSubmit = async (data: z.infer<typeof formSchema>) => {
-		await setFuncionario({
-			nome: data.nome,
-			email: data.email,
-			sexo: data.sexo,
-			rua: data.rua,
-			numero: data.numero,
-			cep: data.cep,
-			cidade: data.cidade,
-			estado: data.estado,
-			telefone: data.telefone,
-			nascimento: formatarDataParaNumeros(data.nascimento),
-			setor: data.setor,
-			cargo: data.cargo,
-			salario: data.salario,
-			dataAdmissao: formatarDataParaNumeros(data.dataAdmissao),
-			ativo: true,
-			historico: [
-				{
-					ocorrido: 'Funcionário adicionado',
-					data: new Date().toISOString(),
-				},
-			],
-		});
-
-		if (funcionario && data.fotoPerfil) {
-			await postFuncionario(funcionario, data.fotoPerfil);
-			<Navigate to="/get-funcionarios" />;
+		setCarregando(true);
+		try {
+			setFuncionario({
+				nome: data.nome,
+				email: data.email,
+				sexo: data.sexo,
+				rua: data.rua,
+				numero: data.numero,
+				cep: data.cep,
+				cidade: data.cidade,
+				estado: data.estado,
+				telefone: data.telefone,
+				nascimento: formatarDataParaNumeros(data.nascimento),
+				setor: data.setor,
+				cargo: data.cargo,
+				salario: data.salario,
+				dataAdmissao: formatarDataParaNumeros(data.dataAdmissao),
+				ativo: true,
+				historico: [
+					{
+						ocorrido: 'Funcionário adicionado',
+						data: new Date().toISOString(),
+					},
+				],
+			});
+		} catch (error) {
+			console.error('Erro ao postar funcionário:', error);
 		}
 	};
+
+	useEffect(() => {
+		const postData = async () => {
+			try {
+				const formData = form.getValues();
+				if (funcionario && formData.fotoPerfil) {
+					setCarregando(true);
+					await postFuncionario(funcionario, formData.fotoPerfil);
+					setCarregando(false);
+					window.location.reload();
+				}
+			} catch (error) {
+				console.error('Erro ao postar funcionário:', error);
+				setCarregando(false);
+			}
+		};
+
+		postData();
+	}, [funcionario, form]);
 
 	{
 		return (
@@ -437,6 +458,7 @@ export default function Formulario({
 														</div>
 														<div className="flex  space-x-4 pt-3">
 															<Switch
+																className="bg-cinza"
 																aria-readonly
 																onCheckedChange={() => {
 																	onChangeFoto();
@@ -577,10 +599,13 @@ export default function Formulario({
 														<FormLabel>Salário</FormLabel>
 														<FormControl>
 															<Input
-																type={'number'}
-																{...field}
-																className="w-full border-transparent bg-transparent p-2 "
+																type="number"
+																className="w-full border-transparent bg-transparent p-2"
 																placeholder="Digite o salário"
+																{...field}
+																onChange={(e) => {
+																	field.onChange(parseFloat(e.target.value));
+																}}
 															/>
 														</FormControl>
 														<FormMessage />
@@ -649,14 +674,25 @@ export default function Formulario({
 								</div>
 							</div>
 							<div className="flex w-full justify-end">
-								<Button
-									variant="outline"
-									className="mr-16 gap-1 px-5 py-4"
-									type="submit"
-								>
-									Continuar
-									<IoSendOutline />
-								</Button>
+								{carregando ? (
+									<Button
+										disabled
+										variant="outline"
+										className="mr-16 flex items-center gap-1 px-5 py-4"
+									>
+										Continuar
+										<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+									</Button>
+								) : (
+									<Button
+										variant="outline"
+										className="mr-16 gap-1 px-5 py-4"
+										type="submit"
+									>
+										Continuar
+										<IoSendOutline />
+									</Button>
+								)}
 							</div>
 						</div>
 					</form>

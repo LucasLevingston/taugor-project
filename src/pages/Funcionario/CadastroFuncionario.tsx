@@ -1,5 +1,5 @@
 import Header from '@/components/Header';
-import Formulario from '../../../components/Formulario';
+import Formulario from '../../components/Formulario';
 import React, { useState } from 'react';
 import { Progress } from '@/components/ui/progress';
 import { useAuntenticacao } from '@/hooks/usuarios.hooks';

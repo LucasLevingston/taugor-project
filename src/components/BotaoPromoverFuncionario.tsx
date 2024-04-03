@@ -14,7 +14,6 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Navigate } from 'react-router-dom';
 
 interface PromoverFuncionarioProps {
 	funcionario: FuncionarioType;
@@ -28,19 +27,17 @@ function novoValor(funcionario: FuncionarioType) {
 		return null;
 	}
 }
-
-async function promover(funcionario: FuncionarioType) {
-	const novoCargo = novoValor(funcionario);
-	if (funcionario.id && novoCargo) {
-		if (await alterarDadoFuncionario(funcionario.id, 'cargo', novoCargo)) {
-			<Navigate to="/login" />;
-		}
-	}
-}
-
 export const PromoverFuncionario: React.FC<PromoverFuncionarioProps> = ({
 	funcionario,
 }) => {
+	async function promover(funcionario: FuncionarioType) {
+		const novoCargo = novoValor(funcionario);
+		if (funcionario.id && novoCargo) {
+			if (await alterarDadoFuncionario(funcionario.id, 'cargo', novoCargo)) {
+				window.location.reload();
+			}
+		}
+	}
 	return (
 		<div>
 			<AlertDialog>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
-import { auth } from '../Firebase/firebase';
+import { auth } from '../../Firebase/firebase';
 import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { ReloadIcon } from '@radix-ui/react-icons';

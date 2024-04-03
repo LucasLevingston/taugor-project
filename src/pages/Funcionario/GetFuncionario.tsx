@@ -26,15 +26,10 @@ export default function GetFuncionario() {
 		campo: string;
 		novoValor: string | File | number;
 	}>({ campo: '', novoValor: '' });
-
 	const { id } = useParams<{ id: string }>();
-	const { carregando, usuario } = useAuntenticacao();
-
-	if (id === null) {
-		return <div>O ID não foi fornecido.</div>;
-	}
-
 	const funcionario = getFuncionarioPeloId(id);
+
+	const { carregando, usuario } = useAuntenticacao();
 
 	const handleChangePage = (page: number) => {
 		setPagina(page);
