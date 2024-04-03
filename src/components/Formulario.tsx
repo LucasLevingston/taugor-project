@@ -171,6 +171,10 @@ export default function Formulario({
 						window.location.href = '/';
 					}, 2000);
 				}
+				toast.warning('Preencha todos os campos');
+				setTimeout(() => {
+					window.location.href = '/';
+				}, 2000);
 			} catch (error) {
 				console.error('Erro ao postar funcionário:', error);
 				setCarregando(false);

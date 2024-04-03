@@ -62,6 +62,11 @@ export default function CadastroUsuario() {
 		setTimeout(() => {
 			window.location.href = '/';
 		}, 2000);
+	} else {
+		toast.error('Erro ao realizar cadastro');
+		setTimeout(() => {
+			window.location.href = '/';
+		}, 2000);
 	}
 	return (
 		<div>

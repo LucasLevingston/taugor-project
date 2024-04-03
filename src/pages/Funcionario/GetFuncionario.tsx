@@ -6,7 +6,7 @@ import {
 	desativarFuncionario,
 	getFuncionarioPeloId,
 } from '@/hooks/funcionarios.hooks';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Paginacao from '@/components/Paginacao';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';

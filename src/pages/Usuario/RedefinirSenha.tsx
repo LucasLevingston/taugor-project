@@ -16,6 +16,7 @@ import { auth } from '../../Firebase/firebase';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { IoArrowBackOutline } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
+import { Toaster, toast } from 'sonner';
 
 export default function RedefinirSenha(): any {
 	const [emailNaoDigitado, setEmailNaoDigitado] = useState(false);
@@ -24,16 +25,25 @@ export default function RedefinirSenha(): any {
 		useSendPasswordResetEmail(auth);
 
 	async function verificarEmail() {
-		const success = await sendPasswordResetEmail(email, {
-			url: 'http://localhost:5173/login',
-		});
-		if (success) {
-			alert('Email enviado.');
+		if (
+			await sendPasswordResetEmail(email, {
+				url: 'http://localhost:5173/login',
+			})
+		) {
+			toast.success('Email enviado com sucesso');
+			setTimeout(() => {
+				window.location.href = '/';
+			}, 2000);
 		}
+		toast.error('Erro ao enviar email');
+		setTimeout(() => {
+			window.location.href = '/';
+		}, 2000);
 	}
 
 	return (
 		<div>
+			<Toaster richColors position="top-right" />
 			<Header />
 			<div className="flex h-full w-full items-center justify-center pt-10">
 				<Tabs defaultValue="account" className="w-[400px]">

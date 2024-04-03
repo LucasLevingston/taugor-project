@@ -44,7 +44,6 @@ import {
 } from './ui/command';
 import { IMaskInput } from 'react-imask';
 import { PromoverFuncionario } from './BotaoPromoverFuncionario';
-import { ToastAction } from './ui/toast';
 import { Toaster, toast } from 'sonner';
 
 export default function BotaoAlterarDado({
@@ -79,6 +78,10 @@ export default function BotaoAlterarDado({
 					window.location.href = '/';
 				}, 2000);
 			}
+			toast.error('Erro ao atualizar funcionário');
+			setTimeout(() => {
+				window.location.href = '/';
+			}, 2000);
 		}
 	};
 	function opcoesSelecionar(field: string) {
