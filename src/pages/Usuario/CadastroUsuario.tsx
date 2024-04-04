@@ -62,11 +62,6 @@ export default function CadastroUsuario() {
 		setTimeout(() => {
 			window.location.href = '/';
 		}, 2000);
-	} else {
-		toast.error('Erro ao realizar cadastro');
-		setTimeout(() => {
-			window.location.href = '/';
-		}, 2000);
 	}
 	return (
 		<div>
@@ -153,8 +148,8 @@ export default function CadastroUsuario() {
 									</div>
 									{!validarSenha() && (
 										<p className="text-xs text-vermelho">
-											As senhas devem ser iguais e ter no minimo 8 caracteres,
-											sendo uma maiuscula e uma especial.
+											As senhas devem ser iguais e ter no mínimo 8 caracteres,
+											sendo uma maiúscula e uma especial.
 										</p>
 									)}
 								</div>
@@ -174,13 +169,13 @@ export default function CadastroUsuario() {
 									</Button>
 								) : (
 									<Button disabled variant="destructive">
-										Senha invalida.
+										Senha inválida.
 									</Button>
 								)}
 								<br />
 								<p className="text-sm">Ja possui cadastro?</p>
 								<Link to="/login" className="text-[12px] text-mainColor">
-									Faca o Login aqui
+									Faça o Login aqui
 								</Link>
 							</CardFooter>
 						</Card>

@@ -225,7 +225,7 @@ export function TabelaUsuarios<TData, TValue>({
 						/>
 						<Button variant="outline">
 							<Link to="/cadastro-funcionario" className="flex items-center">
-								Cadastrar Funcionario
+								Cadastrar Funcionário
 								<FaUserPlus className="ml-2" />
 							</Link>
 						</Button>
@@ -261,7 +261,7 @@ export function TabelaUsuarios<TData, TValue>({
 						</DropdownMenu>
 					</div>
 					<div className="text-muted-foreground flex-1 text-sm">
-						{table.getFilteredSelectedRowModel().rows.length} funcionarios
+						{table.getFilteredSelectedRowModel().rows.length} funcionários
 						selecionados.
 					</div>
 					<div className="rounded-md border border-mainColor">
@@ -275,9 +275,9 @@ export function TabelaUsuarios<TData, TValue>({
 													{header.isPlaceholder
 														? null
 														: flexRender(
-																header.column.columnDef.header,
-																header.getContext()
-															)}
+															header.column.columnDef.header,
+															header.getContext()
+														)}
 												</TableHead>
 											);
 										})}

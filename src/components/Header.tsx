@@ -68,7 +68,7 @@ export default function Header({ progresso }: { progresso?: number }) {
 										className="flex items-center"
 									>
 										<Plus className="mr-2 h-4 w-4" />
-										<span>Cadastrar Funcionario</span>
+										<span>Cadastrar Funcionário</span>
 									</Link>
 								</DropdownMenuItem>
 							</DropdownMenuGroup>

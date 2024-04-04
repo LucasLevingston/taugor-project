@@ -18,7 +18,7 @@ import { IoArrowBackOutline } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
 import { Toaster, toast } from 'sonner';
 
-export default function RedefinirSenha(): any {
+export default function RedefinirSenha() {
 	const [emailNaoDigitado, setEmailNaoDigitado] = useState(false);
 	const [email, setEmail] = useState('');
 	const [sendPasswordResetEmail, enviando, error] =
@@ -61,7 +61,7 @@ export default function RedefinirSenha(): any {
 							<CardContent className="space-y-2">
 								<div className="space-y-3">
 									<Label htmlFor="email">
-										Digite o Email para recuperar a senha
+										Digite o email para recuperar a senha.
 									</Label>
 									<Input
 										id="email"

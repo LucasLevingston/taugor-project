@@ -563,7 +563,7 @@ export default function Formulario({
 											name="telefone"
 											render={({ field }) => (
 												<FormItem className="flex w-[90%] flex-col bg-cinza p-3">
-													<FormLabel>Numero de celular</FormLabel>
+													<FormLabel>Número de celular</FormLabel>
 													<FormControl>
 														<IMaskInput
 															mask="(00) 00000-0000"
@@ -706,7 +706,7 @@ export default function Formulario({
 												name="dataAdmissao"
 												render={({ field }) => (
 													<FormItem className="w-[90%] bg-cinza p-2">
-														<FormLabel>Data de Admissao</FormLabel>
+														<FormLabel>Data de Admissão</FormLabel>
 														<FormControl>
 															<Input
 																{...field}

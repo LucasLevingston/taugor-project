@@ -117,7 +117,7 @@ export default function Login() {
 								</Link>
 							</CardFooter>
 							<CardFooter className="flex flex-col items-center justify-center">
-								<Label>Nao possui conta?</Label>
+								<Label>Não possui conta?</Label>
 								<Link
 									to="/cadastro-usuario"
 									className="text-[12px] text-mainColor"
