@@ -56,7 +56,7 @@ export default function BotaoAlterarDado({
 	funcionario: FuncionarioType;
 	field: string;
 	novoValor: string | File | number;
-	antigoValor?: string | Number;
+	antigoValor?: string | number;
 	handleChange: (field: string, value: string | File | number) => void;
 }) {
 	const [isOpen, setIsOpen] = useState(false);
@@ -137,7 +137,7 @@ export default function BotaoAlterarDado({
 						) : field === 'cep' ? (
 							<div className="flex-col border-preto bg-cinza  p-3">
 								<IMaskInput
-									mask="00000-00"
+									mask="00000-000"
 									placeholder="Digite o CEP"
 									className="rounded bg-branco p-2"
 									onAccept={(event) => {
@@ -159,8 +159,8 @@ export default function BotaoAlterarDado({
 									>
 										{value
 											? estadosBrasileiros.find(
-													(estado) => estado.value === value
-												)?.label
+												(estado) => estado.value === value
+											)?.label
 											: 'Selecione o estado'}
 										<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 									</Button>
@@ -226,9 +226,9 @@ export default function BotaoAlterarDado({
 										))}
 									</SelectContent>
 									{field === 'cargo' &&
-									(funcionario.cargo == 'junior' ||
-										funcionario.cargo === 'pleno' ||
-										funcionario.cargo === 'estagiario') ? (
+										(funcionario.cargo == 'junior' ||
+											funcionario.cargo === 'pleno' ||
+											funcionario.cargo === 'estagiario') ? (
 										<PromoverFuncionario funcionario={funcionario} />
 									) : null}
 								</div>

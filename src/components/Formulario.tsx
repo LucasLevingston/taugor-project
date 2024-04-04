@@ -350,7 +350,7 @@ export default function Formulario({
 													<FormLabel>CEP</FormLabel>
 													<FormControl>
 														<IMaskInput
-															mask="00000-00"
+															mask="00000-000"
 															{...field}
 															className="w-full border-transparent bg-transparent p-2 "
 															placeholder="Digite o CEP"
