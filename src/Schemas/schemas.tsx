@@ -8,7 +8,7 @@ export const formSchema = z.object({
 	email: z.string().email({ message: 'Email inválido' }),
 	sexo: z.string().nonempty({ message: 'Selecione o sexo' }),
 	rua: z.string().min(1, { message: 'Digite o nome da rua' }),
-	numero: z.string().min(1, { message: 'Digite o número' }),
+	numero: z.string().nonempty({ message: "Número inválido" }),
 	cep: z.string().min(8, { message: 'CEP inválido' }),
 	cidade: z.string().min(1, { message: 'Digite o nome da cidade' }),
 	estado: z.string().nonempty({ message: 'Selecione o estado' }),

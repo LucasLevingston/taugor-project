@@ -58,6 +58,7 @@ import { Link } from 'react-router-dom';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { Toaster, toast } from 'sonner';
 import { VerPDF } from './VerPDFFormulario.tsx';
+import { Checkbox } from './ui/checkbox.tsx';
 
 function getImagemData(event: ChangeEvent<HTMLInputElement>) {
 	const dataTransfer = new DataTransfer();
@@ -84,6 +85,7 @@ export default function Formulario({
 	const [, setProgresso] = useState(0);
 	const [carregando, setCarregando] = useState(false);
 	const [verPDF, setVerPDF] = useState(false);
+	const [semNumero, setSemNumero] = useState(false)
 
 	const form = useForm({
 		resolver: zodResolver(formSchema),
@@ -164,14 +166,16 @@ export default function Formulario({
 				const formData = form.getValues();
 				if (funcionario && formData.fotoPerfil) {
 					setCarregando(true);
-					await postFuncionario(funcionario, formData.fotoPerfil);
-					setCarregando(false);
-					toast.success('Funcionário Cadastrado');
-					setTimeout(() => {
-						window.location.href = '/';
-					}, 2000);
+					if (await postFuncionario(funcionario, formData.fotoPerfil)) {
+						setCarregando(false);
+						toast.success('Funcionário Cadastrado');
+						setTimeout(() => {
+							window.location.href = '/';
+						}, 2000);
+					} else {
+						toast.warning('Preencha todos os campos');
+					}
 				}
-				toast.warning('Preencha todos os campos');
 			} catch (error) {
 				console.error('Erro ao postar funcionário:', error);
 				setCarregando(false);
@@ -300,13 +304,36 @@ export default function Formulario({
 													<FormItem className=" bg-cinza p-2">
 														<FormLabel>Numero</FormLabel>
 														<FormControl>
-															<Input
-																type="Number"
-																{...field}
-																className="border-transparent bg-transparent "
-																placeholder="Numero"
-															/>
+															{semNumero ? (
+																<Input
+																	type="text"
+																	disabled
+																	value="Sem número"
+																	className="border-transparent bg-transparent "
+																/>
+															) : (
+																<Input
+																	type="number"
+																	{...field}
+																	className="border-transparent bg-transparent "
+																	placeholder="Número"
+																/>)
+															}
 														</FormControl>
+														<div className="flex items-center space-x-2 ">
+															<Checkbox id="semNumero" onClick={() => {
+																setSemNumero(!semNumero);
+
+																form.setValue('numero', "Sem número")
+															}} />
+															<label
+																htmlFor="semNumero"
+																className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+
+															>
+																Sem número
+															</label>
+														</div>
 														<FormMessage />
 													</FormItem>
 												)}
@@ -379,8 +406,8 @@ export default function Formulario({
 																	>
 																		{value
 																			? estadosBrasileiros.find(
-																					(estado) => estado.value === value
-																				)?.label
+																				(estado) => estado.value === value
+																			)?.label
 																			: 'Selecione o estado'}
 																		<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 																	</Button>
@@ -471,7 +498,7 @@ export default function Formulario({
 																			setPreview(displayUrl);
 																			onChange(
 																				event.target.files &&
-																					event.target.files[0]
+																				event.target.files[0]
 																			);
 																		}
 																	}}
