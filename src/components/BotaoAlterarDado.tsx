@@ -77,11 +77,12 @@ export default function BotaoAlterarDado({
 				setTimeout(() => {
 					window.location.href = '/';
 				}, 2000);
+			} else {
+				toast.error('Erro ao atualizar funcionário');
+				setTimeout(() => {
+					window.location.href = '/';
+				}, 2000);
 			}
-			toast.error('Erro ao atualizar funcionário');
-			setTimeout(() => {
-				window.location.href = '/';
-			}, 2000);
 		}
 	};
 	function opcoesSelecionar(field: string) {
