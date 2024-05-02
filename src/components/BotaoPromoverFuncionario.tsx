@@ -39,11 +39,13 @@ export const PromoverFuncionario: React.FC<PromoverFuncionarioProps> = ({
 				setTimeout(() => {
 					window.location.href = '/';
 				}, 2000);
+			} else {
+
+				toast.error('Erro ao promover funcionário');
+				setTimeout(() => {
+					window.location.href = '/';
+				}, 2000);
 			}
-			toast.error('Erro ao promover funcionario');
-			setTimeout(() => {
-				window.location.href = '/';
-			}, 2000);
 		}
 	}
 	return (
