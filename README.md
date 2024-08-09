@@ -1,18 +1,18 @@
 # Taugor - Gestão de Funcionários
 
-## Se trata de um sistema de gestão de funcionários com formulário para o registro, alteracões de dados e geração de PDF para os mesmos
+Se trata de um sistema de gestão de funcionários com formulário para o registro, alteracões de dados e geração de PDF para os mesmos
 
-## Tecnologias utilizadas: 
+## Tecnologias utilizadas:
 
-- [Vite](https://vitejs.dev/) ![Vite](https://img.shields.io/badge/-Vite-646cff?style=flat-square&logo=vite)
-- [React](https://reactjs.org/) ![React](https://img.shields.io/badge/-React-blue?style=flat-square&logo=react)
-- [TypeScript](https://www.typescriptlang.org/) ![TypeScript](https://img.shields.io/badge/-TypeScript-blue?style=flat-square&logo=typescript)
-- [Tailwind CSS](https://tailwindcss.com/) ![Tailwind CSS](https://img.shields.io/badge/-Tailwind_CSS-blueviolet?style=flat-square&logo=tailwind-css)
-- [Firebase](https://firebase.google.com/) ![Firebase](https://img.shields.io/badge/-Firebase-orange?style=flat-square&logo=firebase)
-- [PDF](#) ![PDF](https://img.shields.io/badge/-PDF-red?style=flat-square&logo=adobe-acrobat-reader)
+![Vite](https://img.shields.io/badge/-Vite-0D1117?style=for-the-badge&logo=Vite&labelColor=0D1117)&nbsp; </br>
+![React.js](https://img.shields.io/badge/-React.js-0D1117?style=for-the-badge&logo=react&labelColor=0D1117)&nbsp;</br>
+![TypeScript](https://img.shields.io/badge/-TypeScript-0D1117?style=for-the-badge&logo=typescript&labelColor=0D1117)&nbsp;</br>
+![Tailwind CSS](https://img.shields.io/badge/-Tailwind%20CSS-0D1117?style=for-the-badge&logo=tailwind-css&labelColor=0D1117)&nbsp;</br>
+![Firebase](https://img.shields.io/badge/-Firebase-0D1117?style=for-the-badge&logo=firebase&labelColor=0D1117)&nbsp;</br>
+![PDF](https://img.shields.io/badge/-PDF-0D1117?style=for-the-badge&logo=PDF&labelColor=0D1117)&nbsp;
 
 
-### Instalação
+## Instalação
 
 1. Faça o clone do projeto
 2. Na pasta `taugor-project`, crie um arquivo para armazenar as variáveis de ambiente do projeto com o nome `.env`
