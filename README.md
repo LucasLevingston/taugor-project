@@ -1,4 +1,4 @@
-# Taugor - Gestão de Funcionários
+# RHControl - Gestão de Funcionários
 
 Se trata de um sistema de gestão de funcionários com formulário para o registro, alteracões de dados e geração de PDF para os mesmos
 
@@ -15,7 +15,7 @@ Se trata de um sistema de gestão de funcionários com formulário para o regist
 ## Instalação
 
 1. Faça o clone do projeto
-2. Na pasta `taugor-project`, crie um arquivo para armazenar as variáveis de ambiente do projeto com o nome `.env`
+2. Na pasta `RHControl-project`, crie um arquivo para armazenar as variáveis de ambiente do projeto com o nome `.env`
 3. Configure as variáveis de ambiente de acordo com o Firebase e utilizando o arquivo `.env.exemplo` como exemplo
 4. Após a configuração das variáveis de ambiente, execute:
 
