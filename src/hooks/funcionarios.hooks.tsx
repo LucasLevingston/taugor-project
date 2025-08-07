@@ -1,290 +1,286 @@
-import { tabelaFuncionarioRef, storage } from '@/Firebase/firebase';
 import {
-	addDoc,
-	doc,
-	getDoc,
-	getDocs,
-	query,
-	setDoc,
-	updateDoc,
-	where,
-} from 'firebase/firestore';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+  addDoc,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+} from 'firebase/firestore'
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { employeeTableRef, storage } from '@/lib/firebase'
 
-export type FuncionarioType = {
-	id?: string;
-	nome: string;
-	sexo: string;
-	email: string;
-	rua: string;
-	numero: string;
-	cep: string;
-	cidade: string;
-	estado: string;
-	telefone: string;
-	fotoPerfil?: File;
-	fotoPerfilUrl?: string;
-	nascimento: string;
-	cargo: string;
-	dataAdmissao: string;
-	setor: string;
-	salario: number;
-	ativo: boolean;
-	historico: {
-		ocorrido: string;
-		data: string;
-	}[];
-};
-
-export function getFuncionarios(): FuncionarioType[] {
-	const [funcionarios, setFuncionarios] = useState<FuncionarioType[]>([]);
-
-	useEffect(() => {
-		const fetchFuncionarios = async () => {
-			const data = await getDocs(tabelaFuncionarioRef);
-			const funcionarioData = data.docs.map((doc) => ({
-				...doc.data(),
-				id: doc.id,
-			})) as FuncionarioType[];
-			setFuncionarios(funcionarioData);
-		};
-		fetchFuncionarios();
-	}, []);
-
-	return funcionarios;
-}
-export function getFuncionariosAtivos(): FuncionarioType[] {
-	const [funcionariosAtivos, setFuncionariosAtivos] = useState<
-		FuncionarioType[]
-	>([]);
-
-	useEffect(() => {
-		const fetchFuncionariosAtivos = async () => {
-			const q = query(tabelaFuncionarioRef, where('ativo', '==', true));
-			const querySnapshot = await getDocs(q);
-
-			const promises: Promise<FuncionarioType | null>[] =
-				querySnapshot.docs.map(async (doc) => {
-					const funcionarioData = {
-						...doc.data(),
-						id: doc.id,
-					} as FuncionarioType;
-					if (funcionarioData.id) {
-						funcionarioData.fotoPerfilUrl = await getFotoPerfil(
-							funcionarioData.id
-						);
-						return funcionarioData;
-					}
-					return null;
-				});
-
-			const funcionariosData = await Promise.all(promises);
-			const funcionariosDataFiltered = funcionariosData.filter(
-				(funcionario) => funcionario !== null
-			) as FuncionarioType[];
-			setFuncionariosAtivos(funcionariosDataFiltered);
-		};
-		fetchFuncionariosAtivos();
-	}, []);
-
-	return funcionariosAtivos;
+export type EmployeeType = {
+  id?: string
+  name: string
+  gender: string
+  email: string
+  street: string
+  number: string
+  zipCode: string
+  city: string
+  state: string
+  phoneNumber: string
+  profilePictrure?: File
+  profilePictureUrl?: string
+  birthDate: string
+  position: string
+  admissionDate: string
+  department: string
+  salary: number
+  isActive: boolean
+  historic: {
+    ocurred: string
+    date: string
+  }[]
 }
 
-export function getFuncionarioPeloId(
-	id: string | undefined
-): FuncionarioType | null {
-	const [funcionario, setFuncionario] = useState<FuncionarioType | null>(null);
+export function getEmployees(): EmployeeType[] {
+  const [employees, setEmployees] = useState<EmployeeType[]>([])
 
-	useEffect(() => {
-		if (!id) {
-			console.log('ID do usuário não fornecido');
-			return;
-		}
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      const data = await getDocs(employeeTableRef)
+      console.log(data)
+      const employeeData = data.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id,
+      })) as EmployeeType[]
+      setEmployees(employeeData)
+    }
+    fetchEmployees()
+  }, [])
 
-		const fetchFuncionario = async () => {
-			try {
-				const data = await getDocs(tabelaFuncionarioRef);
+  return employees
+}
+export function getEmployeesAtivos(): EmployeeType[] {
+  const [employeesAtivos, setEmployeesAtivos] = useState<EmployeeType[]>([])
 
-				const funcionarioData = data.docs.map((doc) => ({
-					id: doc.id,
-					...doc.data(),
-				})) as FuncionarioType[];
+  useEffect(() => {
+    const fetchEmployeesAtivos = async () => {
+      const q = query(employeeTableRef, where('ativo', '==', true))
+      const querySnapshot = await getDocs(q)
 
-				const funcionarioEncontrado = funcionarioData.find((f) => f.id === id);
-				if (funcionarioEncontrado) {
-					funcionarioEncontrado.fotoPerfilUrl = await getFotoPerfil(id);
-					setFuncionario(funcionarioEncontrado);
-				} else {
-					console.log('Funcionário não encontrado');
-				}
-			} catch (error) {
-				console.error('Erro ao buscar funcionário:', error);
-			}
-		};
+      const promises: Promise<EmployeeType | null>[] = querySnapshot.docs.map(
+        async doc => {
+          const employeeData = {
+            ...doc.data(),
+            id: doc.id,
+          } as EmployeeType
+          if (employeeData.id) {
+            employeeData.fotoPerfilUrl = await getFotoPerfil(employeeData.id)
+            return employeeData
+          }
+          return null
+        }
+      )
 
-		fetchFuncionario();
-	}, [id]);
+      const employeesData = await Promise.all(promises)
+      const employeesDataFiltered = employeesData.filter(
+        employee => employee !== null
+      ) as EmployeeType[]
+      setEmployeesAtivos(employeesDataFiltered)
+    }
+    fetchEmployeesAtivos()
+  }, [])
 
-	return funcionario;
+  return employeesAtivos
+}
+
+export function getEmployeeById(id: string | undefined): EmployeeType | null {
+  const [employee, setEmployee] = useState<EmployeeType | null>(null)
+
+  useEffect(() => {
+    if (!id) {
+      console.log('ID do usuário não fornecido')
+      return
+    }
+
+    const fetchEmployee = async () => {
+      try {
+        const data = await getDocs(employeeTableRef)
+
+        const employeeData = data.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as EmployeeType[]
+
+        const employeeEncontrado = employeeData.find(f => f.id === id)
+        if (employeeEncontrado) {
+          employeeEncontrado.fotoPerfilUrl = await getFotoPerfil(id)
+          setEmployee(employeeEncontrado)
+        } else {
+          console.log('Funcionário não encontrado')
+        }
+      } catch (error) {
+        console.error('Erro ao buscar funcionário:', error)
+      }
+    }
+
+    fetchEmployee()
+  }, [id])
+
+  return employee
 }
 
 export async function getFotoPerfil(id: string): Promise<string> {
-	try {
-		const fotoPerfilRef = ref(storage, `imagensPerfil/${id}`);
-		const url = await getDownloadURL(fotoPerfilRef);
+  try {
+    const fotoPerfilRef = ref(storage, `imagensPerfil/${id}`)
+    const url = await getDownloadURL(fotoPerfilRef)
 
-		return url;
-	} catch (error) {
-		console.error('Erro ao obter foto de perfil:', error);
-		return '';
-	}
+    return url
+  } catch (error) {
+    console.error('Erro ao obter foto de perfil:', error)
+    return ''
+  }
 }
-export async function postFuncionario(
-	funcionario: FuncionarioType,
-	fotoPerfil: File
+export async function postEmployee(
+  employee: EmployeeType,
+  fotoPerfil: File
 ): Promise<string | undefined> {
-	try {
-		const docRef = await addDoc(tabelaFuncionarioRef, funcionario);
-		const funcionarioId = docRef.id;
+  try {
+    const docRef = await addDoc(employeeTableRef, employee)
+    const employeeId = docRef.id
 
-		await postFotoPerfil(fotoPerfil, funcionarioId);
+    await postFotoPerfil(fotoPerfil, employeeId)
 
-		return funcionarioId;
-	} catch (error) {
-		console.log('Erro ao cadastrar funcionário', error);
-		return undefined;
-	}
+    return employeeId
+  } catch (error) {
+    console.log('Erro ao cadastrar funcionário', error)
+    return
+  }
 }
 
 const postFotoPerfil = async (imagem: File, id: string | undefined) => {
-	try {
-		const storageRef = ref(storage, `imagensPerfil/${id}`);
-		const metadata = {
-			contentType: 'image/jpg',
-		};
-		await uploadBytes(storageRef, imagem, metadata);
-	} catch (error) {
-		console.log('Erro ao postar imagem de perfil', error);
-	}
-};
+  try {
+    const storageRef = ref(storage, `imagensPerfil/${id}`)
+    const metadata = {
+      contentType: 'image/jpg',
+    }
+    await uploadBytes(storageRef, imagem, metadata)
+  } catch (error) {
+    console.log('Erro ao postar imagem de perfil', error)
+  }
+}
 
-export async function desativarFuncionario(id?: string) {
-	try {
-		const funcionarioRef = doc(tabelaFuncionarioRef, id);
-		const funcionarioDoc = await getDoc(funcionarioRef);
-		const funcionarioData = funcionarioDoc.data();
+export async function desativarEmployee(id?: string) {
+  try {
+    const employeeRef = doc(employeeTableRef, id)
+    const employeeDoc = await getDoc(employeeRef)
+    const employeeData = employeeDoc.data()
 
-		if (funcionarioData) {
-			const novoHistorico = [
-				...(funcionarioData.historico || []),
-				{ ocorrido: 'Funcionário desativado', data: new Date().toISOString() },
-			];
+    if (employeeData) {
+      const novoHistorico = [
+        ...(employeeData.historico || []),
+        { ocorrido: 'Funcionário desativado', data: new Date().toISOString() },
+      ]
 
-			await setDoc(
-				funcionarioRef,
-				{
-					...funcionarioData,
-					ativo: false,
-					historico: novoHistorico,
-				},
-				{ merge: true }
-			);
+      await setDoc(
+        employeeRef,
+        {
+          ...employeeData,
+          ativo: false,
+          historico: novoHistorico,
+        },
+        { merge: true }
+      )
 
-			return true;
-		}
-	} catch (error) {
-		console.error('Erro ao desativar funcionário:', error);
-		return false;
-	}
+      return true
+    }
+  } catch (error) {
+    console.error('Erro ao desativar funcionário:', error)
+    return false
+  }
 }
 interface NovoDado {
-	[key: string]: any;
+  [key: string]: any
 }
 
-export async function alterarDadoFuncionario(
-	id: string,
-	campo: string,
-	novoValor: string | File | number
+export async function alterarDadoEmployee(
+  id: string,
+  campo: string,
+  novoValor: string | File | number
 ) {
-	try {
-		const funcionarioRef = doc(tabelaFuncionarioRef, id);
-		const novoDado: NovoDado = {};
+  try {
+    const employeeRef = doc(employeeTableRef, id)
+    const novoDado: NovoDado = {}
 
-		if (campo === 'fotoPerfil' && novoValor instanceof File) {
-			await updateFotoPerfil(id, novoValor);
-		} else {
-			novoDado[campo] = novoValor;
+    if (campo === 'fotoPerfil' && novoValor instanceof File) {
+      await updateFotoPerfil(id, novoValor)
+    } else {
+      novoDado[campo] = novoValor
 
-			await updateDoc(funcionarioRef, novoDado);
-			await adicionarNoHistorico(id, campo, novoValor);
-		}
+      await updateDoc(employeeRef, novoDado)
+      await adicionarNoHistorico(id, campo, novoValor)
+    }
 
-		return true;
-	} catch (error) {
-		console.error('Erro ao alterar dado do funcionário:', error);
-		return false;
-	}
+    return true
+  } catch (error) {
+    console.error('Erro ao alterar dado do funcionário:', error)
+    return false
+  }
 }
 
 export async function adicionarNoHistorico(
-	id: string,
-	campo: string,
-	novoValor: string | File | number
+  id: string,
+  campo: string,
+  novoValor: string | File | number
 ) {
-	try {
-		const funcionarioRef = doc(tabelaFuncionarioRef, id);
-		const funcionarioDoc = await getDoc(funcionarioRef);
-		const funcionarioData = funcionarioDoc.data();
-		let mensagem = '';
-		if (campo === 'fotoPerfil') {
-			mensagem = `O campo '${campo}' foi alterado.`;
-		} else {
-			mensagem = `O campo '${campo}' foi alterado para '${novoValor}'`;
-		}
-		if (funcionarioData) {
-			const novoHistorico = [
-				...(funcionarioData.historico || []),
-				{ ocorrido: mensagem, data: new Date().toISOString() },
-			];
+  try {
+    const employeeRef = doc(employeeTableRef, id)
+    const employeeDoc = await getDoc(employeeRef)
+    const employeeData = employeeDoc.data()
+    let mensagem = ''
+    if (campo === 'fotoPerfil') {
+      mensagem = `O campo '${campo}' foi alterado.`
+    } else {
+      mensagem = `O campo '${campo}' foi alterado para '${novoValor}'`
+    }
+    if (employeeData) {
+      const novoHistorico = [
+        ...(employeeData.historico || []),
+        { ocorrido: mensagem, data: new Date().toISOString() },
+      ]
 
-			await setDoc(
-				funcionarioRef,
-				{
-					...funcionarioData,
-					historico: novoHistorico,
-				},
-				{ merge: true }
-			);
+      await setDoc(
+        employeeRef,
+        {
+          ...employeeData,
+          historico: novoHistorico,
+        },
+        { merge: true }
+      )
 
-			return true;
-		}
-	} catch (error) {
-		console.error('Erro ao adicionar entrada ao histórico:', error);
-		return false;
-	}
+      return true
+    }
+  } catch (error) {
+    console.error('Erro ao adicionar entrada ao histórico:', error)
+    return false
+  }
 }
 
 export async function updateFotoPerfil(id: string, foto: File): Promise<void> {
-	try {
-		const fotoPerfilRef = ref(storage, `imagensPerfil/${id}`);
+  try {
+    const fotoPerfilRef = ref(storage, `imagensPerfil/${id}`)
 
-		const metadata = {
-			contentType: foto.type,
-		};
-		adicionarNoHistorico(id, 'fotoPerfil', foto);
-		await uploadBytes(fotoPerfilRef, foto, metadata);
-	} catch (error) {
-		console.error('Erro ao atualizar a foto de perfil:', error);
-		throw error;
-	}
+    const metadata = {
+      contentType: foto.type,
+    }
+    adicionarNoHistorico(id, 'fotoPerfil', foto)
+    await uploadBytes(fotoPerfilRef, foto, metadata)
+  } catch (error) {
+    console.error('Erro ao atualizar a foto de perfil:', error)
+    throw error
+  }
 }
 
-export async function getFuncionarioPelaUrl(): Promise<FuncionarioType | null> {
-	const { id } = useParams<{ id: string }>();
-	if (id) {
-		return getFuncionarioPeloId(id);
-	}
-	return null;
+export async function getEmployeePelaUrl(): Promise<EmployeeType | null> {
+  const { id } = useParams<{ id: string }>()
+  if (id) {
+    return getEmployeeById(id)
+  }
+  return null
 }
