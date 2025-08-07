@@ -5,8 +5,8 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import CustomFormField, {
   FormFieldType,
-} from '@/components/custom/custom-form-field'
-import { CustomSubmitButton } from '@/components/form-components/custom-submit-button'
+} from '@/components/custom/form-components/custom-form-field'
+import { CustomSubmitButton } from '@/components/custom/form-components/custom-submit-button'
 import {
   Card,
   CardContent,
@@ -22,36 +22,36 @@ import { useAuth } from '@/hooks/use-auth'
 
 const resetPasswordSchema = z
   .object({
-    token: z.string(),
-    password: z
+    oobCode: z.string(),
+    newPassword: z
       .string()
       .min(8, { message: 'Password must be at least 8 characters long' }),
-    confirmPassword: z.string(),
+    confirmNewPassword: z.string(),
   })
-  .refine(data => data.password === data.confirmPassword, {
+  .refine(data => data.newPassword === data.confirmNewPassword, {
     message: "Passwords don't match",
-    path: ['confirmPassword'],
+    path: ['confirmNewPassword'],
   })
 
 export function ResetPassword() {
   const { resetPassword } = useAuth()
 
-  const token = new URLSearchParams(location.search).get('token')
+  const oobCode = new URLSearchParams(location.search).get('oobCode')
 
   const form = useForm<z.infer<typeof resetPasswordSchema>>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
-      token: token || '',
-      password: '',
-      confirmPassword: '',
+      oobCode: oobCode || '',
+      newPassword: '',
+      confirmNewPassword: '',
     },
   })
 
   const onSubmit = async (values: z.infer<typeof resetPasswordSchema>) => {
     try {
       const result = await resetPassword({
-        password: values.password,
-        token: values.token,
+        newPassword: values.newPassword,
+        oobCode: values.oobCode,
       })
       toast.success(result)
       setTimeout(() => {
@@ -88,11 +88,11 @@ export function ResetPassword() {
                   <CustomFormField
                     fieldType={FormFieldType.INPUT}
                     form={form}
-                    name="confirmPassword"
+                    name="confirmNewPassword"
                   />
                 </CardContent>
                 <CardFooter className="flex flex-col items-center justify-center">
-                  <CustomSubmitButton className="w-full">
+                  <CustomSubmitButton className="w-full" form={form}>
                     Resetar senha
                   </CustomSubmitButton>
                 </CardFooter>

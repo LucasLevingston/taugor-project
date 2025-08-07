@@ -219,10 +219,7 @@ export const showWarningToast = (title: string, description?: string): void => {
 }
 
 // Função para mostrar toast de loading
-export const showLoadingToast = (
-  title: string,
-  description?: string
-): string => {
+export const showLoadingToast = (title: string, description?: string) => {
   return toast.loading(title, {
     description,
   })

@@ -1,9 +1,11 @@
 import { useMask } from '@react-input/mask'
 import { format } from 'date-fns'
 import { CalendarIcon, Search, Upload } from 'lucide-react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import { IoEyeOutline, IoEyeSharp } from 'react-icons/io5'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
   FormControl,
@@ -13,6 +15,12 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import {
   Select,
   SelectContent,
@@ -31,10 +39,6 @@ import { getIconByFormName } from '@/lib/utils/get-icon-by-form-name'
 import { getLabelByFormName } from '@/lib/utils/get-label-by-form-name'
 import { getLabelForEnum } from '@/lib/utils/get-label-for-enum'
 import { getPlaceholderByFormName } from '@/lib/utils/get-placeholder-by-form-name'
-import { Button } from '../ui/button'
-import { Calendar } from '../ui/calendar'
-import { Label } from '../ui/label'
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 
 export enum FormFieldType {
   INPUT = 'input',
@@ -66,14 +70,19 @@ interface CustomProps {
 
 const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
   const [isVisible, setIsVisible] = useState(
-    props.name === 'password' || props.name === 'confirmPassword' ? false : true
+    !(props.name === 'password' || props.name === 'confirmPassword')
   )
-
   const phoneRef = useMask(phoneOptions)
   const zipCodeRef = useMask(zipCodeOptions)
   const cpfRef = useMask(cpfOptions)
 
-  // Função para determinar o tipo correto do input
+  function getInputRef(name: string) {
+    if (name === 'phone') return phoneRef
+    if (name === 'zipCode') return zipCodeRef
+    if (name === 'cpf') return cpfRef
+
+    return field.ref
+  }
   const getInputType = () => {
     if (props.name === 'password' || props.name === 'confirmPassword') {
       return isVisible ? 'text' : 'password'
@@ -97,9 +106,11 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
   }
 
   switch (props.fieldType) {
-    case FormFieldType.INPUT:
+    case FormFieldType.INPUT: {
       return (
-        <div className="flex items-center gap-2 rounded-md border px-4">
+        <div
+          className={`flex items-center gap-2 rounded-md border  ${props.name === 'password' || props.name === 'confirmPassword' ? 'px-4' : 'pl-4'}`}
+        >
           {getIconByFormName(props.name)}
           <FormControl>
             <Input
@@ -108,15 +119,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
               {...field}
               className="no-spinners h-11 border-0 bg-transparent shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 dark:bg-transparent"
               disabled={!props.isEditing}
-              ref={
-                props.name === 'phone'
-                  ? phoneRef
-                  : props.name === 'zipCode'
-                    ? zipCodeRef
-                    : props.name === 'cpf'
-                      ? cpfRef
-                      : field.ref
-              }
+              ref={getInputRef(props.name)}
               variant="outline"
             />
           </FormControl>
@@ -144,6 +147,7 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
           )}
         </div>
       )
+    }
     case FormFieldType.DATE_PICKER:
       return (
         <Popover>

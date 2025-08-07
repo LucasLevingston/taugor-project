@@ -1,5 +1,6 @@
 import { Loader2 } from 'lucide-react'
 import type React from 'react'
+import { UseFormReturn } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -10,6 +11,7 @@ interface CustomSubmitButtonProps {
   submittingText?: string
   className?: string
   disabled?: boolean
+  form?: UseFormReturn<any, any, any>
 }
 
 export function CustomSubmitButton({
@@ -19,6 +21,7 @@ export function CustomSubmitButton({
   submittingText = 'Enviando...',
   className,
   disabled,
+  form,
 }: CustomSubmitButtonProps) {
   return (
     <Button
@@ -26,7 +29,7 @@ export function CustomSubmitButton({
       disabled={isSubmitting || !isDirty || disabled}
       type="submit"
     >
-      {isSubmitting ? (
+      {form?.formState.isSubmitting || isSubmitting ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           {submittingText}

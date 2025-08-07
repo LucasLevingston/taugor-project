@@ -1,5 +1,5 @@
 import { User } from 'lucide-react'
-import Formulario from '@/components/create-employee-form'
+import { CreateEmployeeForm } from '@/components/custom/forms/create-employee-form'
 import {
   Card,
   CardContent,
@@ -23,7 +23,7 @@ export function CreateEmployee() {
         </CardHeader>
         <CardContent>
           {/* <Progress className="w-[60%]" value={progress} /> */}
-          <Formulario />
+          <CreateEmployeeForm />
         </CardContent>
       </Card>
     </div>

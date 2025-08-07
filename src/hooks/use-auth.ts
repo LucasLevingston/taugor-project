@@ -1,60 +1,47 @@
 import {
   confirmPasswordReset,
   createUserWithEmailAndPassword,
-  User as FirebaseUser,
-  GoogleAuthProvider,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
-  signInWithPopup,
   signOut,
   verifyPasswordResetCode,
 } from 'firebase/auth'
-import { doc, setDoc } from 'firebase/firestore'
-import { useState } from 'react'
-import { auth, db } from '@/lib/firebase'
+import { auth } from '@/lib/firebase'
 import { handleFirestoreError } from '@/lib/utils/error-handler'
-import { useUserStore } from '@/stores/user-store'
-import { UserType } from '@/types/user-type'
 
 export const useAuth = () => {
-  const [loading, setLoading] = useState(false)
-  const { setUser, setError, clearUser } = useUserStore()
+  // const createUserDocument = async (
+  //   firebaseUser: FirebaseUser
+  // ): Promise<UserType> => {
 
-  const createUserDocument = async (
-    firebaseUser: FirebaseUser
-  ): Promise<UserType> => {
-    const userData: UserType = {
-      uid: firebaseUser.uid,
-      email: firebaseUser.email,
-      displayName: firebaseUser.displayName,
-      photoURL: firebaseUser.photoURL,
-      emailVerified: firebaseUser.emailVerified,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    }
+  //   const userData: UserType = {
+  //     uid: firebaseUser.uid,
+  //     email: firebaseUser.email!,
+  //     name: firebaseUser.name!,
+  //     photoURL: firebaseUser.photoURL!,
+  //     emailVerified: firebaseUser.emailVerified,
+  //     createdAt: new Date().toISOString(),
+  //     updatedAt: new Date().toISOString(),
+  //   }
 
-    await setDoc(doc(db, 'users', firebaseUser.uid), userData)
-    return userData
-  }
+  //   await setDoc(doc(db, 'users', firebaseUser.uid), userData)
+  //   return userData
+  // }
 
-  const loginWithGoogle = async (): Promise<UserType> => {
-    try {
-      setLoading(true)
-      setError(null)
+  // const loginWithGoogle = async (): Promise<UserType> => {
+  //   try {
+  //     const provider = new GoogleAuthProvider()
+  //     const result = await signInWithPopup(auth, provider)
 
-      const provider = new GoogleAuthProvider()
-      const result = await signInWithPopup(auth, provider)
+  //     // const userData = await createUserDocument(result.user)
 
-      const userData = await createUserDocument(result.user)
-      setUser(userData)
+  //     setUser(userData)
 
-      return userData
-    } catch (error) {
-      handleFirestoreError(error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  //     return userData
+  //   } catch (error) {
+  //     handleFirestoreError(error)
+  //   }
+  // }
 
   const login = async ({
     email,
@@ -62,103 +49,79 @@ export const useAuth = () => {
   }: {
     email: string
     password: string
-  }): Promise<UserType> => {
+  }) => {
     try {
-      setLoading(true)
-      setError(null)
-
       const result = await signInWithEmailAndPassword(auth, email, password)
-      const userData = await createUserDocument(result.user)
-      setUser(userData)
-      console.log(result)
-      return userData
+      if (result.user) throw new Error('Error')
+
+      return result.user
     } catch (error) {
       handleFirestoreError(error)
-    } finally {
-      setLoading(false)
     }
   }
 
   const createUser = async ({
     email,
     password,
-    name: displayName,
   }: {
     name: string
     email: string
     cpf: string
     password: string
-  }): Promise<UserType> => {
+  }) => {
     try {
-      setLoading(true)
-      setError(null)
-
       const result = await createUserWithEmailAndPassword(auth, email, password)
 
-      // if (displayName) {
-      //   await result.user.updateProfile({ displayName })
+      // if (name) {
+      //   await result.user.updateProfile({ name })
       // }
+      if (result.user) throw new Error('Error')
 
-      const userData = await createUserDocument(result.user)
-      setUser(userData)
-
-      return userData
+      return result.user
     } catch (error) {
       handleFirestoreError(error)
-    } finally {
-      setLoading(false)
     }
   }
 
   const logout = async (): Promise<void> => {
     try {
-      setLoading(true)
       await signOut(auth)
-      clearUser()
     } catch (error) {
       handleFirestoreError(error)
-    } finally {
-      setLoading(false)
     }
   }
 
   const passwordRecover = async (email: string): Promise<void> => {
     try {
-      setLoading(true)
-      setError(null)
-      await sendPasswordResetEmail(auth, email)
+      const result = await sendPasswordResetEmail(auth, email)
+      console.log(result)
     } catch (error) {
       handleFirestoreError(error)
-    } finally {
-      setLoading(false)
     }
   }
 
-  const resetPassword = async (
-    oobCode: string,
+  const resetPassword = async ({
+    newPassword,
+    oobCode,
+  }: {
+    oobCode: string
     newPassword: string
-  ): Promise<void> => {
+  }) => {
     try {
-      setLoading(true)
-      setError(null)
       await confirmPasswordReset(auth, oobCode, newPassword)
+
+      return 'Senha alterada com sucesso'
     } catch (error) {
       handleFirestoreError(error)
-    } finally {
-      setLoading(false)
     }
   }
 
-  const validateToken = async (oobCode: string): Promise<string> => {
+  const validateToken = async (oobCode: string) => {
     try {
-      setLoading(true)
-      setError(null)
       const email = await verifyPasswordResetCode(auth, oobCode)
       return email
     } catch (error) {
       handleFirestoreError(error)
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -170,8 +133,7 @@ export const useAuth = () => {
   }
 
   return {
-    loading,
-    loginWithGoogle,
+    // loginWithGoogle,
     login,
     logout,
     validateToken,

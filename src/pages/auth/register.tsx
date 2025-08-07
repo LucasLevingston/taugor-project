@@ -5,8 +5,8 @@ import { toast } from 'sonner'
 import type { z } from 'zod'
 import CustomFormField, {
   FormFieldType,
-} from '@/components/custom/custom-form-field'
-import { CustomSubmitButton } from '@/components/form-components/custom-submit-button'
+} from '@/components/custom/form-components/custom-form-field'
+import { CustomSubmitButton } from '@/components/custom/form-components/custom-submit-button'
 import {
   Card,
   CardContent,
@@ -104,7 +104,7 @@ export function Register() {
                   form={form}
                   name="confirmPassword"
                 />
-                <CustomSubmitButton className="w-full">
+                <CustomSubmitButton className="w-full" form={form}>
                   Registrar
                 </CustomSubmitButton>
                 {/* <GoogleButton /> */}

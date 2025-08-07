@@ -1,13 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Briefcase, MapPin, User } from 'lucide-react'
-import { ChangeEvent, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { RxAvatar } from 'react-icons/rx'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import CustomFormField, {
   FormFieldType,
-} from '@/components/custom/custom-form-field'
+} from '@/components/custom/form-components/custom-form-field'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -15,28 +15,30 @@ import { Form } from '@/components/ui/form'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useEmployees } from '@/hooks/use-employee'
 import { brazilianStates } from '@/lib/utils/brazilian-states'
 import { departmentOptions } from '@/lib/utils/department-options'
 import { genderOptions } from '@/lib/utils/gender-options'
 import { positionOptions } from '@/lib/utils/positions-options'
 import { createEmployeeSchema } from '@/schemas/schemas'
-import { CustomSubmitButton } from './form-components/custom-submit-button'
+import { CustomSubmitButton } from '../form-components/custom-submit-button'
 
 type EmployeeFormData = z.infer<typeof createEmployeeSchema>
 
-function getImageData(event: ChangeEvent<HTMLInputElement>) {
-  if (!event.target.files?.[0]) return null
+// function getImageData(event: ChangeEvent<HTMLInputElement>) {
+//   if (!event.target.files?.[0]) return null
 
-  const file = event.target.files[0]
-  const displayUrl = URL.createObjectURL(file)
-  return { file, displayUrl }
-}
+//   const file = event.target.files[0]
+//   const displayUrl = URL.createObjectURL(file)
+//   return { file, displayUrl }
+// }
 
-export default function EmployeeForm() {
+export function CreateEmployeeForm() {
   const [preview, setPreview] = useState('')
   const [isRoundPhoto, setIsRoundPhoto] = useState(false)
   const [noStreetNumber, setNoStreetNumber] = useState(false)
   const [activeTab, setActiveTab] = useState('personal')
+  const { createEmployee } = useEmployees()
 
   const form = useForm<EmployeeFormData>({
     resolver: zodResolver(createEmployeeSchema),
@@ -60,13 +62,7 @@ export default function EmployeeForm() {
 
   const onSubmit = async (data: EmployeeFormData) => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000))
-
-      toast.success('Employee Created Successfully', {
-        description: 'The new employee has been added to the system.',
-      })
-
-      form.reset()
+      await createEmployee({ data, profilePicture: data.profilePicture })
       setPreview('')
       setActiveTab('personal')
     } catch (error) {
@@ -77,16 +73,16 @@ export default function EmployeeForm() {
     }
   }
 
-  const handlePhotoUpload = (event: ChangeEvent<HTMLInputElement>) => {
-    const result = getImageData(event)
-    if (result) {
-      setPreview(result.displayUrl)
-      form.setValue('profilePicture', result.file)
-    }
-  }
+  // const handlePhotoUpload = (event: ChangeEvent<HTMLInputElement>) => {
+  //   const result = getImageData(event)
+  //   if (result) {
+  //     setPreview(result.displayUrl)
+  //     form.setValue('profilePicture', result.file)
+  //   }
+  // }
 
   const validateCurrentTab = () => {
-    const currentValues = form.getValues()
+    // const currentValues = form.getValues()
     let hasErrors = false
 
     switch (activeTab) {
@@ -100,7 +96,7 @@ export default function EmployeeForm() {
           'gender',
         ]
         personalFields.map(field => {
-          form.trigger(field as keyof EmployeeFormData)
+          return form.trigger(field as keyof EmployeeFormData)
         })
         hasErrors = personalFields.some(
           field => form.formState.errors[field as keyof EmployeeFormData]
@@ -111,7 +107,7 @@ export default function EmployeeForm() {
       case 'address': {
         const addressFields = ['street', 'number', 'zipCode', 'city', 'state']
         addressFields.map(field => {
-          form.trigger(field as keyof EmployeeFormData)
+          return form.trigger(field as keyof EmployeeFormData)
         })
         hasErrors = addressFields.some(
           field => form.formState.errors[field as keyof EmployeeFormData]
@@ -127,13 +123,15 @@ export default function EmployeeForm() {
           'admissionDate',
         ]
         employmentFields.map(field => {
-          form.trigger(field as keyof EmployeeFormData)
+          return form.trigger(field as keyof EmployeeFormData)
         })
         hasErrors = employmentFields.some(
           field => form.formState.errors[field as keyof EmployeeFormData]
         )
         break
       }
+      default:
+        return null
     }
 
     if (hasErrors) {
@@ -400,11 +398,7 @@ export default function EmployeeForm() {
                 Next
               </Button>
             ) : (
-              <CustomSubmitButton
-                className="min-w-[120px]"
-                isDirty={form.formState.isDirty}
-                isSubmitting={form.formState.isSubmitting}
-              >
+              <CustomSubmitButton className="min-w-[120px]" form={form}>
                 Create Employee
               </CustomSubmitButton>
             )}

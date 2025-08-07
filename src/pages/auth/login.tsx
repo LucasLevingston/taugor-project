@@ -5,9 +5,8 @@ import { toast } from 'sonner'
 import type { z } from 'zod'
 import CustomFormField, {
   FormFieldType,
-} from '@/components/custom/custom-form-field'
+} from '@/components/custom/form-components/custom-form-field'
 // import { GoogleButton } from '@/components/custom/google-button'
-import { CustomSubmitButton } from '@/components/form-components/custom-submit-button'
 import {
   Card,
   CardContent,
@@ -69,9 +68,9 @@ export function LoginPage() {
                     form={form}
                     name="password"
                   />
-                  <CustomSubmitButton className="w-full">
+                  {/* <CustomSubmitButton className="w-full" form={form}>
                     Entrar
-                  </CustomSubmitButton>
+                  </CustomSubmitButton> */}
                 </form>
               </Form>
             </CardContent>

@@ -6,8 +6,8 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import CustomFormField, {
   FormFieldType,
-} from '@/components/custom/custom-form-field'
-import { CustomSubmitButton } from '@/components/form-components/custom-submit-button'
+} from '@/components/custom/form-components/custom-form-field'
+import { CustomSubmitButton } from '@/components/custom/form-components/custom-submit-button'
 import {
   Card,
   CardContent,
@@ -37,9 +37,8 @@ export function PasswordRecovery() {
 
   const onSubmit = async (values: z.infer<typeof recoverPasswordSchema>) => {
     try {
-      const result = await passwordRecover(values.email)
+      await passwordRecover(values.email)
 
-      toast.success(result)
       setIsEmailSent(true)
     } catch (error: any) {
       toast.error(`Error: ${error.data.message}`)
@@ -77,7 +76,7 @@ export function PasswordRecovery() {
                   />
                 </CardContent>
                 <CardFooter className="flex flex-col items-center justify-center">
-                  <CustomSubmitButton className="w-full">
+                  <CustomSubmitButton className="w-full" form={form}>
                     Enviar email de recuperação
                   </CustomSubmitButton>
                 </CardFooter>

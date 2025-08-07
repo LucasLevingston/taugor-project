@@ -1,7 +1,7 @@
 import type { JSX } from 'react'
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { RootLayout } from './components/custom/root-layout'
-import { useUser } from './hooks/use-user'
+import { auth } from './lib/firebase'
 import { LoginPage } from './pages/auth/login'
 import { PasswordRecovery } from './pages/auth/password-recovery'
 import { Register } from './pages/auth/register'
@@ -13,12 +13,10 @@ import NotFound from './pages/not-found'
 
 interface PrivateRouteProps {
   element: JSX.Element
-  requiredRole?: 'ADMIN' | 'MANAGER' | 'USER' | 'VIEWER'
-  requiredPermission?: string
 }
 
 const PrivateRoute = ({ element }: PrivateRouteProps) => {
-  const { user } = useUser()
+  const user = auth.currentUser
 
   if (!user) {
     return <Navigate to="/login" />
@@ -31,7 +29,7 @@ interface AuthRouteProps {
   element: JSX.Element
 }
 const AuthRoute = ({ element }: AuthRouteProps) => {
-  const { user } = useUser()
+  const user = auth.currentUser
 
   if (user) {
     return <Navigate to="/" />

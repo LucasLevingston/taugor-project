@@ -2,14 +2,14 @@ import ProgressBar from '@ramonak/react-progress-bar'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import { useUser } from '@/hooks/use-user'
+import { auth } from '@/lib/firebase'
 import { RHControlIcon } from '../icons/rh-control-icon'
 import { HeaderDropdown } from './header-dropdown'
 import { ThemeToggle } from './theme-toggle'
 
-export default function Header({ progress }: { progress?: number }) {
+export function Header({ progress }: { progress?: number }) {
   const [progressBar] = useState(0)
-  const { user } = useUser()
+  const user = auth.currentUser
 
   return (
     <div className="h-full items-center justify-between border-gray-200 border-b px-3 sm:px-6 dark:border-[#1F1F23]">

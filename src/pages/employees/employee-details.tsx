@@ -1,402 +1,414 @@
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Briefcase, MapPin, User } from 'lucide-react'
 import { useState } from 'react'
-import { FaRegFilePdf, FaTrash } from 'react-icons/fa6'
-import { IoIosArrowBack } from 'react-icons/io'
+import { useForm } from 'react-hook-form'
 import { RxAvatar } from 'react-icons/rx'
-import { Link, useParams } from 'react-router-dom'
-import { Toaster, toast } from 'sonner'
-import BotaoAlterarDado from '@/components/BotaoAlterarDado'
-import BotaoMostrarHistorico from '@/components/BotaoMostrarHistorico'
-import Header from '@/components/custom/Header'
-import Paginacao from '@/components/Paginacao'
+import { useParams } from 'react-router-dom'
+import { toast } from 'sonner'
+import z from 'zod'
+import CustomFormField, {
+  FormFieldType,
+} from '@/components/custom/form-components/custom-form-field'
+import { CustomSubmitButton } from '@/components/custom/form-components/custom-submit-button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Form } from '@/components/ui/form'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import { DataFormatada, formatarTelefone } from '@/estatico'
-import {
-  desativarFuncionario,
-  getFuncionarioPeloId,
-} from '@/hooks/funcionarios.hooks'
-import { useUser } from '@/hooks/use-user'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useEmployees } from '@/hooks/use-employee'
+import { brazilianStates } from '@/lib/utils/brazilian-states'
+import { departmentOptions } from '@/lib/utils/department-options'
+import { genderOptions } from '@/lib/utils/gender-options'
+import { positionOptions } from '@/lib/utils/positions-options'
+import { createEmployeeSchema } from '@/schemas/schemas'
 
-export function employeDetails() {
-  const [formato, setFormato] = useState('rounded-none h-56')
-  const [pagina, setPagina] = useState(1)
-  const [dadosAlterados, setDadosAlterados] = useState<{
-    campo: string
-    novoValor: string | File | number
-  }>({ campo: '', novoValor: '' })
+type EmployeeFormData = z.infer<typeof createEmployeeSchema>
+
+export const EmployeeDetails = () => {
+  const [preview, setPreview] = useState('')
+  const [isRoundPhoto, setIsRoundPhoto] = useState(false)
+  const [noStreetNumber, setNoStreetNumber] = useState(false)
+  const [activeTab, setActiveTab] = useState('personal')
+
+  const { getEmployeeById } = useEmployees()
   const { id } = useParams<{ id: string }>()
-  const funcionario = getFuncionarioPeloId(id)
-
-  const { user } = useUser()
-
-  const handleChangePage = (page: number) => {
-    setPagina(page)
+  if (!id) {
+    throw new Error('Error')
   }
+  const employee = getEmployeeById(id)
 
-  function onChangeFoto() {
-    if (formato == 'h-48') {
-      setFormato('rounded-none h-56')
-    } else if (formato == 'rounded-none h-56') {
-      setFormato('h-48')
+  if (!employee) {
+    throw new Error('Error')
+  }
+  const form = useForm<EmployeeFormData>({
+    resolver: zodResolver(createEmployeeSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      phoneNumber: '',
+      birthDate: '',
+      gender: '',
+      street: '',
+      number: '',
+      zipCode: '',
+      city: '',
+      state: '',
+      department: '',
+      position: '',
+      salary: 0,
+      admissionDate: '',
+    },
+  })
+
+  const onSubmit = (data: EmployeeFormData) => {
+    try {
+      console.log(data)
+
+      setPreview('')
+      setActiveTab('personal')
+    } catch (error) {
+      console.error('Error creating employee:', error)
+      toast.error('Failed to Create Employee', {
+        description: 'Please check all fields and try again.',
+      })
     }
   }
 
-  const handleChange = (campo: string, valor: string | File | number) => {
-    setDadosAlterados({
-      campo,
-      novoValor: valor,
-    })
+  // const handlePhotoUpload = (event: ChangeEvent<HTMLInputElement>) => {
+  //   const result = getImageData(event)
+  //   if (result) {
+  //     setPreview(result.displayUrl)
+  //     form.setValue('profilePicture', result.file)
+  //   }
+  // }
+
+  const validateCurrentTab = () => {
+    // const currentValues = form.getValues()
+    let hasErrors = false
+
+    switch (activeTab) {
+      case 'personal': {
+        const personalFields = [
+          'name',
+          'lastName',
+          'email',
+          'phoneNumber',
+          'birthDate',
+          'gender',
+        ]
+        personalFields.map(field => {
+          return form.trigger(field as keyof EmployeeFormData)
+        })
+        hasErrors = personalFields.some(
+          field => form.formState.errors[field as keyof EmployeeFormData]
+        )
+        break
+      }
+
+      case 'address': {
+        const addressFields = ['street', 'number', 'zipCode', 'city', 'state']
+        addressFields.map(field => {
+          return form.trigger(field as keyof EmployeeFormData)
+        })
+        hasErrors = addressFields.some(
+          field => form.formState.errors[field as keyof EmployeeFormData]
+        )
+        break
+      }
+
+      case 'employment': {
+        const employmentFields = [
+          'department',
+          'position',
+          'salary',
+          'admissionDate',
+        ]
+        employmentFields.map(field => {
+          return form.trigger(field as keyof EmployeeFormData)
+        })
+        hasErrors = employmentFields.some(
+          field => form.formState.errors[field as keyof EmployeeFormData]
+        )
+        break
+      }
+      default: {
+        return null
+      }
+    }
+
+    if (hasErrors) {
+      toast.error('Please Fix Form Errors', {
+        description: 'Some fields in this section have validation errors.',
+      })
+      return false
+    }
+    return true
+  }
+
+  const goToNextTab = () => {
+    if (!validateCurrentTab()) return
+
+    const tabs = ['personal', 'address', 'employment', 'additional']
+    const currentIndex = tabs.indexOf(activeTab)
+    if (currentIndex < tabs.length - 1) {
+      setActiveTab(tabs[currentIndex + 1])
+    }
+  }
+
+  const goToPreviousTab = () => {
+    const tabs = ['personal', 'address', 'employment', 'additional']
+    const currentIndex = tabs.indexOf(activeTab)
+    if (currentIndex > 0) {
+      setActiveTab(tabs[currentIndex - 1])
+    }
   }
 
   return (
-    <div>
-      <Toaster position="top-right" richColors />
-      <Header />
-      {user ? (
-        funcionario ? (
-          <div className="flex w-full flex-col items-center justify-center pb-3  ">
-            <div className="w-[70%] space-y-8 rounded-3xl border-[4px] border-mainColor  p-5">
-              <div className="flex items-center justify-between  ">
-                <div className="flex items-center space-x-2">
-                  <Button variant="outline">
-                    <Link
-                      className="flex items-center justify-center"
-                      to="/get-funcionarios"
-                    >
-                      <IoIosArrowBack className="mr-3" />
-                      Ver todos os Funcionarios
-                    </Link>
-                  </Button>
-                  <BotaoMostrarHistorico funcionario={funcionario} />
-                </div>
-                <div className="p-3 pb-3 text-[40px] font-bold text-mainColor">
-                  Dados do Funcionário
-                </div>
-                <div className=" flex items-center space-x-2 ">
-                  <Button
-                    className="flex  items-center space-x-6"
-                    variant="outline"
+    <Form {...form}>
+      <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+        <Tabs onValueChange={setActiveTab} value={activeTab}>
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger className="flex items-center gap-2" value="personal">
+              <User className="h-4 w-4" />
+              Personal
+            </TabsTrigger>
+            <TabsTrigger className="flex items-center gap-2" value="address">
+              <MapPin className="h-4 w-4" />
+              Address
+            </TabsTrigger>
+            <TabsTrigger className="flex items-center gap-2" value="employment">
+              <Briefcase className="h-4 w-4" />
+              Employment
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Personal Information Tab */}
+          <TabsContent className="space-y-6" value="personal">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <CustomFormField
+                  fieldType={FormFieldType.INPUT}
+                  form={form}
+                  name="name"
+                  placeholder="Enter first name"
+                />
+
+                <CustomFormField
+                  fieldType={FormFieldType.INPUT}
+                  form={form}
+                  name="lastName"
+                  placeholder="Enter last name"
+                />
+
+                <CustomFormField
+                  fieldType={FormFieldType.INPUT}
+                  form={form}
+                  name="email"
+                  placeholder="Enter email address"
+                />
+
+                <CustomFormField
+                  fieldType={FormFieldType.INPUT}
+                  form={form}
+                  name="phoneNumber"
+                  placeholder="Enter phoneNumber number"
+                />
+
+                <CustomFormField
+                  dateFormat="MM/dd/yyyy"
+                  fieldType={FormFieldType.DATE_PICKER}
+                  form={form}
+                  name="birthDate"
+                  placeholder="Select date of birth"
+                />
+
+                <CustomFormField
+                  fieldType={FormFieldType.SELECT}
+                  form={form}
+                  name="gender"
+                  options={genderOptions}
+                  placeholder="Select gender"
+                />
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex flex-col items-center space-y-4">
+                  <Avatar
+                    className={`h-48 w-48 bg-muted   ${
+                      isRoundPhoto ? 'rounded-full' : 'rounded-lg'
+                    }`}
                   >
-                    <Link
-                      className="flex  items-center space-x-7 "
-                      to={`/gerar-pdf/${id}`}
-                    >
-                      Gerar PDF
-                      <FaRegFilePdf />
-                    </Link>
-                  </Button>
-                  <Button
-                    className="text-vermelho"
-                    onClick={async () => {
-                      if (
-                        funcionario.id &&
-                        (await desativarFuncionario(funcionario.id))
-                      ) {
-                        toast.error('Funcionário desativado')
-                        setTimeout(() => {
-                          window.location.href = '/'
-                        }, 2000)
-                      }
-                    }}
-                    variant="outline"
-                  >
-                    Desativar Funcionário <FaTrash className="ml-3" />
-                  </Button>
+                    <AvatarImage
+                      className="h-full w-full object-cover"
+                      src={preview || '/placeholder.svg?height=192&width=192'}
+                    />
+                    <AvatarFallback>
+                      <RxAvatar className="h-48 w-48" />
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <div className="w-full space-y-2">
+                    <CustomFormField
+                      fieldType={FormFieldType.FILE_UPLOAD}
+                      form={form}
+                      name="profilePicture"
+                      placeholder="Upload profile picture"
+                    />
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      checked={isRoundPhoto}
+                      onCheckedChange={setIsRoundPhoto}
+                    />
+                    <Label>Round photo</Label>
+                  </div>
                 </div>
               </div>
-              {pagina == 1 ? (
-                <div>
-                  <div className="pb-3 text-2xl font-bold">
-                    Informações de Contato
-                  </div>
-                  <div className="flex">
-                    <div className="flex w-[50%] flex-col">
-                      <div className="w-full space-y-5">
-                        <div className="h-13 w-[90%]  bg-cinza p-2 ">
-                          <h1 className="text-xs font-bold">Nome</h1>
-                          <div className="flex items-center justify-between">
-                            <h2 className="text-lg">{funcionario.nome}</h2>
-                            <BotaoAlterarDado
-                              antigoValor={funcionario.nome}
-                              field="nome"
-                              funcionario={funcionario}
-                              handleChange={handleChange}
-                              novoValor={dadosAlterados.novoValor as string}
-                            />
-                          </div>{' '}
-                        </div>
-                        <div className="h-13 w-[90%]  bg-cinza p-2 ">
-                          <h1 className="text-xs font-bold">Email</h1>
-                          <div className="flex items-center justify-between">
-                            <h2 className="text-lg">{funcionario.email}</h2>
-                            <BotaoAlterarDado
-                              antigoValor={funcionario.email}
-                              field="email"
-                              funcionario={funcionario}
-                              handleChange={handleChange}
-                              novoValor={dadosAlterados.novoValor as string}
-                            />
-                          </div>{' '}
-                        </div>
-                        <div className="flex w-[90%]">
-                          <div className="w-[70%]">
-                            <div className="h-13 w-[90%]  bg-cinza p-2 ">
-                              <h1 className="text-xs font-bold">Rua</h1>
-
-                              <div className="flex items-center justify-between">
-                                <h2 className="text-lg">{funcionario.rua}</h2>
-                                <BotaoAlterarDado
-                                  antigoValor={funcionario.rua}
-                                  field="rua"
-                                  funcionario={funcionario}
-                                  handleChange={handleChange}
-                                  novoValor={dadosAlterados.novoValor as string}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="w-[30%]">
-                            <div className="h-13 bg-cinza p-2 ">
-                              <h1 className="text-xs font-bold">Número</h1>
-                              <div className="flex items-center justify-between">
-                                <h2 className="text-lg">
-                                  {funcionario.numero}
-                                </h2>
-                                <BotaoAlterarDado
-                                  antigoValor={funcionario.numero}
-                                  field="numero"
-                                  funcionario={funcionario}
-                                  handleChange={handleChange}
-                                  novoValor={dadosAlterados.novoValor as string}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="h-13 w-[90%]  bg-cinza p-2 ">
-                          <h1 className="text-xs font-bold">CEP</h1>
-                          <div className="flex items-center justify-between">
-                            <h2 className="text-lg">{funcionario.cep}</h2>
-                            <BotaoAlterarDado
-                              antigoValor={funcionario.cep}
-                              field="cep"
-                              funcionario={funcionario}
-                              handleChange={handleChange}
-                              novoValor={dadosAlterados.novoValor as string}
-                            />
-                          </div>
-                        </div>
-                        <div className="flex w-[90%] justify-between">
-                          <div className="h-13 w-[50%] bg-cinza p-2 ">
-                            <h1 className="text-xs font-bold">Cidade</h1>
-                            <div className="flex items-center justify-between">
-                              <h2 className="text-lg">{funcionario.cidade}</h2>
-                              <BotaoAlterarDado
-                                antigoValor={funcionario.cidade}
-                                field="cidade"
-                                funcionario={funcionario}
-                                handleChange={handleChange}
-                                novoValor={dadosAlterados.novoValor as string}
-                              />
-                            </div>
-                          </div>
-                          <div className="h-13 w-[45%]  bg-cinza p-2 ">
-                            <h1 className="text-xs font-bold">Estado</h1>
-                            <div className="flex items-center justify-between">
-                              <h2 className="text-lg">{funcionario.estado}</h2>
-                              <BotaoAlterarDado
-                                antigoValor={funcionario.estado}
-                                field="estado"
-                                funcionario={funcionario}
-                                handleChange={handleChange}
-                                novoValor={dadosAlterados.novoValor as string}
-                              />
-                            </div>{' '}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex w-[50%] flex-col ">
-                      <div className="w-full space-y-5 ">
-                        <div className="flex w-[90%] justify-between space-x-4 bg-cinza p-2">
-                          <div className="flex space-x-4">
-                            <div className="flex flex-col  space-x-2">
-                              <h1 className="py-2 pl-2 text-xs font-bold">
-                                Foto de Perfil
-                              </h1>
-                              <Avatar
-                                className={`${formato}  w-48 border-[4px]  border-mainColor`}
-                              >
-                                <AvatarImage
-                                  className="h-full w-full"
-                                  src={funcionario.fotoPerfilUrl}
-                                />
-                                <AvatarFallback>
-                                  <RxAvatar className="h-full w-full" />
-                                </AvatarFallback>
-                              </Avatar>
-                            </div>
-                            <div className="flex justify-center space-x-4 pt-10">
-                              <Switch
-                                aria-readonly
-                                className=""
-                                onCheckedChange={() => {
-                                  onChangeFoto()
-                                }}
-                              />
-                              <Label>Foto redonda</Label>
-                            </div>
-                          </div>
-                          <BotaoAlterarDado
-                            antigoValor={funcionario.fotoPerfilUrl}
-                            field="fotoPerfil"
-                            funcionario={funcionario}
-                            handleChange={handleChange}
-                            novoValor={dadosAlterados.novoValor as File}
-                          />
-                        </div>
-                        <div className="h-13 w-[90%]  bg-cinza p-2 ">
-                          <h1 className="text-xs font-bold">Sexo</h1>
-                          <div className="flex items-center justify-between">
-                            <h2 className="text-lg">{funcionario.sexo}</h2>
-                            <BotaoAlterarDado
-                              antigoValor={funcionario.sexo}
-                              field="sexo"
-                              funcionario={funcionario}
-                              handleChange={handleChange}
-                              novoValor={dadosAlterados.novoValor as string}
-                            />
-                          </div>{' '}
-                        </div>
-                        <div className="flex w-[90%] justify-between">
-                          <div className="h-13 w-[50%]  bg-cinza p-2 ">
-                            <h1 className="text-xs font-bold">
-                              Número de Celular
-                            </h1>
-                            <div className="flex items-center justify-between">
-                              <h2 className="text-lg">
-                                {formatarTelefone(funcionario.telefone)}
-                              </h2>
-                              <BotaoAlterarDado
-                                antigoValor={funcionario.telefone}
-                                field="telefone"
-                                funcionario={funcionario}
-                                handleChange={handleChange}
-                                novoValor={dadosAlterados.novoValor as string}
-                              />
-                            </div>
-                          </div>
-                          <div className="h-13 w-[45%]  bg-cinza p-2 ">
-                            <h1 className="text-xs font-bold">
-                              Data de Aniversário
-                            </h1>
-                            <div className="flex items-center justify-between">
-                              <h2 className="text-lg">
-                                {DataFormatada(funcionario.nascimento)}
-                              </h2>
-                              <BotaoAlterarDado
-                                antigoValor={funcionario.nascimento}
-                                field="nascimento"
-                                funcionario={funcionario}
-                                handleChange={handleChange}
-                                novoValor={dadosAlterados.novoValor as string}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <div className="pb-3 text-2xl font-bold">
-                    Informações de Funcionário
-                  </div>
-                  <div className="flex">
-                    <div className="flex w-[50%] flex-col">
-                      <div className="w-full space-y-5">
-                        <div className="h-13 w-[90%]  bg-cinza p-2 ">
-                          <h1 className="text-xs font-bold">Setor</h1>
-                          <div className="flex items-center justify-between">
-                            <h2 className="text-lg">{funcionario.setor}</h2>
-                            <BotaoAlterarDado
-                              antigoValor={funcionario.setor}
-                              field="setor"
-                              funcionario={funcionario}
-                              handleChange={handleChange}
-                              novoValor={dadosAlterados.novoValor as string}
-                            />
-                          </div>{' '}
-                        </div>
-                        <div className="h-13 w-[90%]  bg-cinza p-2 ">
-                          <h1 className="text-xs font-bold">Cargo</h1>
-                          <div className="flex items-center justify-between">
-                            <h2 className="text-lg">{funcionario.cargo}</h2>
-                            <BotaoAlterarDado
-                              antigoValor={funcionario.cargo}
-                              field="cargo"
-                              funcionario={funcionario}
-                              handleChange={handleChange}
-                              novoValor={dadosAlterados.novoValor as string}
-                            />
-                          </div>{' '}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex w-[50%] flex-col ">
-                      <div className="w-full space-y-5">
-                        <div className="h-13 w-[90%]  bg-cinza p-2 ">
-                          <h1 className="text-xs font-bold">Salário</h1>
-                          <div className="flex items-center justify-between">
-                            <h2 className="text-lg">
-                              R$ {funcionario.salario}
-                            </h2>
-                            <BotaoAlterarDado
-                              antigoValor={funcionario.salario}
-                              field="salario"
-                              funcionario={funcionario}
-                              handleChange={handleChange}
-                              novoValor={dadosAlterados.novoValor as string}
-                            />
-                          </div>
-                        </div>
-                        <div className="h-13 w-[90%]  bg-cinza p-2 ">
-                          <h1 className="text-xs font-bold">
-                            Data de Admissão
-                          </h1>
-                          <div className="flex items-center justify-between">
-                            <h2 className="text-lg">
-                              {DataFormatada(funcionario.dataAdmissao)}
-                            </h2>
-                            <BotaoAlterarDado
-                              antigoValor={funcionario.dataAdmissao}
-                              field="dataAdmissao"
-                              funcionario={funcionario}
-                              handleChange={handleChange}
-                              novoValor={dadosAlterados.novoValor as string}
-                            />
-                          </div>{' '}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-              <Paginacao onChangePage={handleChangePage} />
             </div>
-          </div>
-        ) : null
-      ) : (
-        <div className="flex items-center justify-center space-x-5 ">
-          <div>Faça o login para Continuar </div>
-          <Button variant="outline">
-            <Link to="/login">Fazer login</Link>
+          </TabsContent>
+
+          <TabsContent className="space-y-6" value="address">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <CustomFormField
+                      fieldType={FormFieldType.INPUT}
+                      form={form}
+                      name="street"
+                      placeholder="Enter street address"
+                    />
+                  </div>
+                  <div className="w-32">
+                    {noStreetNumber ? (
+                      <div className="flex h-11 items-center gap-2 rounded-md border px-4 bg-muted mt-2">
+                        <span className="text-muted-foreground text-sm">
+                          No number
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="mt-2">
+                        <CustomFormField
+                          fieldType={FormFieldType.INPUT}
+                          form={form}
+                          name="number"
+                          placeholder="Number"
+                          type="string"
+                        />
+                      </div>
+                    )}
+                    <div className="flex items-center space-x-2 mt-2">
+                      <Checkbox
+                        checked={noStreetNumber}
+                        id="noNumber"
+                        onCheckedChange={checked => {
+                          setNoStreetNumber(!!checked)
+                          form.setValue('number', checked ? 'No number' : '')
+                        }}
+                      />
+                      <Label className="text-sm" htmlFor="noNumber">
+                        No number
+                      </Label>
+                    </div>
+                  </div>
+                </div>
+
+                <CustomFormField
+                  fieldType={FormFieldType.INPUT}
+                  form={form}
+                  name="zipCode"
+                  placeholder="Enter ZIP code"
+                />
+              </div>
+
+              <div className="space-y-4">
+                <CustomFormField
+                  fieldType={FormFieldType.INPUT}
+                  form={form}
+                  name="city"
+                  placeholder="Enter city"
+                />
+
+                <CustomFormField
+                  fieldType={FormFieldType.SELECT}
+                  form={form}
+                  name="state"
+                  options={brazilianStates}
+                  placeholder="Select state"
+                />
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Employment Information Tab */}
+          <TabsContent className="space-y-6" value="employment">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <CustomFormField
+                  fieldType={FormFieldType.SELECT}
+                  form={form}
+                  name="department"
+                  options={departmentOptions}
+                  placeholder="Select department"
+                />
+
+                <CustomFormField
+                  fieldType={FormFieldType.SELECT}
+                  form={form}
+                  name="position"
+                  options={positionOptions}
+                  placeholder="Select position"
+                />
+              </div>
+
+              <div className="space-y-4">
+                <CustomFormField
+                  fieldType={FormFieldType.INPUT}
+                  form={form}
+                  name="salary"
+                  placeholder="Enter annual salary"
+                  type="number"
+                />
+
+                <CustomFormField
+                  dateFormat="MM/dd/yyyy"
+                  fieldType={FormFieldType.DATE_PICKER}
+                  form={form}
+                  name="admissionDate"
+                  placeholder="Select start date"
+                />
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        {/* Navigation Buttons */}
+        <div className="flex justify-between pt-6">
+          <Button
+            disabled={activeTab === 'personal'}
+            onClick={goToPreviousTab}
+            type="button"
+            variant="outline"
+          >
+            Previous
           </Button>
+
+          <div className="flex gap-2">
+            {activeTab !== 'additional' ? (
+              <Button onClick={goToNextTab} type="button">
+                Next
+              </Button>
+            ) : (
+              <CustomSubmitButton className="min-w-[120px]" form={form}>
+                Create Employee
+              </CustomSubmitButton>
+            )}
+          </div>
         </div>
-      )}
-    </div>
+      </form>
+    </Form>
   )
 }

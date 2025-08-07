@@ -1,3 +1,4 @@
+import firebaseAuth from 'firebase/auth'
 import {
   BarChart,
   FileText,
@@ -21,7 +22,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useAuth } from '@/hooks/use-auth'
-import { UserType } from '@/types/user-type'
 
 interface MenuItem {
   label: string
@@ -32,7 +32,7 @@ interface MenuItem {
 }
 
 interface HeaderDropdownProps {
-  user: UserType
+  user: firebaseAuth.User
 }
 
 export function HeaderDropdown({ user }: HeaderDropdownProps) {

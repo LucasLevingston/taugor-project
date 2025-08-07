@@ -1,9 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import {
-  browserSessionPersistence,
-  getAuth,
-  setPersistence,
-} from 'firebase/auth'
+import { browserLocalPersistence, getAuth, setPersistence } from 'firebase/auth'
 import { collection, getFirestore } from 'firebase/firestore'
 import { getStorage, ref } from 'firebase/storage'
 import { env } from '@/env'
@@ -22,10 +18,10 @@ export const auth = getAuth(app)
 export const db = getFirestore(app)
 export const storage = getStorage()
 
-export const employeeTableRef = collection(db, 'employee')
+export const employeeTableRef = collection(db, 'employees')
 export const profilePicturesTableRef = ref(storage, 'profilePictures')
 
-setPersistence(auth, browserSessionPersistence).catch(error => {
+setPersistence(auth, browserLocalPersistence).catch(error => {
   console.error(
     'Erro ao habilitar persistência de autenticação:',
     error.message
