@@ -80,17 +80,17 @@ export function ProfileSettings() {
   }
 
   // Lida com a mudança do arquivo de imagem para exibir o preview
-  const handleFileChange = (file: File | undefined) => {
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setPreview(reader.result as string)
-      }
-      reader.readAsDataURL(file)
-    } else {
-      setPreview(user?.photoURL || null) // Volta para a URL original se o arquivo for limpo
-    }
-  }
+  // const handleFileChange = (file: File | undefined) => {
+  //   if (file) {
+  //     const reader = new FileReader()
+  //     reader.onloadend = () => {
+  //       setPreview(reader.result as string)
+  //     }
+  //     reader.readAsDataURL(file)
+  //   } else {
+  //     setPreview(user?.photoURL || null) // Volta para a URL original se o arquivo for limpo
+  //   }
+  // }
 
   if (!user) {
     return (
