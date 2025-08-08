@@ -1,11 +1,10 @@
 import { ColumnDef } from '@tanstack/react-table'
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
-import { FaTrash } from 'react-icons/fa'
-import { RxAvatar } from 'react-icons/rx'
+import { ArrowUpDown, MoreHorizontal, Trash2, User } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -17,14 +16,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { EmployeeType } from '@/types/employee-type'
-import { Badge } from '../ui/badge'
 
 export const Columns: ColumnDef<EmployeeType>[] = [
   {
     id: 'select',
     header: ({ table }) => (
       <Checkbox
-        aria-label="Select all"
+        aria-label="Selecionar todos"
         checked={
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && 'indeterminate')
@@ -34,7 +32,7 @@ export const Columns: ColumnDef<EmployeeType>[] = [
     ),
     cell: ({ row }) => (
       <Checkbox
-        aria-label="Select row"
+        aria-label="Selecionar linha"
         checked={row.getIsSelected()}
         onCheckedChange={value => row.toggleSelected(!!value)}
       />
@@ -56,11 +54,14 @@ export const Columns: ColumnDef<EmployeeType>[] = [
             }
           />
           <AvatarFallback>
-            <RxAvatar className="h-full w-full" />
+            <User className="h-full w-full" />{' '}
+            {/* Ícone User do lucide-react */}
           </AvatarFallback>
         </Avatar>
       )
     },
+    enableSorting: false, // Imagens geralmente não são ordenáveis
+    enableHiding: true,
   },
   {
     accessorKey: 'name',
@@ -70,45 +71,147 @@ export const Columns: ColumnDef<EmployeeType>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           variant="ghost"
         >
-          Name
+          Nome
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
     },
+    enableSorting: true,
+    enableHiding: true,
   },
   {
-    accessorKey: 'position',
-    header: 'Position',
+    accessorKey: 'email',
+    header: ({ column }) => {
+      return (
+        <Button
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          variant="ghost"
+        >
+          Email
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    enableSorting: true,
+    enableHiding: true,
+  },
+  {
+    accessorKey: 'phone',
+    header: ({ column }) => {
+      return (
+        <Button
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          variant="ghost"
+        >
+          Telefone
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    enableSorting: true,
+    enableHiding: true,
   },
   {
     accessorKey: 'department',
-    header: 'Department',
-  },
-  {
-    accessorKey: 'isActive',
-    header: 'Status',
-    cell: ({ row }) => {
-      const isActive = row.getValue('isActive')
+    header: ({ column }) => {
       return (
-        <Badge
-          className={`${isActive ? 'bg-green-500' : 'bg-destructive'} dark:text-black`}
+        <Button
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          variant="ghost"
         >
-          {isActive ? 'Active' : 'Deactivated'}
-        </Badge>
+          Departamento
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
       )
     },
+    enableSorting: true,
+    enableHiding: true,
+  },
+  {
+    accessorKey: 'position',
+    header: ({ column }) => {
+      return (
+        <Button
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          variant="ghost"
+        >
+          Cargo
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    enableSorting: true,
+    enableHiding: true,
   },
   {
     accessorKey: 'salary',
-    header: () => <div className="text-right">Salary</div>,
+    header: ({ column }) => (
+      <div className="text-right">
+        <Button
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          variant="ghost"
+        >
+          Salário
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      </div>
+    ),
     cell: ({ row }) => {
       const salario = Number.parseFloat(row.getValue('salary'))
-      const formatted = new Intl.NumberFormat('en-US', {
+      const formatted = new Intl.NumberFormat('pt-BR', {
         style: 'currency',
         currency: 'BRL',
       }).format(salario)
       return <div className="text-right font-medium">{formatted}</div>
     },
+    enableSorting: true,
+    enableHiding: true,
+  },
+  {
+    accessorKey: 'admissionDate',
+    header: ({ column }) => {
+      return (
+        <Button
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          variant="ghost"
+        >
+          Data de Admissão
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      const date = new Date(row.getValue('admissionDate'))
+      return date.toLocaleDateString('pt-BR')
+    },
+    enableSorting: true,
+    enableHiding: true,
+  },
+  {
+    accessorKey: 'isActive',
+    header: ({ column }) => {
+      return (
+        <Button
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          variant="ghost"
+        >
+          Status
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      const isActive = row.getValue('isActive')
+      return (
+        <Badge
+          className={`${isActive ? 'bg-green-500' : 'bg-red-500'} text-white`}
+        >
+          {isActive ? 'Ativo' : 'Desativado'}
+        </Badge>
+      )
+    },
+    enableSorting: true,
+    enableHiding: true,
   },
   {
     id: 'actions',
@@ -117,37 +220,36 @@ export const Columns: ColumnDef<EmployeeType>[] = [
       const { deactivateEmployeeById } = table.options.meta as {
         deactivateEmployeeById: (uid: string) => Promise<boolean>
       }
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button className="h-8 w-8 p-0" variant="ghost">
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">Abrir menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-black text-white">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <Link className="cursor-pointer" to={`/employee/${employee.uid}`}>
-              <DropdownMenuItem>View details</DropdownMenuItem>
+              <DropdownMenuItem>Ver detalhes</DropdownMenuItem>
             </Link>
             <DropdownMenuItem
-              className="flex font-bold text-red-600"
+              className="cursor-pointer bg-destructive hover:bg-destructive hover:opacity-80 hover:text-black"
               onClick={async () => {
                 if (
                   employee.uid &&
                   (await deactivateEmployeeById(employee.uid))
                 ) {
-                  toast.error('Employee deactivated')
+                  toast.error('Funcionário desativado')
                   setTimeout(() => {
                     window.location.reload()
                   }, 2000)
                 }
               }}
             >
-              Deactivate employee
-              <FaTrash className="ml-3" />
+              Desativar funcionário
+              <Trash2 className="ml-3 h-4 w-4" />{' '}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

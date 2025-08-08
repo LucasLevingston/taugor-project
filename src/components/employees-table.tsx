@@ -1,3 +1,5 @@
+'use client'
+
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -28,6 +30,13 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
   Table,
   TableBody,
   TableCell,
@@ -35,6 +44,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { EmployeeType } from '@/types/employee-type' // Importar EmployeeType
 
 interface EmployeeTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -54,6 +64,7 @@ export function EmployeeTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+  const [globalFilter, setGlobalFilter] = React.useState('') // Estado para o filtro global
 
   const table = useReactTable({
     data,
@@ -63,47 +74,130 @@ export function EmployeeTable<TData, TValue>({
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
+    getFilteredRowModel: getFilteredRowModel(), // Necessário para filtros de coluna e glob
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    onGlobalFilterChange: setGlobalFilter, // Adicionado para o filtro global
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
+      globalFilter,
     },
     meta: {
       deactivateEmployeeById,
     },
   })
 
+  const uniqueDepartments = React.useMemo(() => {
+    const departments = new Set<string>()
+    data.map(item => departments.add((item as EmployeeType).department))
+    return Array.from(departments).sort()
+  }, [data])
+
+  const uniquePositions = React.useMemo(() => {
+    const positions = new Set<string>()
+    data.map(item => positions.add((item as EmployeeType).position))
+    return Array.from(positions).sort()
+  }, [data])
+
   return (
     <div className="w-full">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 gap-4">
-        <Input
-          className="max-w-sm"
-          onChange={event =>
-            table.getColumn('name')?.setFilterValue(event.target.value)
-          }
-          placeholder="Filter by name..."
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-        />
+        <div className="flex flex-wrap gap-4">
+          <Input
+            className="max-w-sm"
+            onChange={event => setGlobalFilter(event.target.value)}
+            placeholder="Buscar em todas as colunas..."
+            value={globalFilter ?? ''}
+          />
+
+          <Select
+            onValueChange={value =>
+              table
+                .getColumn('department')
+                ?.setFilterValue(value === 'all' ? undefined : value)
+            }
+            value={
+              (table.getColumn('department')?.getFilterValue() as string) ?? ''
+            }
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filtrar por Departamento" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os Departamentos</SelectItem>{' '}
+              {/* Alterado de "" para "all" */}
+              {uniqueDepartments.map(department => (
+                <SelectItem key={department} value={department}>
+                  {department}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {/* Filtro por Cargo */}
+          <Select
+            onValueChange={value =>
+              table
+                .getColumn('position')
+                ?.setFilterValue(value === 'all' ? undefined : value)
+            }
+            value={
+              (table.getColumn('position')?.getFilterValue() as string) ?? ''
+            }
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filtrar por Cargo" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os Cargos</SelectItem>{' '}
+              {/* Alterado de "" para "all" */}
+              {uniquePositions.map(position => (
+                <SelectItem key={position} value={position}>
+                  {position}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {/* Filtro por Status Ativo */}
+          <Select
+            onValueChange={value =>
+              table
+                .getColumn('isActive')
+                ?.setFilterValue(value === 'all' ? undefined : value)
+            }
+            value={
+              (table.getColumn('isActive')?.getFilterValue() as string) ?? ''
+            }
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filtrar por Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os Status</SelectItem>{' '}
+              {/* Alterado de "" para "all" */}
+              <SelectItem value="true">Ativo</SelectItem>
+              <SelectItem value="false">Inativo</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <div className="flex gap-2">
           <Button asChild>
-            {/* Removed extraneous whitespace/newlines here */}
             <Link className="flex items-center" to="/employee/create">
+              {' '}
+              {/* Alterado 'to' para 'href' */}
               <PlusCircle className="mr-2 h-4 w-4" />
-              Add Employee
+              Adicionar Funcionário
             </Link>
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="ml-auto" variant="outline">
-                Columns <ChevronDown className="ml-2 h-4 w-4" />
+                Colunas <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {/* Removed extraneous whitespace/newlines here */}
               {table
                 .getAllColumns()
                 .filter(
@@ -125,7 +219,8 @@ export function EmployeeTable<TData, TValue>({
         </div>
       </div>
       <div className="text-muted-foreground flex-1 text-sm mb-4">
-        {table.getFilteredSelectedRowModel().rows.length} employee(s) selected.
+        {table.getFilteredSelectedRowModel().rows.length} funcionário(s)
+        selecionado(s).
       </div>
       <div className="rounded-md border overflow-x-auto">
         <Table>
@@ -168,7 +263,7 @@ export function EmployeeTable<TData, TValue>({
                   className="h-24 text-center"
                   colSpan={columns.length}
                 >
-                  No employees registered.
+                  Nenhum funcionário registrado.
                 </TableCell>
               </TableRow>
             )}
@@ -182,7 +277,7 @@ export function EmployeeTable<TData, TValue>({
           size="sm"
           variant="outline"
         >
-          <ChevronLeft className="mr-2 h-4 w-4" /> Previous
+          <ChevronLeft className="mr-2 h-4 w-4" /> Anterior
         </Button>
         <Button
           disabled={!table.getCanNextPage()}
@@ -190,7 +285,7 @@ export function EmployeeTable<TData, TValue>({
           size="sm"
           variant="outline"
         >
-          Next <ChevronRight className="ml-2 h-4 w-4" />
+          Próximo <ChevronRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
     </div>
