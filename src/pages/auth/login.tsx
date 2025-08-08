@@ -6,6 +6,7 @@ import type { z } from 'zod'
 import CustomFormField, {
   FormFieldType,
 } from '@/components/custom/form-components/custom-form-field'
+import { CustomSubmitButton } from '@/components/custom/form-components/custom-submit-button'
 // import { GoogleButton } from '@/components/custom/google-button'
 import {
   Card,
@@ -18,11 +19,11 @@ import { Form } from '@/components/ui/form'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/hooks/use-auth'
-import { loginSchema } from '@/schemas/login-schema'
+import { useFormProgressTracker } from '@/providers/progress-bar-provider'
+import { loginSchema } from '@/schemas/auth/login-schema'
 
 export function LoginPage() {
   const { login } = useAuth()
-
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -30,12 +31,11 @@ export function LoginPage() {
       password: '',
     },
   })
+  useFormProgressTracker(form)
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     try {
       await login({ email: values.email, password: values.password })
-
-      toast.success('Login successfully!')
     } catch (error: any) {
       return toast.error(error.message)
     }
@@ -68,9 +68,9 @@ export function LoginPage() {
                     form={form}
                     name="password"
                   />
-                  {/* <CustomSubmitButton className="w-full" form={form}>
+                  <CustomSubmitButton className="w-full" form={form}>
                     Entrar
-                  </CustomSubmitButton> */}
+                  </CustomSubmitButton>
                 </form>
               </Form>
             </CardContent>

@@ -17,6 +17,7 @@ import {
 import { Form } from '@/components/ui/form'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/hooks/use-auth'
+import { useFormProgressTracker } from '@/providers/progress-bar-provider'
 import { registerSchema } from '@/schemas/auth/register-schema'
 
 export function Register() {
@@ -32,6 +33,7 @@ export function Register() {
       confirmPassword: '',
     },
   })
+  useFormProgressTracker(form)
 
   async function onSubmit({
     cpf,
@@ -115,10 +117,7 @@ export function Register() {
             <Separator />
             <div className="flex flex-col items-center">
               <p className="text-sm">Já possui conta?</p>
-              <Link
-                className="text-[12px] text-blue-400 text-mainColor"
-                to="/login"
-              >
+              <Link className="text-[12px] text-blue-400 " to="/login">
                 Faça login aqui
               </Link>
             </div>

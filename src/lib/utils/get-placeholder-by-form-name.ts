@@ -4,6 +4,8 @@ export const getPlaceholderByFormName = (name: string) => {
       return 'Identificador'
     case 'name':
       return 'Nome completo'
+    case 'displayName':
+      return 'Nome completo'
     case 'email':
       return 'Digite seu e-mail'
     case 'password':

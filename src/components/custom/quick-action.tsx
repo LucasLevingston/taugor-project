@@ -18,7 +18,7 @@ export const QuickAction = ({
   href,
   available,
 }: QuickActionProps) => (
-  <div className="group">
+  <Link className="group" to={href}>
     <Card
       className={`h-full transition-all duration-200 ${
         available
@@ -58,13 +58,11 @@ export const QuickAction = ({
           </div>
           <div className="flex items-center space-x-2">
             {available && (
-              <Link to={href}>
-                <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-              </Link>
+              <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
             )}
           </div>
         </div>
       </CardContent>
     </Card>
-  </div>
+  </Link>
 )

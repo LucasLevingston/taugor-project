@@ -10,11 +10,14 @@ import {
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table'
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  PlusCircle,
+} from 'lucide-react'
 import React from 'react'
-import { FaUserPlus } from 'react-icons/fa6'
-import { GoColumns } from 'react-icons/go'
 import { Link } from 'react-router-dom'
-import { Toaster } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -76,125 +79,119 @@ export function EmployeeTable<TData, TValue>({
 
   return (
     <div className="w-full">
-      <Toaster position="top-right" richColors />
-
-      <div>
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 gap-4">
-          <Input
-            className="max-w-sm"
-            onChange={event =>
-              table.getColumn('name')?.setFilterValue(event.target.value)
-            }
-            placeholder="Filter by name"
-            value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          />
-          <div className="flex gap-2">
-            <Button asChild variant="outline">
-              <Link className="flex items-center" to="/cadastro-funcionario">
-                Add Employee
-                <FaUserPlus className="ml-2" />
-              </Link>
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline">
-                  Columns
-                  <GoColumns className="ml-2" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-black text-white">
-                {table
-                  .getAllColumns()
-                  .filter(
-                    column =>
-                      column.getCanHide() && column.id !== 'profilePictureUrl'
-                  ) // Filtra profilePictureUrl aqui
-                  .map(column => (
-                    <DropdownMenuCheckboxItem // Removido o div extra aqui
-                      checked={column.getIsVisible()}
-                      className="capitalize"
-                      key={column.id}
-                      onCheckedChange={value =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-        <div className="text-muted-foreground flex-1 text-sm mb-4">
-          {table.getFilteredSelectedRowModel().rows.length} employee(s)
-          selected.
-        </div>
-        <div className="rounded-md border border-mainColor overflow-x-auto">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows.length ? (
-                table.getRowModel().rows.map(row => (
-                  <TableRow
-                    data-state={row.getIsSelected() && 'selected'}
-                    key={row.id}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 gap-4">
+        <Input
+          className="max-w-sm"
+          onChange={event =>
+            table.getColumn('name')?.setFilterValue(event.target.value)
+          }
+          placeholder="Filter by name..."
+          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+        />
+        <div className="flex gap-2">
+          <Button asChild>
+            {/* Removed extraneous whitespace/newlines here */}
+            <Link className="flex items-center" to="/employee/create">
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Add Employee
+            </Link>
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="ml-auto" variant="outline">
+                Columns <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {/* Removed extraneous whitespace/newlines here */}
+              {table
+                .getAllColumns()
+                .filter(
+                  column =>
+                    column.getCanHide() && column.id !== 'profilePictureUrl'
+                )
+                .map(column => (
+                  <DropdownMenuCheckboxItem
+                    checked={column.getIsVisible()}
+                    className="capitalize"
+                    key={column.id}
+                    onCheckedChange={value => column.toggleVisibility(!!value)}
                   >
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+      <div className="text-muted-foreground flex-1 text-sm mb-4">
+        {table.getFilteredSelectedRowModel().rows.length} employee(s) selected.
+      </div>
+      <div className="rounded-md border overflow-x-auto">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map(headerGroup => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map(header => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
                         )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    className="h-24 text-center"
-                    colSpan={columns.length}
-                  >
-                    No employees registered.
-                  </TableCell>
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.length ? (
+              table.getRowModel().rows.map(row => (
+                <TableRow
+                  data-state={row.getIsSelected() && 'selected'}
+                  key={row.id}
+                >
+                  {row.getVisibleCells().map(cell => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
-          <Button
-            disabled={!table.getCanPreviousPage()}
-            onClick={() => table.previousPage()}
-            size="sm"
-            variant="outline"
-          >
-            Previous
-          </Button>
-          <Button
-            disabled={!table.getCanNextPage()}
-            onClick={() => table.nextPage()}
-            size="sm"
-            variant="outline"
-          >
-            Next
-          </Button>
-        </div>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  className="h-24 text-center"
+                  colSpan={columns.length}
+                >
+                  No employees registered.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <Button
+          disabled={!table.getCanPreviousPage()}
+          onClick={() => table.previousPage()}
+          size="sm"
+          variant="outline"
+        >
+          <ChevronLeft className="mr-2 h-4 w-4" /> Previous
+        </Button>
+        <Button
+          disabled={!table.getCanNextPage()}
+          onClick={() => table.nextPage()}
+          size="sm"
+          variant="outline"
+        >
+          Next <ChevronRight className="ml-2 h-4 w-4" />
+        </Button>
       </div>
     </div>
   )

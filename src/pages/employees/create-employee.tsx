@@ -1,5 +1,5 @@
 import { User } from 'lucide-react'
-import { CreateEmployeeForm } from '@/components/custom/forms/create-employee-form'
+import { EmployeeForm } from '@/components/custom/forms/employee-form'
 import {
   Card,
   CardContent,
@@ -10,8 +10,8 @@ import {
 
 export function CreateEmployee() {
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      <Card>
+    <div className="flex flex-col items-center justify-center w-full">
+      <Card className="w-full">
         <CardHeader>
           <CardTitle className="text-2xl font-bold flex items-center gap-2">
             <User className="h-6 w-6" />
@@ -23,7 +23,7 @@ export function CreateEmployee() {
         </CardHeader>
         <CardContent>
           {/* <Progress className="w-[60%]" value={progress} /> */}
-          <CreateEmployeeForm />
+          <EmployeeForm />
         </CardContent>
       </Card>
     </div>

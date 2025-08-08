@@ -10,39 +10,6 @@ import { auth } from '@/lib/firebase'
 import { handleFirestoreError } from '@/lib/utils/error-handler'
 
 export const useAuth = () => {
-  // const createUserDocument = async (
-  //   firebaseUser: FirebaseUser
-  // ): Promise<UserType> => {
-
-  //   const userData: UserType = {
-  //     uid: firebaseUser.uid,
-  //     email: firebaseUser.email!,
-  //     name: firebaseUser.name!,
-  //     photoURL: firebaseUser.photoURL!,
-  //     emailVerified: firebaseUser.emailVerified,
-  //     createdAt: new Date().toISOString(),
-  //     updatedAt: new Date().toISOString(),
-  //   }
-
-  //   await setDoc(doc(db, 'users', firebaseUser.uid), userData)
-  //   return userData
-  // }
-
-  // const loginWithGoogle = async (): Promise<UserType> => {
-  //   try {
-  //     const provider = new GoogleAuthProvider()
-  //     const result = await signInWithPopup(auth, provider)
-
-  //     // const userData = await createUserDocument(result.user)
-
-  //     setUser(userData)
-
-  //     return userData
-  //   } catch (error) {
-  //     handleFirestoreError(error)
-  //   }
-  // }
-
   const login = async ({
     email,
     password,
@@ -51,10 +18,9 @@ export const useAuth = () => {
     password: string
   }) => {
     try {
-      const result = await signInWithEmailAndPassword(auth, email, password)
-      if (result.user) throw new Error('Error')
+      await signInWithEmailAndPassword(auth, email, password)
 
-      return result.user
+      return true
     } catch (error) {
       handleFirestoreError(error)
     }
@@ -72,9 +38,6 @@ export const useAuth = () => {
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password)
 
-      // if (name) {
-      //   await result.user.updateProfile({ name })
-      // }
       if (result.user) throw new Error('Error')
 
       return result.user

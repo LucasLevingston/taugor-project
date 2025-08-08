@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/card'
 import { auth } from '@/lib/firebase'
 
-export function Home() {
+export default function Home() {
   const user = auth.currentUser
 
   if (!user) {
@@ -96,7 +96,7 @@ export function Home() {
           <QuickAction
             available={true}
             description="Personalizar suas informações e preferências"
-            href="/profile"
+            href="/settings/profile"
             icon={<Settings className="h-5 w-5" />}
             title="Configurações do Perfil"
           />
@@ -181,7 +181,7 @@ export function Home() {
             </div>
 
             <div className="mt-6">
-              <Link to="/profile">
+              <Link to="/settings/profile">
                 <Button className="w-full">
                   <Settings className="mr-2 h-4 w-4" />
                   Editar Perfil
@@ -230,7 +230,7 @@ export function Home() {
                       <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
                         Adicione seu nome para personalizar a experiência
                       </p>
-                      <Link to="/profile">
+                      <Link to="/settings/profile">
                         <Button className="mt-2" size="sm">
                           Completar Agora
                         </Button>

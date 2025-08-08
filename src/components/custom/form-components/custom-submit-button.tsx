@@ -1,6 +1,6 @@
-import { Loader2 } from 'lucide-react'
 import type React from 'react'
 import { UseFormReturn } from 'react-hook-form'
+import { Loading } from '@/components/Loading'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -31,7 +31,7 @@ export function CustomSubmitButton({
     >
       {form?.formState.isSubmitting || isSubmitting ? (
         <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          <Loading />
           {submittingText}
         </>
       ) : (

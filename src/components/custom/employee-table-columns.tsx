@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { EmployeeType } from '@/types/employee-type'
+import { Badge } from '../ui/badge'
 
 export const Columns: ColumnDef<EmployeeType>[] = [
   {
@@ -84,6 +85,20 @@ export const Columns: ColumnDef<EmployeeType>[] = [
     header: 'Department',
   },
   {
+    accessorKey: 'isActive',
+    header: 'Status',
+    cell: ({ row }) => {
+      const isActive = row.getValue('isActive')
+      return (
+        <Badge
+          className={`${isActive ? 'bg-green-500' : 'bg-destructive'} dark:text-black`}
+        >
+          {isActive ? 'Active' : 'Deactivated'}
+        </Badge>
+      )
+    },
+  },
+  {
     accessorKey: 'salary',
     header: () => <div className="text-right">Salary</div>,
     cell: ({ row }) => {
@@ -114,9 +129,9 @@ export const Columns: ColumnDef<EmployeeType>[] = [
           <DropdownMenuContent align="end" className="bg-black text-white">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link to={`/get-funcionario/${employee.uid}`}>View details</Link>
-            </DropdownMenuItem>
+            <Link className="cursor-pointer" to={`/employee/${employee.uid}`}>
+              <DropdownMenuItem>View details</DropdownMenuItem>
+            </Link>
             <DropdownMenuItem
               className="flex font-bold text-red-600"
               onClick={async () => {

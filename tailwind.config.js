@@ -11,16 +11,6 @@ export default {
   prefix: '',
 
   theme: {
-    colors: {
-      mainColor: '#0073CF',
-      branco: '#fff',
-      preto: '#000',
-      cinza: '#E1E3E3',
-      transparent: 'transparent',
-      vermelho: '#FF0000',
-      azulClaro: '#B8CAD4',
-      verde: '#5EE617',
-    },
     container: {
       center: true,
       padding: '2rem',
@@ -29,6 +19,41 @@ export default {
       },
     },
     extend: {
+      colors: {
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
+        },
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
+        },
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
+        },
+      },
       keyframes: {
         'accordion-down': {
           from: { height: '0' },

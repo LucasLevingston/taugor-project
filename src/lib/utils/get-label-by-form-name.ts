@@ -2,6 +2,8 @@ export function getLabelByFormName(name: string): string {
   switch (name) {
     case 'name':
       return 'Nome Completo'
+    case 'displayName':
+      return 'Nome Completo'
     case 'email':
       return 'Email'
     case 'password':

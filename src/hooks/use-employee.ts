@@ -1,4 +1,3 @@
-// hooks/use-employees.ts
 import {
   addDoc,
   doc,
@@ -20,7 +19,7 @@ import {
   type CreateEmployeeData,
   EmployeePosition,
   type EmployeeType,
-} from '@/types/employee-type' // Import EmployeePosition
+} from '@/types/employee-type'
 
 export const useEmployees = () => {
   const {
@@ -37,7 +36,6 @@ export const useEmployees = () => {
       const employeeData = data.docs.map(employeeDoc => ({
         ...employeeDoc.data(),
         uid: employeeDoc.id,
-        // Ensure timestamps are converted if needed, or handle them as Firestore Timestamps
         createdAt: employeeDoc.data().createdAt?.toDate
           ? employeeDoc.data().createdAt.toDate()
           : employeeDoc.data().createdAt,
@@ -52,9 +50,8 @@ export const useEmployees = () => {
   }
 
   const getEmployeeById = (id: string) => {
-    // No need for try-catch here as .find() doesn't throw
     const employee = employees.find(emp => emp.uid === id)
-    return employee || null // Return null if not found
+    return employee || null
   }
 
   const createEmployee = async ({
@@ -80,9 +77,9 @@ export const useEmployees = () => {
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       }
+
       const docRef = await addDoc(employeeTableRef, newEmployeeData)
 
-      // Fetch the newly created employee to get the server-generated timestamp and UID
       const docSnap = await getDoc(docRef)
       if (docSnap.exists()) {
         const createdEmployeeWithId = {
@@ -98,7 +95,7 @@ export const useEmployees = () => {
         addEmployee(createdEmployeeWithId)
       }
       toast.success('Employee created successfully!')
-      return newEmployeeData // Return the data sent to Firestore (without client-side timestamp conversion)
+      return newEmployeeData
     } catch (error) {
       handleFirestoreError(error)
       return null
@@ -114,7 +111,6 @@ export const useEmployees = () => {
       const docRef = doc(employeeTableRef, id)
       const updateData: Partial<EmployeeType> = {
         ...updates,
-        // updatedAt: serverTimestamp(), // Use serverTimestamp for consistency
       }
 
       if (profilePicture) {
@@ -130,11 +126,11 @@ export const useEmployees = () => {
         'Employee updated',
         'Employee information was updated'
       )
-      // Update store with client-side timestamp for immediate UI reflection
+
       updateEmployeeStore(id, {
         ...updates,
         profilePictureUrl: updateData.profilePictureUrl,
-        updatedAt: new Date().toISOString(), // Use ISO string for client-side store
+        updatedAt: new Date().toISOString(),
       })
       toast.success('Employee updated successfully!')
       return true
@@ -178,7 +174,7 @@ export const useEmployees = () => {
         const currentHistory = currentData.history || []
         const newHistoryEntry = {
           action,
-          date: new Date().toISOString(), // Use ISO string for history date
+          date: new Date().toISOString(),
           details,
         }
         await updateDoc(docRef, {
@@ -219,7 +215,7 @@ export const useEmployees = () => {
 
   return {
     employees,
-    promoteEmployee, // Export the new function
+    promoteEmployee,
     getEmployees,
     getEmployeeById,
     createEmployee,

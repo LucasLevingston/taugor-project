@@ -1,14 +1,14 @@
-import firebaseAuth from 'firebase/auth'
+import { User as firebaseUser } from 'firebase/auth'
 import {
-  BarChart,
   FileText,
-  LayoutList,
   LogOut,
   MoveUpRight,
   Settings,
   User,
+  Users,
 } from 'lucide-react'
 import type * as React from 'react'
+import { IoCreate } from 'react-icons/io5'
 import { Link } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -32,7 +32,7 @@ interface MenuItem {
 }
 
 interface HeaderDropdownProps {
-  user: firebaseAuth.User
+  user: firebaseUser
 }
 
 export function HeaderDropdown({ user }: HeaderDropdownProps) {
@@ -40,34 +40,23 @@ export function HeaderDropdown({ user }: HeaderDropdownProps) {
 
   const menuItems: MenuItem[] = [
     {
-      label: 'Meus Dados',
-      href: '/profile',
-      icon: <User className="h-4 w-4" />,
+      label: 'Employes',
+      href: '/employee/list',
+      icon: <Users className="h-4 w-4" />,
     },
     {
-      label: 'Configurações',
-      href: '/settings',
+      label: 'Add employee',
+      href: '/employee/list',
+      icon: <IoCreate className="h-4 w-4" />,
+    },
+    {
+      label: 'Settings',
+      href: '/settings/profile',
       icon: <Settings className="h-4 w-4" />,
-    },
-    // {
-    //   label: 'Gerenciar Usuários',
-    //   href: '/admin/users',
-    //   icon: <Users className="h-4 w-4" />,
-    //   show: user?.role === UserRole.ADMIN,
-    // },
-    {
-      label: 'Gerenciar Programas',
-      href: '/programs',
-      icon: <LayoutList className="h-4 w-4" />,
-    },
-    {
-      label: 'Relatórios',
-      href: '/reports',
-      icon: <BarChart className="h-4 w-4" />,
     },
 
     {
-      label: 'Termos e Políticas',
+      label: 'Terms and Policies',
       href: '/terms',
       icon: <FileText className="h-4 w-4" />,
       external: false,
@@ -129,7 +118,7 @@ export function HeaderDropdown({ user }: HeaderDropdownProps) {
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logout}>
           <LogOut className="mr-2 h-4 w-4" />
-          <span>Sair</span>
+          <span>LogOut</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -14,8 +14,8 @@ export interface EmployeeType {
   uid?: string
   name: string
   email: string
-  phoneNumber: string // Changed from 'phone' to 'phoneNumber'
-  birthDate: string // Changed from 'dateOfBirth' to 'birthDate'
+  phone: string
+  birthDate: string
   gender: string
   street: string
   number: string
@@ -23,13 +23,13 @@ export interface EmployeeType {
   city: string
   state: string
   department: string
-  position: EmployeePosition | string // Use the enum or allow custom string
+  position: EmployeePosition | string
   salary: number
   admissionDate: string
   profilePictureUrl?: string
   isActive: boolean
-  createdAt: Date | string // Firestore Timestamp will be converted to Date on client
-  updatedAt: Date | string // Firestore Timestamp will be converted to Date on client
+  createdAt: Date | string
+  updatedAt: Date | string
   history: {
     action: string
     date: string
@@ -39,7 +39,7 @@ export interface EmployeeType {
 export interface CreateEmployeeData {
   name: string
   email: string
-  phoneNumber: string
+  phone: string
   birthDate: string
   gender: string
   street: string

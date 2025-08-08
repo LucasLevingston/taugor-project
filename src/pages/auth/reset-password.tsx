@@ -19,6 +19,7 @@ import { Form } from '@/components/ui/form'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs'
 import { useAuth } from '@/hooks/use-auth'
+import { useFormProgressTracker } from '@/providers/progress-bar-provider'
 
 const resetPasswordSchema = z
   .object({
@@ -46,6 +47,7 @@ export function ResetPassword() {
       confirmNewPassword: '',
     },
   })
+  useFormProgressTracker(form)
 
   const onSubmit = async (values: z.infer<typeof resetPasswordSchema>) => {
     try {
@@ -99,7 +101,7 @@ export function ResetPassword() {
               </form>
             </Form>
             <CardFooter className="flex flex-col items-center justify-center">
-              <Link className="text-[12px] text-mainColor" to="/login">
+              <Link className="text-[12px]" to="/login">
                 Voltar para login
               </Link>
             </CardFooter>

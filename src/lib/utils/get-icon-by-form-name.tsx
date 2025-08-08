@@ -36,6 +36,8 @@ export const getIconByFormName = (name: string) => {
       return <Fingerprint className="h-4 w-4" />
     case 'name':
       return <User className="h-4 w-4" />
+    case 'displayName':
+      return <User className="h-4 w-4" />
     case 'email':
       return <Mail className="h-4 w-4" />
     case 'password':

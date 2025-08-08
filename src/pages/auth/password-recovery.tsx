@@ -19,6 +19,7 @@ import {
 import { Form } from '@/components/ui/form'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/hooks/use-auth'
+import { useFormProgressTracker } from '@/providers/progress-bar-provider'
 
 const recoverPasswordSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }),
@@ -34,6 +35,7 @@ export function PasswordRecovery() {
       email: '',
     },
   })
+  useFormProgressTracker(form)
 
   const onSubmit = async (values: z.infer<typeof recoverPasswordSchema>) => {
     try {

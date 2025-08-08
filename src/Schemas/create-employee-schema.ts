@@ -12,8 +12,8 @@ export const createEmployeeSchema = z.object({
   zipCode: z.string().min(8, { message: 'CEP inválido' }),
   city: z.string().min(1, { message: 'Digite o nome da cidade' }),
   state: z.string().nonempty({ message: 'Selecione o estado' }),
-  phoneNumber: z.string().nonempty({ message: 'Selecione o estado' }),
-  profilePicture: z.instanceof(File).optional(),
+  phone: z.string().nonempty({ message: 'Selecione o estado' }),
+  profilePicture: z.any().optional(),
   birthDate: z.string().refine(
     value => {
       const date = new Date(value)

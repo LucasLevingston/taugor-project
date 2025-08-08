@@ -117,6 +117,11 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
               placeholder={getPlaceholderByFormName(props.name)}
               type={getInputType()}
               {...field}
+              autoComplete={
+                props.name === 'password' || props.name === 'confirmPassword'
+                  ? 'current-password'
+                  : 'on'
+              }
               className="no-spinners h-11 border-0 bg-transparent shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 dark:bg-transparent"
               disabled={!props.isEditing}
               ref={getInputRef(props.name)}
