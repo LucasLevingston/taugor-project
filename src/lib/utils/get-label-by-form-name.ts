@@ -66,41 +66,41 @@ export function getLabelByFormName(name: string): string {
       return 'Contato de Emergência'
     case 'emergencyContactPhone':
       return 'Telefone de Emergência'
-    case 'title': // For HumanResources, Contracts, Indicators
+    case 'title':
       return 'Título'
-    case 'description': // For HumanResources, Departments, Indicators
+    case 'description':
       return 'Descrição'
-    case 'contactEmail': // For Departments, HumanResources
+    case 'contactEmail':
       return 'Email de Contato'
-    case 'contactPhone': // For Departments, HumanResources
+    case 'contactPhone':
       return 'Telefone de Contato'
-    case 'location': // For Departments, HumanResources
+    case 'location':
       return 'Localização'
-    case 'budget': // For Departments, HumanResources
+    case 'budget':
       return 'Orçamento'
-    case 'headOfDepartmentId': // For Departments, HumanResources
+    case 'headOfDepartmentId':
       return 'Chefe do Departamento'
-    case 'contractNumber': // For Contracts
+    case 'contractNumber':
       return 'Número do Contrato'
-    case 'value': // For Contracts
+    case 'value':
       return 'Valor'
-    case 'startDate': // For Contracts
+    case 'startDate':
       return 'Data de Início'
-    case 'endDate': // For Contracts
+    case 'endDate':
       return 'Data de Término'
-    case 'partiesInvolved': // For Contracts
+    case 'partiesInvolved':
       return 'Partes Envolvidas'
-    case 'type': // For Contracts
+    case 'type':
       return 'Tipo'
-    case 'unit': // For Indicators
+    case 'unit':
       return 'Unidade de Medida'
-    case 'targetValue': // For Indicators
+    case 'targetValue':
       return 'Valor Alvo'
-    case 'actualValue': // For Indicators
+    case 'actualValue':
       return 'Valor Atual'
-    case 'measurementFrequency': // For Indicators
+    case 'measurementFrequency':
       return 'Frequência de Medição'
-    case 'dataSource': // For Indicators
+    case 'dataSource':
       return 'Fonte de Dados'
     default:
       return name

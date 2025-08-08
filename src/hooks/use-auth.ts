@@ -96,7 +96,6 @@ export const useAuth = () => {
   }
 
   return {
-    // loginWithGoogle,
     login,
     logout,
     validateToken,

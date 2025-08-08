@@ -7,7 +7,6 @@ import CustomFormField, {
   FormFieldType,
 } from '@/components/custom/form-components/custom-form-field'
 import { CustomSubmitButton } from '@/components/custom/form-components/custom-submit-button'
-// import { GoogleButton } from '@/components/custom/google-button'
 import {
   Card,
   CardContent,
@@ -76,8 +75,6 @@ export function LoginPage() {
             </CardContent>
             <CardFooter className="flex flex-col items-center justify-center gap-2">
               <Separator className="my-2" />
-
-              {/* <GoogleButton /> */}
 
               <div className="mt-2">
                 <Link

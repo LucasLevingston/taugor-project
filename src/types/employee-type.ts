@@ -15,7 +15,7 @@ export interface EmployeeType {
   name: string
   email: string
   phone: string
-  birthDate: string
+  birthDate: Date
   gender: string
   street: string
   number: string
@@ -24,8 +24,8 @@ export interface EmployeeType {
   state: string
   department: string
   position: EmployeePosition | string
-  salary: number
-  admissionDate: string
+  salary: string
+  admissionDate: Date
   profilePictureUrl?: string
   isActive: boolean
   createdAt: Date | string
@@ -40,7 +40,7 @@ export interface CreateEmployeeData {
   name: string
   email: string
   phone: string
-  birthDate: string
+  birthDate: Date
   gender: string
   street: string
   number: string
@@ -49,6 +49,6 @@ export interface CreateEmployeeData {
   state: string
   department: string
   position: string
-  salary: number
-  admissionDate: string
+  salary: string
+  admissionDate: Date
 }

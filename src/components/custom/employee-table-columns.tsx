@@ -157,11 +157,10 @@ export const Columns: ColumnDef<EmployeeType>[] = [
       </div>
     ),
     cell: ({ row }) => {
-      const salario = Number.parseFloat(row.getValue('salary'))
       const formatted = new Intl.NumberFormat('pt-BR', {
         style: 'currency',
         currency: 'BRL',
-      }).format(salario)
+      }).format(row.getValue('salary'))
       return <div className="text-right font-medium">{formatted}</div>
     },
     enableSorting: true,

@@ -1,5 +1,3 @@
-'use client'
-
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -44,7 +42,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { EmployeeType } from '@/types/employee-type' // Importar EmployeeType
+import { EmployeeType } from '@/types/employee-type'
 
 interface EmployeeTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -64,7 +62,7 @@ export function EmployeeTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
-  const [globalFilter, setGlobalFilter] = React.useState('') // Estado para o filtro global
+  const [globalFilter, setGlobalFilter] = React.useState('')
 
   const table = useReactTable({
     data,
@@ -74,10 +72,10 @@ export function EmployeeTable<TData, TValue>({
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(), // Necessário para filtros de coluna e glob
+    getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    onGlobalFilterChange: setGlobalFilter, // Adicionado para o filtro global
+    onGlobalFilterChange: setGlobalFilter,
     state: {
       sorting,
       columnFilters,
@@ -128,7 +126,6 @@ export function EmployeeTable<TData, TValue>({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos os Departamentos</SelectItem>{' '}
-              {/* Alterado de "" para "all" */}
               {uniqueDepartments.map(department => (
                 <SelectItem key={department} value={department}>
                   {department}
@@ -136,7 +133,6 @@ export function EmployeeTable<TData, TValue>({
               ))}
             </SelectContent>
           </Select>
-          {/* Filtro por Cargo */}
           <Select
             onValueChange={value =>
               table
@@ -152,7 +148,6 @@ export function EmployeeTable<TData, TValue>({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos os Cargos</SelectItem>{' '}
-              {/* Alterado de "" para "all" */}
               {uniquePositions.map(position => (
                 <SelectItem key={position} value={position}>
                   {position}
@@ -160,7 +155,6 @@ export function EmployeeTable<TData, TValue>({
               ))}
             </SelectContent>
           </Select>
-          {/* Filtro por Status Ativo */}
           <Select
             onValueChange={value =>
               table
@@ -176,7 +170,6 @@ export function EmployeeTable<TData, TValue>({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos os Status</SelectItem>{' '}
-              {/* Alterado de "" para "all" */}
               <SelectItem value="true">Ativo</SelectItem>
               <SelectItem value="false">Inativo</SelectItem>
             </SelectContent>
@@ -186,7 +179,6 @@ export function EmployeeTable<TData, TValue>({
           <Button asChild>
             <Link className="flex items-center" to="/employee/create">
               {' '}
-              {/* Alterado 'to' para 'href' */}
               <PlusCircle className="mr-2 h-4 w-4" />
               Adicionar Funcionário
             </Link>

@@ -1,5 +1,3 @@
-'use client'
-
 import {
   Activity,
   Building2,
@@ -21,10 +19,10 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { auth } from '@/lib/firebase'
+import { useUser } from '@/hooks/use-user'
 
 export default function Home() {
-  const user = auth.currentUser
+  const { user } = useUser()
 
   if (!user) {
     return (
@@ -250,7 +248,7 @@ export default function Home() {
                     <p className="text-xs text-green-700 dark:text-green-300 mt-1">
                       Comece gerenciando a lista de funcionários
                     </p>
-                    <Link to="/employee/listar">
+                    <Link to="/employee/list">
                       <Button className="mt-2" size="sm" variant="outline">
                         Ver Funcionários
                       </Button>

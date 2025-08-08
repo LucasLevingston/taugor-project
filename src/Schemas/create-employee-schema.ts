@@ -14,21 +14,9 @@ export const createEmployeeSchema = z.object({
   state: z.string().nonempty({ message: 'Selecione o estado' }),
   phone: z.string().nonempty({ message: 'Selecione o estado' }),
   profilePicture: z.any().optional(),
-  birthDate: z.string().refine(
-    value => {
-      const date = new Date(value)
-      return date.getTime()
-    },
-    { message: 'A data de aniversário deve estar em um formato válido' }
-  ),
+  birthDate: z.date(),
   department: z.string().nonempty({ message: 'Selecione o setor' }),
   position: z.string().nonempty({ message: 'Selecione o cargo' }),
-  salary: z.number().min(3, { message: 'Digite o salário' }),
-  admissionDate: z.string().refine(
-    value => {
-      const dataAdmissao = new Date(value)
-      return dataAdmissao.getTime()
-    },
-    { message: 'A data de admissão deve estar em um formato válido' }
-  ),
+  salary: z.string(),
+  admissionDate: z.date(),
 })

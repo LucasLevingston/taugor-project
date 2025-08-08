@@ -1,5 +1,3 @@
-'use client'
-
 import React, {
   createContext,
   useCallback,
@@ -12,8 +10,6 @@ import { UseFormReturn } from 'react-hook-form'
 
 interface FormProgressContextType {
   progress: number
-  // Função para registrar um formulário para rastreamento de progresso
-  // Retorna uma função de limpeza para "desregistrar" o formulário
   trackForm: (formInstance: UseFormReturn<any>, fields?: string[]) => () => void
 }
 
@@ -27,17 +23,14 @@ interface FormProgressProviderProps {
 
 export function FormProgressProvider({ children }: FormProgressProviderProps) {
   const [progress, setProgress] = useState(0)
-  // Estado para armazenar a instância do formulário e os campos a serem rastreados
   const [trackedForm, setTrackedForm] = useState<{
     form: UseFormReturn<any>
     fields: string[]
   } | null>(null)
 
-  // Função para registrar um formulário
   const trackForm = useCallback(
     (formInstance: UseFormReturn<any>, fields?: string[]) => {
       setTrackedForm({ form: formInstance, fields: fields || [] })
-      // Retorna uma função de limpeza para desregistrar o formulário quando o componente que o chamou for desmontado
       return () => setTrackedForm(null)
     },
     []
@@ -45,7 +38,7 @@ export function FormProgressProvider({ children }: FormProgressProviderProps) {
 
   useEffect(() => {
     if (!trackedForm) {
-      setProgress(0) // Se nenhum formulário estiver sendo rastreado, o progresso é 0
+      setProgress(0)
       return
     }
 

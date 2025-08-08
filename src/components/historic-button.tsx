@@ -1,6 +1,4 @@
-'use client'
-
-import { History } from 'lucide-react' // Importe o ícone Lucide
+import { History } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import {
@@ -11,27 +9,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { formatDate } from '@/lib/dayjs'
 import { EmployeeType } from '@/types/employee-type'
-
-// Mock da função formatarDataHistorico
-const formatarDataHistorico = (dateString: string): string => {
-  try {
-    const date = new Date(dateString)
-    if (date.getTime()) {
-      return dateString
-    }
-    return date.toLocaleString('pt-BR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-  } catch (e) {
-    console.error('Error formatting date:', e)
-    return dateString
-  }
-}
 
 export default function HistoricButton({
   employee,
@@ -72,7 +51,7 @@ export default function HistoricButton({
                     </p>
                   )}
                   <p className="text-xs text-gray-500 mt-2">
-                    Date: {formatarDataHistorico(entry.date)}
+                    Date: {formatDate(entry.date)}
                   </p>
                 </div>
               ))

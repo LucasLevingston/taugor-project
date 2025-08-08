@@ -1,15 +1,15 @@
 import ProgressBar from '@ramonak/react-progress-bar'
 import { Link } from 'react-router-dom'
-import { Button } from '@/components/ui/button'
-import { auth } from '@/lib/firebase'
+import { useUser } from '@/hooks/use-user'
 import { useFormProgress } from '@/providers/progress-bar-provider'
 import { RHControlIcon } from '../icons/rh-control-icon'
+import { Button } from '../ui/button'
 import { HeaderDropdown } from './header-dropdown'
 import { ThemeToggle } from './theme-toggle'
 
 export function Header() {
   const { progress } = useFormProgress()
-  const user = auth.currentUser
+  const { user } = useUser()
 
   return (
     <div className="flex flex-col border-b border-gray-200 dark:border-[#1F1F23]">

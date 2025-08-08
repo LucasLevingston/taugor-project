@@ -22,7 +22,6 @@ export function CreateEmployee() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {/* <Progress className="w-[60%]" value={progress} /> */}
           <EmployeeForm />
         </CardContent>
       </Card>

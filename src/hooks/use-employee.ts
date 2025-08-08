@@ -1,3 +1,5 @@
+import { parse } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import {
   addDoc,
   doc,
@@ -16,9 +18,9 @@ import { employeeTableRef, storage } from '@/lib/firebase'
 import { handleFirestoreError } from '@/lib/utils/error-handler'
 import { useEmployeeStore } from '@/stores/employee-store'
 import {
-  type CreateEmployeeData,
+  CreateEmployeeData,
   EmployeePosition,
-  type EmployeeType,
+  EmployeeType,
 } from '@/types/employee-type'
 
 export const useEmployees = () => {
@@ -30,25 +32,67 @@ export const useEmployees = () => {
     deactivateEmployee,
   } = useEmployeeStore()
 
+  const parseFirebaseDateInput = (dateInput: any): Date | undefined => {
+    if (!dateInput) return
+    if (dateInput instanceof Date) return dateInput
+
+    if (
+      typeof dateInput === 'object' &&
+      typeof dateInput.toDate === 'function'
+    ) {
+      return dateInput.toDate()
+    }
+
+    if (typeof dateInput === 'string') {
+      const parsedLocalizedDate = parse(
+        dateInput,
+        "d 'de' MMMM 'de' yyyy 'às' HH:mm:ss 'UTC'xxx",
+        new Date(),
+        { locale: ptBR }
+      )
+      if (parsedLocalizedDate.getTime()) {
+        return parsedLocalizedDate
+      }
+
+      try {
+        const isoParsedDate = new Date(dateInput)
+        if (isoParsedDate.getTime()) {
+          return isoParsedDate
+        }
+      } catch (e) {
+        console.error(`Falha ao parsear data como ISO string: ${dateInput}`, e)
+      }
+    }
+
+    console.warn(
+      'parseFirebaseDateInput recebeu um formato de data inesperado:',
+      dateInput
+    )
+    return
+  }
   const getEmployees = async () => {
     try {
       const data = await getDocs(employeeTableRef)
-      const employeeData = data.docs.map(employeeDoc => ({
-        ...employeeDoc.data(),
-        uid: employeeDoc.id,
-        createdAt: employeeDoc.data().createdAt?.toDate
-          ? employeeDoc.data().createdAt.toDate()
-          : employeeDoc.data().createdAt,
-        updatedAt: employeeDoc.data().updatedAt?.toDate
-          ? employeeDoc.data().updatedAt.toDate()
-          : employeeDoc.data().updatedAt,
-      })) as EmployeeType[]
+      const employeeData = data.docs.map(employeeDoc => {
+        const rawData = employeeDoc.data()
+        return {
+          ...rawData,
+          uid: employeeDoc.id,
+          createdAt: rawData.createdAt?.toDate
+            ? rawData.createdAt.toDate()
+            : parseFirebaseDateInput(rawData.createdAt),
+          updatedAt: rawData.updatedAt?.toDate
+            ? rawData.updatedAt.toDate()
+            : parseFirebaseDateInput(rawData.updatedAt),
+          admissionDate: parseFirebaseDateInput(rawData.admissionDate),
+          birthDate: parseFirebaseDateInput(rawData.birthDate),
+        }
+      }) as EmployeeType[]
       setEmployees(employeeData)
     } catch (error) {
       handleFirestoreError(error)
     }
   }
-
   const getEmployeeById = (id: string) => {
     const employee = employees.find(emp => emp.uid === id)
     return employee || null
@@ -108,11 +152,9 @@ export const useEmployees = () => {
     profilePicture?: File
   ): Promise<boolean> => {
     try {
-      const docRef = doc(employeeTableRef, id)
       const updateData: Partial<EmployeeType> = {
         ...updates,
       }
-
       if (profilePicture) {
         const storagePath = `profilePictures/${id}_${Date.now()}_${profilePicture.name}`
         const imageRef = storageRef(storage, storagePath)
@@ -120,7 +162,15 @@ export const useEmployees = () => {
         updateData.profilePictureUrl = await getDownloadURL(uploadResult.ref)
       }
 
-      await updateDoc(docRef, updateData)
+      if ('profilePicture' in updateData) {
+        delete updateData.profilePicture
+      }
+
+      const docRef = doc(employeeTableRef, id)
+      await updateDoc(docRef, {
+        ...updateData,
+        updatedAt: serverTimestamp(),
+      })
       await addToHistory(
         id,
         'Employee updated',
@@ -130,7 +180,7 @@ export const useEmployees = () => {
       updateEmployeeStore(id, {
         ...updates,
         profilePictureUrl: updateData.profilePictureUrl,
-        updatedAt: new Date().toISOString(),
+        updatedAt: new Date(),
       })
       toast.success('Employee updated successfully!')
       return true

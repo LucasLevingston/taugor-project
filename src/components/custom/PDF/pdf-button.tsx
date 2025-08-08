@@ -1,25 +1,15 @@
-'use client'
-
 import { jsPDF } from 'jspdf'
 import { FileText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { formatDate } from '@/lib/dayjs'
 import { EmployeeType } from '@/types/employee-type'
 
 export function PDFButton({ employee }: { employee: EmployeeType }) {
-  const formatCurrency = (value: number) => {
+  const formatCurrency = (value: number | string) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
-    }).format(value)
-  }
-
-  const formatDate = (dateString: string | Date) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('pt-BR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
+    }).format(Number(value))
   }
 
   const handleGeneratePDF = () => {

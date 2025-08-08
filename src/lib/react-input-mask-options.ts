@@ -10,3 +10,15 @@ export const cpfOptions = {
   mask: '___.___.___-__',
   replacement: { _: /\d/ },
 }
+export const salaryOptions = {
+  mask: 'R$ num',
+  blocks: {
+    num: {
+      mask: Number,
+      thousandsSeparator: '.',
+      radix: ',',
+      scale: 2,
+      signed: false,
+    },
+  },
+}

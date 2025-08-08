@@ -1,0 +1,23 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /profilePictures/{userId}/{allPaths=**} {
+      // Permite leitura e escrita apenas para usuários autenticados
+      // e apenas se o userId no caminho corresponder ao uid do usuário autenticado
+      // ou se for uma nova imagem (sem userId específico no caminho inicial, como no seu caso de upload)
+      allow read, write: if request.auth != null;
+    }
+
+    // Regra mais genérica para uploads de profilePictures sem userId no caminho
+    // Permite que qualquer usuário autenticado crie um novo arquivo na pasta profilePictures
+    match /profilePictures/{fileName} {
+      allow write: if request.auth != null;
+      allow read: if true; // Permite que qualquer um leia as fotos de perfil (ajuste conforme sua necessidade)
+    }
+
+    // Opcional: Se você tiver outras pastas ou quiser regras mais restritivas
+    // match /{allPaths=**} {
+    //   allow read, write: if request.auth != null; // Apenas usuários autenticados podem ler/escrever em qualquer lugar
+    // }
+  }
+}

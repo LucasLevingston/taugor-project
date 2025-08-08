@@ -32,6 +32,14 @@ export function EditButton({
       {isEditing ? (
         <>
           <Button
+            disabled={isSubmitting}
+            onClick={handleCancel}
+            size="sm"
+            variant="outline"
+          >
+            <XIcon className="mr-2 h-4 w-4" /> Cancelar
+          </Button>
+          <Button
             disabled={isSubmitting || !form.formState.isDirty}
             onClick={handleSave}
             size="sm"
@@ -45,14 +53,6 @@ export function EditButton({
                 <SaveIcon className="mr-2 h-4 w-4" /> Salvar
               </>
             )}
-          </Button>
-          <Button
-            disabled={isSubmitting}
-            onClick={handleCancel}
-            size="sm"
-            variant="outline"
-          >
-            <XIcon className="mr-2 h-4 w-4" /> Cancelar
           </Button>
         </>
       ) : (

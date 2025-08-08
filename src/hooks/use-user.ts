@@ -1,25 +1,19 @@
 import { User as FirebaseUser, updateProfile } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
+import { useAuthProvider } from '@/providers/auth-context'
 
 export const useUser = () => {
-  const getUser = () => {
-    return auth.currentUser
-  }
+  const { user } = useAuthProvider()
 
   const updateUser = async (data: Partial<FirebaseUser>): Promise<void> => {
-    if (!auth.currentUser) {
+    if (!user) {
       throw new Error('No user logged in')
     }
     try {
-      await updateProfile(auth.currentUser, {
+      await updateProfile(user, {
         displayName:
-          data.displayName === undefined
-            ? auth.currentUser.displayName
-            : data.displayName,
-        photoURL:
-          data.photoURL === undefined
-            ? auth.currentUser.photoURL
-            : data.photoURL,
+          data.displayName === undefined ? user.displayName : data.displayName,
+        photoURL: data.photoURL === undefined ? user.photoURL : data.photoURL,
       })
     } catch (err) {
       console.error('Error updating user:', err)
@@ -38,7 +32,7 @@ export const useUser = () => {
 
   return {
     logOut,
-    getUser,
+    user,
     updateUser,
   }
 }

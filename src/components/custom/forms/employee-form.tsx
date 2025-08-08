@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Briefcase, MapPin, User, UserRound } from 'lucide-react'
+import { Briefcase, MapPin, User } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -7,11 +7,9 @@ import { z } from 'zod'
 import CustomFormField, {
   FormFieldType,
 } from '@/components/custom/form-components/custom-form-field'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Form } from '@/components/ui/form'
 import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useEmployees } from '@/hooks/use-employee'
 import { brazilianStates } from '@/lib/utils/brazilian-states'
@@ -26,19 +24,11 @@ import { EditButton } from '../form-components/edit-button'
 
 type EmployeeFormData = z.infer<typeof createEmployeeSchema>
 
-// function getImageData(event: ChangeEvent<HTMLInputElement>) {
-//   if (!event.target.files?.[0]) return null
-
-//   const file = event.target.files[0]
-//   const displayUrl = URL.createObjectURL(file)
-//   return { file, displayUrl }
-// }
 interface EmployeeFormProps {
   employee?: EmployeeType
 }
 export function EmployeeForm({ employee }: EmployeeFormProps) {
   const [preview, setPreview] = useState(employee?.profilePictureUrl || '')
-  const [isRoundPhoto, setIsRoundPhoto] = useState(false)
   const [noStreetNumber, setNoStreetNumber] = useState(
     employee?.number === 'No number'
   )
@@ -53,7 +43,7 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
       name: employee?.name || '',
       email: employee?.email || '',
       phone: employee?.phone || '',
-      birthDate: employee?.birthDate || '',
+      birthDate: employee?.birthDate || new Date(),
       gender: employee?.gender || '',
       street: employee?.street || '',
       number: employee?.number || '',
@@ -62,8 +52,8 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
       state: employee?.state || '',
       department: employee?.department || '',
       position: employee?.position || '',
-      salary: employee?.salary || 0,
-      admissionDate: employee?.admissionDate || '',
+      salary: employee?.salary || '0',
+      admissionDate: employee?.admissionDate || new Date(),
       profilePicture: null,
     },
   })
@@ -86,7 +76,7 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
         position: employee.position,
         salary: employee.salary,
         admissionDate: employee.admissionDate,
-        profilePicture: null, // Reset file input
+        profilePicture: null,
       })
       setPreview(employee.profilePictureUrl || '')
       setNoStreetNumber(employee.number === 'No number')
@@ -95,7 +85,7 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
         name: '',
         email: '',
         phone: '',
-        birthDate: '',
+        birthDate: new Date(),
         gender: '',
         street: '',
         number: '',
@@ -104,8 +94,8 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
         state: '',
         department: '',
         position: '',
-        salary: 0,
-        admissionDate: '',
+        salary: '0',
+        admissionDate: new Date(),
         profilePicture: null,
       })
       setPreview('')
@@ -121,7 +111,6 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
       } else {
         await createEmployee({ data, profilePicture: data.profilePicture })
         toast.success('Employee created successfully!')
-        // Reset form after successful creation
         form.reset()
         setPreview('')
         setActiveTab('personal')
@@ -150,15 +139,16 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
             </TabsTrigger>
           </TabsList>
 
-          {/* Personal Information Tab */}
           <TabsContent className="space-y-6" value="personal">
+            {/* Estrutura de grid responsiva */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Coluna para campos de texto */}
               <div className="space-y-4">
                 <CustomFormField
                   fieldType={FormFieldType.INPUT}
                   form={form}
                   isEditing={isEditing}
-                  name="name" // Changed to full name as lastName was removed
+                  name="name"
                   placeholder="Enter full name"
                 />
                 <CustomFormField
@@ -192,44 +182,29 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
                   placeholder="Select gender"
                 />
               </div>
+              {/* Coluna para upload de foto de perfil e opção de arredondamento */}
               <div className="space-y-4">
                 <div className="flex flex-col items-center space-y-4">
-                  <Avatar
-                    className={`h-48 w-48 bg-muted ${
-                      isRoundPhoto ? 'rounded-full' : 'rounded-lg'
-                    }`}
-                  >
-                    <AvatarImage
-                      className="h-full w-full object-cover"
-                      src={preview || '/placeholder.svg?height=192&width=192'}
-                    />
-                    <AvatarFallback>
-                      <UserRound className="h-48 w-48" /> {/* Lucide icon */}
-                    </AvatarFallback>
-                  </Avatar>
                   <div className="w-full space-y-2">
                     <CustomFormField
                       fieldType={FormFieldType.FILE_UPLOAD}
                       form={form}
+                      isAvatar={true}
                       isEditing={isEditing}
                       label=""
                       name="profilePicture"
-                      placeholder="Upload profile picture" // No label for file upload
+                      placeholder="Upload profile picture"
+                      // isRoundPhoto e setPreview não são mais passados aqui
+                      preview={preview} // Continua passando preview para inicialização
+                      setPreview={setPreview} // Continua passando setPreview para atualizar o pai
                     />
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      checked={isRoundPhoto}
-                      onCheckedChange={setIsRoundPhoto} // Disable switch if not editing
-                    />
-                    <Label>Round photo</Label>
-                  </div>
+                  {/* O Switch e Label para Round photo foram movidos para dentro do CustomFormField */}
                 </div>
               </div>
             </div>
           </TabsContent>
 
-          {/* Address Information Tab */}
           <TabsContent className="space-y-6" value="address">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
@@ -240,7 +215,6 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
                       form={form}
                       isEditing={isEditing}
                       name="street"
-                      placeholder="Enter street address"
                     />
                   </div>
                   <div className="w-32">
@@ -257,7 +231,6 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
                           form={form}
                           isEditing={isEditing}
                           name="number"
-                          placeholder="Number"
                           type="string"
                         />
                       </div>
@@ -269,7 +242,7 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
                         onCheckedChange={checked => {
                           setNoStreetNumber(!!checked)
                           form.setValue('number', checked ? 'No number' : '')
-                        }} // Disable checkbox if not editing
+                        }}
                       />
                       <Label className="text-sm" htmlFor="noNumber">
                         No number
@@ -282,7 +255,6 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
                   form={form}
                   isEditing={isEditing}
                   name="zipCode"
-                  placeholder="Enter ZIP code"
                 />
               </div>
               <div className="space-y-4">
@@ -291,7 +263,6 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
                   form={form}
                   isEditing={isEditing}
                   name="city"
-                  placeholder="Enter city"
                 />
                 <CustomFormField
                   fieldType={FormFieldType.SELECT}
@@ -299,13 +270,11 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
                   isEditing={isEditing}
                   name="state"
                   options={brazilianStates}
-                  placeholder="Select state"
                 />
               </div>
             </div>
           </TabsContent>
 
-          {/* Employment Information Tab */}
           <TabsContent className="space-y-6" value="employment">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
@@ -315,7 +284,6 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
                   isEditing={isEditing}
                   name="department"
                   options={departmentOptions}
-                  placeholder="Select department"
                 />
                 <CustomFormField
                   fieldType={FormFieldType.SELECT}
@@ -323,7 +291,6 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
                   isEditing={isEditing}
                   name="position"
                   options={positionOptions}
-                  placeholder="Select position"
                 />
               </div>
               <div className="space-y-4">
@@ -332,16 +299,13 @@ export function EmployeeForm({ employee }: EmployeeFormProps) {
                   form={form}
                   isEditing={isEditing}
                   name="salary"
-                  placeholder="Enter annual salary"
-                  type="number"
                 />
                 <CustomFormField
-                  dateFormat="MM/dd/yyyy"
+                  dateFormat="dd/MM/yyyy"
                   fieldType={FormFieldType.DATE_PICKER}
                   form={form}
                   isEditing={isEditing}
                   name="admissionDate"
-                  placeholder="Select start date"
                 />
               </div>
             </div>

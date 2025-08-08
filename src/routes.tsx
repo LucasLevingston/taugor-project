@@ -1,7 +1,8 @@
 import { type JSX, lazy, Suspense } from 'react'
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { RootLayout } from './components/custom/root-layout'
 import { Loading } from './components/Loading'
+import { useUser } from './hooks/use-user'
 import { ProfileSettings } from './pages/settings/profile'
 
 const LoginPage = lazy(() =>
@@ -40,11 +41,12 @@ interface PrivateRouteProps {
 }
 
 const PrivateRoute = ({ element }: PrivateRouteProps) => {
-  // const user = auth.currentUser
+  const { user } = useUser()
 
-  // if (!user) {
-  //   return <Navigate to="/login" />
-  // }
+  if (!user) {
+    return <Navigate to="/login" />
+  }
+
   return element
 }
 
@@ -53,11 +55,11 @@ interface AuthRouteProps {
 }
 
 const AuthRoute = ({ element }: AuthRouteProps) => {
-  // const user = auth.currentUser
+  const { user } = useUser()
 
-  // if (user) {
-  //   return <Navigate to="/" />
-  // }
+  if (user) {
+    return <Navigate to="/" />
+  }
   return element
 }
 

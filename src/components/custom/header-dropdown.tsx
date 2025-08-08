@@ -46,7 +46,7 @@ export function HeaderDropdown({ user }: HeaderDropdownProps) {
     },
     {
       label: 'Add employee',
-      href: '/employee/list',
+      href: '/employee/create',
       icon: <IoCreate className="h-4 w-4" />,
     },
     {
